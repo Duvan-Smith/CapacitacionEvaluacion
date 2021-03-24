@@ -35,11 +35,13 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
-
+        //TODO: impementar metodo
         public Task<T> Patch<T>(string path, T request) where T : class
         {
             ValidatePath(path);
+#pragma warning disable RCS1079 // Throwing of new NotImplementedException.
             throw new System.NotImplementedException();
+#pragma warning restore RCS1079 // Throwing of new NotImplementedException.
         }
 
         public async Task<TResponse> Post<TResponse, TRequest>(string path, TRequest request) where TResponse : class
@@ -51,13 +53,15 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
-
+        //TODO: impementar metodo
         public Task<T> Put<T>(string path, T request) where T : class
         {
             ValidatePath(path);
+#pragma warning disable RCS1079 // Throwing of new NotImplementedException.
             throw new System.NotImplementedException();
+#pragma warning restore RCS1079 // Throwing of new NotImplementedException.
         }
-        private void ValidatePath(string path)
+        private static void ValidatePath(string path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentPathException($"Parameter: {nameof(path)} required");
