@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Evaluacion.Dominio.Core.Genericas.TipoDocumentos
 {
-    public class TipoDocumento : EntidadBase
+    public class TipoDocumentoEntity : EntidadBase
     {
         [Required]
         [MaxLength(50)]

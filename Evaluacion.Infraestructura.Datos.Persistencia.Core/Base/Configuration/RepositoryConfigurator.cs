@@ -1,4 +1,14 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Evaluacion.Dominio.Core.Especificas.Empleados;
+using Evaluacion.Dominio.Core.Especificas.Personas;
+using Evaluacion.Dominio.Core.Especificas.Proveedores;
+using Evaluacion.Dominio.Core.Genericas.Areas;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
+using Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Empleados;
+using Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Personas;
+using Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Proveedores;
+using Evaluacion.Infraestructura.Datos.Persistencia.Core.Genericas.Areas;
+using Evaluacion.Infraestructura.Datos.Persistencia.Core.Genericas.TipoDocumentos;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration
@@ -8,7 +18,11 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration
         public static void ConfigureBaseRepository(this IServiceCollection services, DbSettings settings)
         {
             //TODO: Lookup
-            //services.TryAddTransient< IClass, Class>();
+            services.TryAddTransient<IAreaRepositorio, AreaRepositorio>();
+            services.TryAddTransient<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
+            services.TryAddTransient<IPersonaRepositorio, PersonaRepositorio>();
+            services.TryAddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
+            services.TryAddTransient<IProveedorRepositorio, ProveedorRepositorio>();
 
             services.ConfigureContext(settings);
         }

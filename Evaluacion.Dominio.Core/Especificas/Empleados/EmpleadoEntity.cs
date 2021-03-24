@@ -5,11 +5,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Evaluacion.Dominio.Core.Especificas.Empleados
 {
-    public class Empleado : EntidadBase
+    public class EmpleadoEntity : EntidadBase
     {
         [ForeignKey("Id")]
-        public Persona Persona { get; set; }
+        public PersonaEntity Persona { get; set; }
         [ForeignKey("Id")]
-        public Area Area { get; set; }
+        public AreaEntity Area { get; set; }
     }
 }

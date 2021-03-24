@@ -1,12 +1,12 @@
 ﻿using Evaluacion.Dominio.Core.Base;
-using Evaluacion.Dominio.Core.Genericas;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Evaluacion.Dominio.Core.Especificas.Personas
 {
-    public class Persona : EntidadBase
+    public class PersonaEntity : EntidadBase
     {
         [Required]
         [MaxLength(50)]
@@ -30,6 +30,6 @@ namespace Evaluacion.Dominio.Core.Especificas.Personas
         public string CorreoElectronico { get; set; }
 
         [ForeignKey("Id")]
-        public TipoDocumento TipoDocumento { get; set; }
+        public TipoDocumentoEntity TipoDocumento { get; set; }
     }
 }

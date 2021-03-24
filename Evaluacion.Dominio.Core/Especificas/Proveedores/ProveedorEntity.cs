@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Evaluacion.Dominio.Core.Especificas.Proveedores
 {
-    public class Proveedor : EntidadBase
+    public class ProveedorEntity : EntidadBase
     {
         [ForeignKey("Id")]
-        public Persona Persona { get; set; }
+        public PersonaEntity Persona { get; set; }
     }
 }

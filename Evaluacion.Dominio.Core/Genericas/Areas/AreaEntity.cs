@@ -5,13 +5,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Evaluacion.Dominio.Core.Genericas.Areas
 {
-    public class Area : EntidadBase
+    public class AreaEntity : EntidadBase
     {
         [Required]
         [MaxLength(50)]
         public string NombreArea { get; set; }
 
         [ForeignKey("Id")]
-        public Persona Persona { get; set; }
+        public PersonaEntity Persona { get; set; }
     }
 }

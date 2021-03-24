@@ -1,4 +1,9 @@
 ﻿using Evaluacion.Dominio.Core.Base;
+using Evaluacion.Dominio.Core.Especificas.Empleados;
+using Evaluacion.Dominio.Core.Especificas.Personas;
+using Evaluacion.Dominio.Core.Especificas.Proveedores;
+using Evaluacion.Dominio.Core.Genericas.Areas;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -9,6 +14,13 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base
     public class ContextoDb : DbContext, IContextDb
     {
         private readonly DbSettings _settings;
+        #region Tablas BD
+        public virtual DbSet<AreaEntity> Area { get; set; }
+        public virtual DbSet<TipoDocumentoEntity> TipoDocumento { get; set; }
+        public virtual DbSet<PersonaEntity> Persona { get; set; }
+        public virtual DbSet<EmpleadoEntity> Empleado { get; set; }
+        public virtual DbSet<ProveedorEntity> Proveedor { get; set; }
+        #endregion
         public ContextoDb(IOptions<DbSettings> settings) =>
            _settings = settings.Value;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
