@@ -1,3 +1,4 @@
+using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,8 @@ namespace Evaluacion.WebApi
             services.AddServerSideBlazor();
             services.AddControllers();
             var dbSettings = Configuration.GetSection("ConnectionString").Get<string>();
+            //TODO: Se debe eliminar configurador ConfigureBaseRepository
+            services.ConfigureBaseRepository(new DbSettings { ConnectionString = dbSettings });
             //services.ConfigureFilmService(new DbSettings { ConnectionString = dbSettings });
         }
 

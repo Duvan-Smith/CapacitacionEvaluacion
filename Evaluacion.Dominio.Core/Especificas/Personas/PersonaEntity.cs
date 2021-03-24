@@ -1,8 +1,8 @@
 ﻿using Evaluacion.Dominio.Core.Base;
-using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
+using Evaluacion.Dominio.Core.Genericas.Areas;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Evaluacion.Dominio.Core.Especificas.Personas
 {
@@ -29,7 +29,9 @@ namespace Evaluacion.Dominio.Core.Especificas.Personas
         [RegularExpression(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")]
         public string CorreoElectronico { get; set; }
 
-        [ForeignKey("Id")]
-        public TipoDocumentoEntity TipoDocumento { get; set; }
+        public IEnumerable<AreaEntity> Area { get; set; }
+        public Guid EmpleadoEntityId { get; set; }
+        public Guid ProveedorEntityId { get; set; }
+        public Guid TipoDocumentoId { get; set; }
     }
 }
