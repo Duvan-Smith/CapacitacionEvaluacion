@@ -27,6 +27,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Evaluacion.Core", "Tes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.Infraestructura.Datos.Persistencia.Core", "Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj", "{152C8B76-2E93-45BB-AEF2-980007119660}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1410198F-4910-438A-B247-A8E4938DE82A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
