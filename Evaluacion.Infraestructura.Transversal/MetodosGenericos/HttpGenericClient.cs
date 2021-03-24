@@ -1,8 +1,11 @@
 ﻿using Evaluacion.Infraestructura.Transversal.Exceptions;
 using Evaluacion.Infraestructura.Transversal.MetodosGenericos.Cofiguration;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
@@ -14,34 +17,50 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
         {
             if (settings == null)
                 throw new UriFormatException();
-            if (client.BaseAddress == null)
-                throw new HttpClientNotDefinedException();
-            _client = client;
+            _client = client ?? throw new HttpClientNotDefinedException();
             _client.BaseAddress = settings.Value.GetServiceUrl();
         }
-        public Task<T> Get<T>(string path, string request) where T : class
+        public async Task<T> Get<T>(string path, string request) where T : class
         {
-            throw new System.NotImplementedException();
+            ValidatePath(path);
+            var response = await _client.GetAsync(path).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        public Task<T> GetAll<T>(string path) where T : class
+        public async Task<T> GetAll<T>(string path) where T : class
         {
-            throw new System.NotImplementedException();
+            ValidatePath(path);
+            var response = await _client.GetAsync(path).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
         public Task<T> Patch<T>(string path, T request) where T : class
         {
+            ValidatePath(path);
             throw new System.NotImplementedException();
         }
 
-        public Task<TResponse> Post<TResponse, TRequest>(string path, TRequest request) where TResponse : class
+        public async Task<TResponse> Post<TResponse, TRequest>(string path, TRequest request) where TResponse : class
         {
-            throw new System.NotImplementedException();
+            ValidatePath(path);
+            var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await _client.PostAsync(path, stringRequest).ConfigureAwait(false);
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
         public Task<T> Put<T>(string path, T request) where T : class
         {
+            ValidatePath(path);
             throw new System.NotImplementedException();
+        }
+        private void ValidatePath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentPathException($"Parameter: {nameof(path)} required");
         }
     }
 }
