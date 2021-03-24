@@ -1,12 +1,28 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos.Cofiguration
 {
-    class HttpClientSettings
+    public class HttpClientSettings
     {
+        public string ServiceProtocol { get; set; }
+        public string Hostname { get; set; }
+        public int Port { get; set; }
+        public string Context { get; set; }
+
+        public void CopyFrom(HttpClientSettings settings)
+        {
+            ServiceProtocol = settings.ServiceProtocol;
+            Port = settings.Port;
+            Context = settings.Context;
+            Hostname = settings.Hostname;
+        }
+
+        public Uri GetServiceUrl() => new UriBuilder
+        {
+            Host = Hostname,
+            Port = Port,
+            Path = Context,
+            Scheme = ServiceProtocol
+        }.Uri;
     }
 }

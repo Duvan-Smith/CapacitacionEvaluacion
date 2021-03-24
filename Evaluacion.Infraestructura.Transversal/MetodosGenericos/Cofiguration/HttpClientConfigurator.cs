@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos.Cofiguration
 {
-    class HttpClientConfigurator
+    public static class HttpClientConfigurator
     {
+        public static void ConfigureHttpClientService(this IServiceCollection services, HttpClientSettings settings)
+        {
+            services.AddHttpClient<HttpGenericClient>();
+            services.Configure<HttpClientSettings>(o => o.CopyFrom(settings));
+            services.TryAddTransient<IHttpGenericClient, HttpGenericClient>();
+        }
     }
 }
