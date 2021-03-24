@@ -1,16 +1,9 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Evaluacion.WebApi
 {
@@ -32,6 +25,11 @@ namespace Evaluacion.WebApi
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Evaluacion.WebApi", Version = "v1" });
             });
+            services.AddRazorPages();
+            services.AddServerSideBlazor();
+            services.AddControllers();
+            var dbSettings = Configuration.GetSection("ConnectionString").Get<string>();
+            //services.ConfigureFilmService(new DbSettings { ConnectionString = dbSettings });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
