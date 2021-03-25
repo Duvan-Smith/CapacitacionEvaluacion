@@ -1,3 +1,5 @@
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,10 +29,11 @@ namespace Evaluacion.WebApi
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddControllers();
+
             var dbSettings = Configuration.GetSection("ConnectionString").Get<string>();
-            //TODO: Se debe eliminar configurador ConfigureBaseRepository
-            services.ConfigureBaseRepository(new DbSettings { ConnectionString = dbSettings });
-            //services.ConfigureFilmService(new DbSettings { ConnectionString = dbSettings });
+
+            services.ConfigurePersonasService(new DbSettings { ConnectionString = dbSettings });
+            services.ConfigureGenericasService(new DbSettings { ConnectionString = dbSettings });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

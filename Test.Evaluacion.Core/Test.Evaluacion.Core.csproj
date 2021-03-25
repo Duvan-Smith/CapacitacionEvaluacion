@@ -26,4 +26,8 @@
     <ProjectReference Include="..\Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Aplicacion\Dto\" />
+  </ItemGroup>
+
 </Project>

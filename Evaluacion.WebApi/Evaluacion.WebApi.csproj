@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Evaluacion.Aplicacion.Core\Evaluacion.Aplicacion.Core.csproj" />
     <ProjectReference Include="..\Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj" />
   </ItemGroup>
 
