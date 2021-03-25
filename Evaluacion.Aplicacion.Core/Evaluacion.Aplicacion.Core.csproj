@@ -5,8 +5,21 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="AdministracionPersonas\Especificas\Configuration\" />
-    <Folder Include="AdministracionPersonas\Genericas\Configuration\" />
+    <PackageReference Include="AutoMapper" Version="10.1.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Evaluacion.Aplicacion.Dto\Evaluacion.Aplicacion.Dto.csproj" />
+    <ProjectReference Include="..\Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="AdministracionPersonas\Personas\Clientes\Services\" />
+    <Folder Include="AdministracionPersonas\Personas\Empleados\Services\" />
+    <Folder Include="AdministracionPersonas\Personas\Proveedores\Services\" />
+    <Folder Include="AdministracionPersonas\Genericas\Areas\Services\" />
+    <Folder Include="AdministracionPersonas\Genericas\TipoDocumentos\Services\" />
   </ItemGroup>
 
 </Project>
