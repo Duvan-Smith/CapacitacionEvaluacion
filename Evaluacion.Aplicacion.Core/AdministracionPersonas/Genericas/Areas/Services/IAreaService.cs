@@ -7,10 +7,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 {
     public interface IAreaService
     {
-        public Task<Guid> Agregar<Trequest>(Trequest requestDto);
-        public Task<bool> Eliminar<Trequest>(Trequest requestDto);
-        public Task<AreaDto> GetAreaByArea<Trequest>(Trequest requestDto);
+        public Task<Guid> Agregar(AreaRequestDto requestDto);
+        public Task<bool> Eliminar(AreaRequestDto requestDto);
+        public Task<AreaDto> GetAreaByArea(AreaRequestDto requestDto);
         public Task<IEnumerable<AreaDto>> GetAllArea();
-        public Task<bool> ActualizarArea<Trequest>(Trequest requestDto);
+        public Task<bool> ActualizarArea(AreaRequestDto requestDto);
     }
 }
