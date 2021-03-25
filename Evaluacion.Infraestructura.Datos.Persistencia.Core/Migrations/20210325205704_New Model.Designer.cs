@@ -4,14 +4,16 @@ using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 {
     [DbContext(typeof(ContextoDb))]
-    partial class ContextoDbModelSnapshot : ModelSnapshot
+    [Migration("20210325205704_New Model")]
+    partial class NewModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -165,6 +167,9 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("EmpleadoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("EmpleadoResponsableId")
                         .HasColumnType("uniqueidentifier");
 
@@ -184,10 +189,19 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("ClienteId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("EmpleadoId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("NombreTipoDocumento")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
+
+                    b.Property<Guid>("ProveedorId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 

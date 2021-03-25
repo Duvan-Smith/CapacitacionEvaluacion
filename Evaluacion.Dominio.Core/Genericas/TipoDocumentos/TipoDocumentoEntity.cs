@@ -12,8 +12,8 @@ namespace Evaluacion.Dominio.Core.Genericas.TipoDocumentos
         [Required]
         [MaxLength(50)]
         public string NombreTipoDocumento { get; set; }
-        public IEnumerable<ClienteEntity> ClienteTipoDocumento { get; set; }
-        public IEnumerable<EmpleadoEntity> EmpleadoTipoDocumento { get; set; }
-        public IEnumerable<ProveedorEntity> ProveedorTipoDocumento { get; set; }
+        public virtual IEnumerable<ClienteEntity> Cliente { get; set; }
+        public virtual IEnumerable<EmpleadoEntity> Empleado { get; set; }
+        public virtual IEnumerable<ProveedorEntity> Proveedor { get; set; }
     }
 }

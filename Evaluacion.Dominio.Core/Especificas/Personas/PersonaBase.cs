@@ -35,7 +35,6 @@ namespace Evaluacion.Dominio.Core.Especificas.Personas
         public string CorreoElectronico { get; set; }
         public virtual TipoDocumentoEntity TipoDocumento { get; set; }
         public virtual Guid TipoDocumentoId { get; set; }
-        //public virtual IEnumerable<TipoDocumentoEntity> TiposDocumento { get; set; }
 
         [Required]
         [MinLength(8)]

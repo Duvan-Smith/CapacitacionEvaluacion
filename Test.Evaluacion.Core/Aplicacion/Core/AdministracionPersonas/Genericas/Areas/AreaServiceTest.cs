@@ -34,6 +34,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.GetArea(null)).ConfigureAwait(false);
             await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.InsertArea(null)).ConfigureAwait(false);
         }
+        //TODO: Criterio: No se pueden eliminar áreas que tengan empleados asociados
         [Fact]
         [UnitTest]
         public async Task No_se_pueden_eliminar_areas_que_tengan_empleados_asociados()
@@ -96,7 +97,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoArea = new AreaRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreArea = "FakeArea",
+                NombreArea = "FakeAreaOk",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
             areaService.InsertArea(dtoArea);
@@ -157,21 +158,58 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.DeleteArea(dtoArea)).ConfigureAwait(false);
 
             await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
+            await areaService.DeleteArea(dtoArea).ConfigureAwait(false);
         }
         [Fact]
         [IntegrationTest]
-        public async void Get_Tabla_Relaciones()
+        public async void No_Test_Get_Tabla_Relaciones()
         {
             var service = new ServiceCollection();
+            var serviceP = new ServiceCollection();
+
             service.ConfigureGenericasService(new DbSettings
             {
                 ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
             });
+            serviceP.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+
             var provider = service.BuildServiceProvider();
+            var providerP = serviceP.BuildServiceProvider();
+
             var areaService = provider.GetRequiredService<IAreaService>();
+            var empleadoService = providerP.GetRequiredService<IEmpleadoService>();
 
-            var result = await areaService.GetAllArea().ConfigureAwait(false);
+            var dtoArea = new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "FakeListEmpleado",
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            await areaService.InsertArea(dtoArea).ConfigureAwait(false);
 
+            var dtoEmpleado = new EmpleadoRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake",
+                Apellido = "Fake",
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                NumeroTelefono = 0,
+                CorreoElectronico = "fake@fake.fake",
+                TipoDocumentoId = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                CodigoTipoDocumento = "12345678",
+                Salario = 20000,
+                AreaId = dtoArea.Id
+            };
+            await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+
+            await areaService.GetAllArea().ConfigureAwait(false);
+
+            await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
+            await areaService.DeleteArea(dtoArea).ConfigureAwait(false);
         }
         //TODO: Hacer primero Empleado para hacer las llamadas desde area
 

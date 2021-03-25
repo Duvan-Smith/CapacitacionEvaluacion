@@ -11,7 +11,7 @@ namespace Evaluacion.Dominio.Core.Genericas.Areas
         [Required]
         [MaxLength(50)]
         public string NombreArea { get; set; }
-        public IEnumerable<EmpleadoEntity> Empleado { get; set; }
+        public virtual IEnumerable<EmpleadoEntity> Empleado { get; set; }
         public Guid EmpleadoResponsableId { get; set; }
     }
 }
