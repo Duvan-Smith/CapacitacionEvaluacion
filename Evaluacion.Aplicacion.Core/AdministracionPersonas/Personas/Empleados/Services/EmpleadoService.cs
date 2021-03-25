@@ -51,6 +51,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             if (usernameExist)
                 throw new EmpleadonameAlreadyExistException(requestDto.Nombre);
 
+            var idExist = _empleadoRepositorio
+                .SearchMatching<EmpleadoEntity>(x => x.Id == requestDto.Id)
+                ;
+
+            if (idExist.Any())
+                throw new EmpleadoidAlreadyExistException(idExist.First().Id.ToString());
+
             var response = await _empleadoRepositorio.Insert(_mapper.Map<EmpleadoEntity>(requestDto)).ConfigureAwait(false);
 
             return response.Id;

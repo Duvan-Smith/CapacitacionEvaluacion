@@ -12,7 +12,7 @@ namespace Evaluacion.Dominio.Core.Especificas.Personas
     }
     public abstract class PersonaBase : EntidadBase
     {
-        public abstract TipoPersona TipoPersona { get; }
+        public virtual TipoPersona TipoPersona { get; set; }
         [Required]
         [MaxLength(50)]
         public string Nombre { get; set; }

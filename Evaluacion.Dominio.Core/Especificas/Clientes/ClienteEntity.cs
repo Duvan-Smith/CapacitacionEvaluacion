@@ -4,6 +4,5 @@ namespace Evaluacion.Dominio.Core.Especificas.Clientes
 {
     public class ClienteEntity : PersonaBase
     {
-        public override TipoPersona TipoPersona => TipoPersona.Natural;
     }
 }
