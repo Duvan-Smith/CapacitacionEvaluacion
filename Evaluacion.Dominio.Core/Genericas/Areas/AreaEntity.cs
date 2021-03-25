@@ -1,4 +1,5 @@
 ﻿using Evaluacion.Dominio.Core.Base;
+using Evaluacion.Dominio.Core.Especificas.Clientes;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Especificas.Personas;
 using System.Collections.Generic;

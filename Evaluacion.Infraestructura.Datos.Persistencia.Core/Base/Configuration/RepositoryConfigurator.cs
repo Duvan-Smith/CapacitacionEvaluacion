@@ -1,4 +1,5 @@
-﻿using Evaluacion.Dominio.Core.Especificas.Empleados;
+﻿using Evaluacion.Dominio.Core.Especificas.Clientes;
+using Evaluacion.Dominio.Core.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Especificas.Personas;
 using Evaluacion.Dominio.Core.Especificas.Proveedores;
 using Evaluacion.Dominio.Core.Genericas.Areas;

@@ -1,4 +1,5 @@
-﻿using Evaluacion.Dominio.Core.Especificas.Empleados;
+﻿using Evaluacion.Dominio.Core.Especificas.Clientes;
+using Evaluacion.Dominio.Core.Especificas.Empleados;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base;
 
 namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Empleados

@@ -1,4 +1,5 @@
 ﻿using Evaluacion.Dominio.Core.Base;
+using Evaluacion.Dominio.Core.Especificas.Clientes;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Especificas.Proveedores;
 using Evaluacion.Dominio.Core.Genericas.Areas;
@@ -36,5 +37,6 @@ namespace Evaluacion.Dominio.Core.Especificas.Personas
         public EmpleadoEntity EmpleadoEntity { get; set; }
         public ProveedorEntity ProveedorEntity { get; set; }
         public TipoDocumentoEntity TipoDocumentoEntity { get; set; }
+        public ClienteEntity ClienteEntity { get; set; }
     }
 }

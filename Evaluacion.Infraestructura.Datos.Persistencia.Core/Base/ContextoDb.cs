@@ -1,4 +1,5 @@
 ﻿using Evaluacion.Dominio.Core.Base;
+using Evaluacion.Dominio.Core.Especificas.Clientes;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Especificas.Personas;
 using Evaluacion.Dominio.Core.Especificas.Proveedores;
@@ -20,6 +21,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base
         public virtual DbSet<PersonaEntity> Personas { get; set; }
         public virtual DbSet<EmpleadoEntity> Empleados { get; set; }
         public virtual DbSet<ProveedorEntity> Proveedores { get; set; }
+        public virtual DbSet<ClienteEntity> Clientes { get; set; }
         #endregion
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -42,6 +44,10 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base
             modelBuilder.Entity<PersonaEntity>()
                 .HasOne(p => p.TipoDocumentoEntity)
                 .WithMany(b => b.PersonaTipoDocumento);
+
+            modelBuilder.Entity<PersonaEntity>()
+                .HasOne(p => p.ClienteEntity)
+                .WithMany(b => b.PersonaCliente);
 
         }
         public ContextoDb(IOptions<DbSettings> settings) =>
