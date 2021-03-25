@@ -1,11 +1,9 @@
-﻿using Evaluacion.Dominio.Core.Base;
-using Evaluacion.Dominio.Core.Especificas.Personas;
-using System.Collections.Generic;
+﻿using Evaluacion.Dominio.Core.Especificas.Personas;
 
 namespace Evaluacion.Dominio.Core.Especificas.Clientes
 {
-    public class ClienteEntity : EntidadBase
+    public class ClienteEntity : PersonaBase
     {
-        public IEnumerable<PersonaEntity> PersonaCliente { get; set; }
+        public override TipoPersona TipoPersona => TipoPersona.Natural;
     }
 }

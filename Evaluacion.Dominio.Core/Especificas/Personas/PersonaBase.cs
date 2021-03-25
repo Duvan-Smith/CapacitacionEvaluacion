@@ -1,17 +1,18 @@
 ﻿using Evaluacion.Dominio.Core.Base;
-using Evaluacion.Dominio.Core.Especificas.Clientes;
-using Evaluacion.Dominio.Core.Especificas.Empleados;
-using Evaluacion.Dominio.Core.Especificas.Proveedores;
-using Evaluacion.Dominio.Core.Genericas.Areas;
 using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Evaluacion.Dominio.Core.Especificas.Personas
 {
-    public class PersonaEntity : EntidadBase
+    public enum TipoPersona
     {
+        Natural = 1,
+        Juridico = 2,
+    }
+    public abstract class PersonaBase : EntidadBase
+    {
+        public abstract TipoPersona TipoPersona { get; }
         [Required]
         [MaxLength(50)]
         public string Nombre { get; set; }
@@ -32,11 +33,6 @@ namespace Evaluacion.Dominio.Core.Especificas.Personas
         [Required]
         [RegularExpression(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")]
         public string CorreoElectronico { get; set; }
-
-        public IEnumerable<AreaEntity> Area { get; set; }
-        public EmpleadoEntity EmpleadoEntity { get; set; }
-        public ProveedorEntity ProveedorEntity { get; set; }
         public TipoDocumentoEntity TipoDocumentoEntity { get; set; }
-        public ClienteEntity ClienteEntity { get; set; }
     }
 }

@@ -1,13 +1,14 @@
-﻿using Evaluacion.Dominio.Core.Base;
-using Evaluacion.Dominio.Core.Especificas.Personas;
+﻿using Evaluacion.Dominio.Core.Especificas.Personas;
 using Evaluacion.Dominio.Core.Genericas.Areas;
-using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Evaluacion.Dominio.Core.Especificas.Empleados
 {
-    public class EmpleadoEntity : EntidadBase
+    public class EmpleadoEntity : PersonaBase
     {
-        public IEnumerable<PersonaEntity> PersonaEmpleado { get; set; }
+        [Required]
+        public double Salario { get; set; }
         public AreaEntity AreaEntity { get; set; }
+        public override TipoPersona TipoPersona => TipoPersona.Natural;
     }
 }

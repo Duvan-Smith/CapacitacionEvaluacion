@@ -1,11 +1,9 @@
-﻿using Evaluacion.Dominio.Core.Base;
-using Evaluacion.Dominio.Core.Especificas.Personas;
-using System.Collections.Generic;
+﻿using Evaluacion.Dominio.Core.Especificas.Personas;
 
 namespace Evaluacion.Dominio.Core.Especificas.Proveedores
 {
-    public class ProveedorEntity : EntidadBase
+    public class ProveedorEntity : PersonaBase
     {
-        public IEnumerable<PersonaEntity> PersonaProveedor { get; set; }
+        public override TipoPersona TipoPersona => TipoPersona.Juridico;
     }
 }

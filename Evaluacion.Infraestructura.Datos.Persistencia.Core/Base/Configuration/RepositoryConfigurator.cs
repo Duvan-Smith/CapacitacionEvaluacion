@@ -1,11 +1,10 @@
 ﻿using Evaluacion.Dominio.Core.Especificas.Clientes;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
-using Evaluacion.Dominio.Core.Especificas.Personas;
 using Evaluacion.Dominio.Core.Especificas.Proveedores;
 using Evaluacion.Dominio.Core.Genericas.Areas;
 using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
+using Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Clientes;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Empleados;
-using Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Personas;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Especificas.Proveedores;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Genericas.Areas;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Genericas.TipoDocumentos;
@@ -21,7 +20,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration
             //TODO: Lookup
             services.TryAddTransient<IAreaRepositorio, AreaRepositorio>();
             services.TryAddTransient<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
-            services.TryAddTransient<IPersonaRepositorio, PersonaRepositorio>();
+            services.TryAddTransient<IClienteRepositorio, ClienteRepositorio>();
             services.TryAddTransient<IEmpleadoRepositorio, EmpleadoRepositorio>();
             services.TryAddTransient<IProveedorRepositorio, ProveedorRepositorio>();
 

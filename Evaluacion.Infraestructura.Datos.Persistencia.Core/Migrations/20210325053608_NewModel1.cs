@@ -3,19 +3,21 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 {
-    public partial class Prueba1 : Migration
+    public partial class NewModel1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Proveedores",
+                name: "Areas",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    NombreArea = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    EmpleadoResponsableId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Proveedores", x => x.Id);
+                    table.PrimaryKey("PK_Areas", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -32,19 +34,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Empleados",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AreaEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Empleados", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Personas",
+                name: "Clientes",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -54,27 +44,13 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                     FechaRegistro = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     NumeroTelefono = table.Column<int>(type: "int", nullable: false),
                     CorreoElectronico = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmpleadoEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProveedorEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TipoDocumentoEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Personas", x => x.Id);
+                    table.PrimaryKey("PK_Clientes", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Personas_Empleados_EmpleadoEntityId",
-                        column: x => x.EmpleadoEntityId,
-                        principalTable: "Empleados",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Personas_Proveedores_ProveedorEntityId",
-                        column: x => x.ProveedorEntityId,
-                        principalTable: "Proveedores",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Personas_TipoDocumentos_TipoDocumentoEntityId",
+                        name: "FK_Clientes_TipoDocumentos_TipoDocumentoEntityId",
                         column: x => x.TipoDocumentoEntityId,
                         principalTable: "TipoDocumentos",
                         principalColumn: "Id",
@@ -82,28 +58,65 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Areas",
+                name: "Empleados",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    NombreArea = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PersonaEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    Salario = table.Column<double>(type: "float", nullable: false),
+                    AreaEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FechaNacimiento = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    FechaRegistro = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    NumeroTelefono = table.Column<int>(type: "int", nullable: false),
+                    CorreoElectronico = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoDocumentoEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Areas", x => x.Id);
+                    table.PrimaryKey("PK_Empleados", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Areas_Personas_PersonaEntityId",
-                        column: x => x.PersonaEntityId,
-                        principalTable: "Personas",
+                        name: "FK_Empleados_Areas_AreaEntityId",
+                        column: x => x.AreaEntityId,
+                        principalTable: "Areas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Empleados_TipoDocumentos_TipoDocumentoEntityId",
+                        column: x => x.TipoDocumentoEntityId,
+                        principalTable: "TipoDocumentos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Proveedores",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    Apellido = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
+                    FechaNacimiento = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    FechaRegistro = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
+                    NumeroTelefono = table.Column<int>(type: "int", nullable: false),
+                    CorreoElectronico = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TipoDocumentoEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Proveedores", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Proveedores_TipoDocumentos_TipoDocumentoEntityId",
+                        column: x => x.TipoDocumentoEntityId,
+                        principalTable: "TipoDocumentos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Areas_PersonaEntityId",
-                table: "Areas",
-                column: "PersonaEntityId");
+                name: "IX_Clientes_TipoDocumentoEntityId",
+                table: "Clientes",
+                column: "TipoDocumentoEntityId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Empleados_AreaEntityId",
@@ -111,37 +124,20 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                 column: "AreaEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Personas_EmpleadoEntityId",
-                table: "Personas",
-                column: "EmpleadoEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Personas_ProveedorEntityId",
-                table: "Personas",
-                column: "ProveedorEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Personas_TipoDocumentoEntityId",
-                table: "Personas",
+                name: "IX_Empleados_TipoDocumentoEntityId",
+                table: "Empleados",
                 column: "TipoDocumentoEntityId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Empleados_Areas_AreaEntityId",
-                table: "Empleados",
-                column: "AreaEntityId",
-                principalTable: "Areas",
-                principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.CreateIndex(
+                name: "IX_Proveedores_TipoDocumentoEntityId",
+                table: "Proveedores",
+                column: "TipoDocumentoEntityId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Areas_Personas_PersonaEntityId",
-                table: "Areas");
-
             migrationBuilder.DropTable(
-                name: "Personas");
+                name: "Clientes");
 
             migrationBuilder.DropTable(
                 name: "Empleados");
@@ -150,10 +146,10 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                 name: "Proveedores");
 
             migrationBuilder.DropTable(
-                name: "TipoDocumentos");
+                name: "Areas");
 
             migrationBuilder.DropTable(
-                name: "Areas");
+                name: "TipoDocumentos");
         }
     }
 }
