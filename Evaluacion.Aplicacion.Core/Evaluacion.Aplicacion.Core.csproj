@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="AdministracionPersonas\Personas\FachadaPersonas\" />
+  </ItemGroup>
+
 </Project>

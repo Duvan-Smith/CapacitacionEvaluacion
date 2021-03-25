@@ -24,5 +24,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.GetArea(null)).ConfigureAwait(false);
             await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.InsertArea(null)).ConfigureAwait(false);
         }
+        //TODO: Hacer primero Empleado para hacer las llamadas desde area
     }
 }
