@@ -58,7 +58,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
             {
                 Aceptado = result,
                 StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
-                StatusDescription = result ? "Insert" : "No insert"
+                StatusDescription = result ? "Update" : "No Update"
             };
         }
         #endregion
@@ -102,7 +102,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
             {
                 Aceptado = result,
                 StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
-                StatusDescription = result ? "Insert" : "No insert"
+                StatusDescription = result ? "Update" : "No Update"
             };
         }
         #endregion

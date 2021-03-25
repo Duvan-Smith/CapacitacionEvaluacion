@@ -5,6 +5,7 @@ using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
 using Evaluacion.Aplicacion.Dto.Especificas.Empleados;
 using Evaluacion.Aplicacion.Dto.Especificas.Proveedores;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPersonas
@@ -21,79 +22,137 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
             _empleadoService = empleadoService;
             _proveedorService = proveedorService;
         }
-        public Task<ClienteResponseDto> ClienteManagementDelete(ClienteRequestDto requestDto)
+        #region ClienteServices
+        public async Task<ClienteResponseDto> ClienteManagementDelete(ClienteRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _clienteService.Delete(requestDto).ConfigureAwait(false);
+            return new ClienteResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Delete" : "No delete"
+            };
         }
 
         public Task<ClienteDto> ClienteManagementGet(ClienteRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            return _clienteService.Get(requestDto);
         }
 
         public Task<IEnumerable<ClienteDto>> ClienteManagementGetAll()
         {
-            throw new System.NotImplementedException();
+            return _clienteService.GetAll();
         }
 
-        public Task<ClienteResponseDto> ClienteManagementInsert(ClienteRequestDto requestDto)
+        public async Task<ClienteResponseDto> ClienteManagementInsert(ClienteRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _clienteService.Insert(requestDto).ConfigureAwait(false) != default;
+            return new ClienteResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Insert" : "No insert"
+            };
         }
 
-        public Task<ClienteResponseDto> ClienteManagementUpdate(ClienteRequestDto requestDto)
+        public async Task<ClienteResponseDto> ClienteManagementUpdate(ClienteRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _clienteService.Update(requestDto).ConfigureAwait(false) != default;
+            return new ClienteResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Update" : "No Update"
+            };
         }
-
-        public Task<EmpleadoResponseDto> EmpleadoManagementDelete(EmpleadoRequestDto requestDto)
+        #endregion
+        #region EmpleadoServices
+        public async Task<EmpleadoResponseDto> EmpleadoManagementDelete(EmpleadoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _empleadoService.Delete(requestDto).ConfigureAwait(false);
+            return new EmpleadoResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Delete" : "No delete"
+            };
         }
 
         public Task<EmpleadoDto> EmpleadoManagementGet(EmpleadoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            return _empleadoService.Get(requestDto);
         }
 
         public Task<IEnumerable<EmpleadoDto>> EmpleadoManagementGetAll()
         {
-            throw new System.NotImplementedException();
+            return _empleadoService.GetAll();
         }
 
-        public Task<EmpleadoResponseDto> EmpleadoManagementInsert(EmpleadoRequestDto requestDto)
+        public async Task<EmpleadoResponseDto> EmpleadoManagementInsert(EmpleadoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _empleadoService.Insert(requestDto).ConfigureAwait(false) != default;
+            return new EmpleadoResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Insert" : "No insert"
+            };
         }
 
-        public Task<EmpleadoResponseDto> EmpleadoManagementUpdate(EmpleadoRequestDto requestDto)
+        public async Task<EmpleadoResponseDto> EmpleadoManagementUpdate(EmpleadoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _empleadoService.Update(requestDto).ConfigureAwait(false) != default;
+            return new EmpleadoResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Update" : "No Update"
+            };
         }
-
-        public Task<ProveedorResponseDto> ProveedorManagementDelete(ProveedorRequestDto requestDto)
+        #endregion
+        #region ProveedorServices
+        public async Task<ProveedorResponseDto> ProveedorManagementDelete(ProveedorRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _proveedorService.Delete(requestDto).ConfigureAwait(false);
+            return new ProveedorResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Delete" : "No delete"
+            };
         }
 
         public Task<ProveedorDto> ProveedorManagementGet(ProveedorRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            return _proveedorService.Get(requestDto);
         }
 
         public Task<IEnumerable<ProveedorDto>> ProveedorManagementGetAll()
         {
-            throw new System.NotImplementedException();
+            return _proveedorService.GetAll();
         }
 
-        public Task<ProveedorResponseDto> ProveedorManagementInsert(ProveedorRequestDto requestDto)
+        public async Task<ProveedorResponseDto> ProveedorManagementInsert(ProveedorRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _proveedorService.Insert(requestDto).ConfigureAwait(false) != default;
+            return new ProveedorResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Insert" : "No insert"
+            };
         }
 
-        public Task<ProveedorResponseDto> ProveedorManagementUpdate(ProveedorRequestDto requestDto)
+        public async Task<ProveedorResponseDto> ProveedorManagementUpdate(ProveedorRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _proveedorService.Update(requestDto).ConfigureAwait(false) != default;
+            return new ProveedorResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Update" : "No Update"
+            };
         }
+        #endregion
     }
 }
