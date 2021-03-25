@@ -17,7 +17,6 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration
     {
         public static void ConfigureBaseRepository(this IServiceCollection services, DbSettings settings)
         {
-            //TODO: Lookup
             services.TryAddTransient<IAreaRepositorio, AreaRepositorio>();
             services.TryAddTransient<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
             services.TryAddTransient<IClienteRepositorio, ClienteRepositorio>();

@@ -61,6 +61,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             ValidationDto(requestDto);
             var entity = _empleadoRepositorio.SearchMatchingOneResult<EmpleadoEntity>(x => x.Id == requestDto.Id);
             entity.Nombre = requestDto.Nombre;
+            entity.Apellido = requestDto.Apellido;
+            entity.FechaNacimiento = requestDto.FechaNacimiento;
+            entity.FechaRegistro = requestDto.FechaRegistro;
+            entity.NumeroTelefono = requestDto.NumeroTelefono;
+            entity.CorreoElectronico = requestDto.CorreoElectronico;
+            entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
             //TODO: Agregar demas datos a actualizar
             return Task.FromResult(_empleadoRepositorio.Update(entity));
         }

@@ -27,7 +27,8 @@ namespace Evaluacion.Aplicacion.Dto.Especificas.Personas
         [Required]
         [RegularExpression(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")]
         public string CorreoElectronico { get; set; }
-        public TipoDocumentoDto TipoDocumentoDto { get; set; }
+        public TipoDocumentoDto TipoDocumento { get; set; }
+        public Guid TipoDocumentoId { get; set; }
 
         [Required]
         [MinLength(8)]

@@ -1,4 +1,5 @@
-﻿using Evaluacion.Infraestructura.Transversal.Exceptions;
+﻿using Evaluacion.Aplicacion.Dto.Base;
+using Evaluacion.Infraestructura.Transversal.Exceptions;
 using Evaluacion.Infraestructura.Transversal.MetodosGenericos.Cofiguration;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -20,7 +21,7 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
             _client = client ?? throw new HttpClientNotDefinedException();
             _client.BaseAddress = settings.Value.GetServiceUrl();
         }
-        public async Task<T> Get<T>(string path, string request) where T : class
+        public async Task<T> Get<T>(string path, string request) where T : DataTransferObject
         {
             ValidatePath(path);
             var response = await _client.GetAsync(path).ConfigureAwait(false);
@@ -28,7 +29,7 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        public async Task<T> GetAll<T>(string path) where T : class
+        public async Task<T> GetAll<T>(string path) where T : DataTransferObject
         {
             ValidatePath(path);
             var response = await _client.GetAsync(path).ConfigureAwait(false);
@@ -36,7 +37,7 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
         //TODO: impementar metodo
-        public Task<T> Patch<T>(string path, T request) where T : class
+        public Task<T> Patch<T>(string path, T request) where T : DataTransferObject
         {
             ValidatePath(path);
 #pragma warning disable RCS1079 // Throwing of new NotImplementedException.
@@ -44,7 +45,7 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
 #pragma warning restore RCS1079 // Throwing of new NotImplementedException.
         }
 
-        public async Task<TResponse> Post<TResponse, TRequest>(string path, TRequest request) where TResponse : class
+        public async Task<TResponse> Post<TResponse, TRequest>(string path, TRequest request) where TResponse : DataTransferObject
         {
             ValidatePath(path);
             var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
@@ -54,7 +55,7 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
             return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
         //TODO: impementar metodo
-        public Task<T> Put<T>(string path, T request) where T : class
+        public Task<T> Put<T>(string path, T request) where T : DataTransferObject
         {
             ValidatePath(path);
 #pragma warning disable RCS1079 // Throwing of new NotImplementedException.

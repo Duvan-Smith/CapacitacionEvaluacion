@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Evaluacion.Aplicacion.Core.Base.Excepciones;
+using System;
 using System.Runtime.Serialization;
 
 namespace Evaluacion.Infraestructura.Transversal.Exceptions
 {
     [Serializable]
-    //TODO: Cambiar Exception por Exception base del proyecto
-    internal class HttpClientNotDefinedException : Exception
+    internal class HttpClientNotDefinedException : EvaluacionException
     {
         public HttpClientNotDefinedException()
         {

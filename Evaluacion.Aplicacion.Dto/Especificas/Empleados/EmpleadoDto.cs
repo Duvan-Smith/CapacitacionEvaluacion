@@ -1,5 +1,6 @@
 ﻿using Evaluacion.Aplicacion.Dto.Especificas.Personas;
 using Evaluacion.Aplicacion.Dto.Genericas.Areas;
+using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace Evaluacion.Aplicacion.Dto.Especificas.Empleados
@@ -8,6 +9,7 @@ namespace Evaluacion.Aplicacion.Dto.Especificas.Empleados
     {
         [Required]
         public double Salario { get; set; }
-        public AreaDto AreaDto { get; set; }
+        public AreaDto Area { get; set; }
+        public Guid AreaId { get; set; }
     }
 }

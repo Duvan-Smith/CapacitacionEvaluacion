@@ -33,7 +33,9 @@ namespace Evaluacion.Dominio.Core.Especificas.Personas
         [Required]
         [RegularExpression(@"^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$")]
         public string CorreoElectronico { get; set; }
-        public TipoDocumentoEntity TipoDocumentoEntity { get; set; }
+        public virtual TipoDocumentoEntity TipoDocumento { get; set; }
+        public virtual Guid TipoDocumentoId { get; set; }
+        //public virtual IEnumerable<TipoDocumentoEntity> TiposDocumento { get; set; }
 
         [Required]
         [MinLength(8)]
