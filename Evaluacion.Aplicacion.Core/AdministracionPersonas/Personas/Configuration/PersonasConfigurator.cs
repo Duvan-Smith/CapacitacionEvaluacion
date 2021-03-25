@@ -1,5 +1,6 @@
 ﻿using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Services;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPersonas;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores.Services;
 using Evaluacion.Aplicacion.Core.Mapper.Configuration;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
@@ -15,6 +16,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configurati
             services.TryAddTransient<IClienteService, ClienteService>();
             services.TryAddTransient<IEmpleadoService, EmpleadoService>();
             services.TryAddTransient<IProveedorService, ProveedorService>();
+            services.TryAddTransient<IFachadaPersonasService, FachadaPersonasService>();
 
             services.ConfigureMapper();
             services.ConfigureBaseRepository(settings);
