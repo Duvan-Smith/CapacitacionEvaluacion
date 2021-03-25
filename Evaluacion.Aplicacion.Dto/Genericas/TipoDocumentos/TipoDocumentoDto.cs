@@ -8,10 +8,5 @@ namespace Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos
         [Required]
         [MaxLength(50)]
         public string NombreTipoDocumento { get; set; }
-
-        [Required]
-        [MinLength(8)]
-        [MaxLength(50)]
-        public string CodigoTipoDocumento { get; set; }
     }
 }

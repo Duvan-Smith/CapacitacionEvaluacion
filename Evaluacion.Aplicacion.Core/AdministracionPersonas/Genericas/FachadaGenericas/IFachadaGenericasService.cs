@@ -18,6 +18,5 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
         public Task<TipoDocumentoResponseDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto);
         public Task<TipoDocumentoResponseDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto);
         public Task<IEnumerable<TipoDocumentoDto>> TipoDocumentoManagementGetAll();
-
     }
 }

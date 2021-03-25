@@ -18,7 +18,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
             _areaService = areaService;
             _tipoDocumentoService = tipoDocumentoService;
         }
-
+        #region AreaServices
         public async Task<AreaResponseDto> AreaManagementDelete(AreaRequestDto requestDto)
         {
             var result = await _areaService.DeleteArea(requestDto).ConfigureAwait(false);
@@ -61,30 +61,50 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
                 StatusDescription = result ? "Insert" : "No insert"
             };
         }
-
-        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto)
+        #endregion
+        #region TipoDocumentoServices
+        public async Task<TipoDocumentoResponseDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _tipoDocumentoService.DeleteTipoDocumento(requestDto).ConfigureAwait(false);
+            return new TipoDocumentoResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Delete" : "No delete"
+            };
         }
 
         public Task<TipoDocumentoDto> TipoDocumentoManagementGet(TipoDocumentoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            return _tipoDocumentoService.GetTipoDocumento(requestDto);
         }
 
         public Task<IEnumerable<TipoDocumentoDto>> TipoDocumentoManagementGetAll()
         {
-            throw new System.NotImplementedException();
+            return _tipoDocumentoService.GetAllTipoDocumento();
         }
 
-        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementInsert(TipoDocumentoRequestDto requestDto)
+        public async Task<TipoDocumentoResponseDto> TipoDocumentoManagementInsert(TipoDocumentoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _tipoDocumentoService.InsertTipoDocumento(requestDto).ConfigureAwait(false) != default;
+            return new TipoDocumentoResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Insert" : "No insert"
+            };
         }
 
-        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto)
+        public async Task<TipoDocumentoResponseDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _tipoDocumentoService.UpdateTipoDocumento(requestDto).ConfigureAwait(false) != default;
+            return new TipoDocumentoResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Insert" : "No insert"
+            };
         }
+        #endregion
     }
 }
