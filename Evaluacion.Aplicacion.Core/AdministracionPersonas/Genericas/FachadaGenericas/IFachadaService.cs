@@ -8,15 +8,15 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
     public interface IFachadaService
     {
         public Task<AreaDto> AreaManagementGet(AreaRequestDto requestDto);
-        public Task<AreaDto> AreaManagementInsert(AreaRequestDto requestDto);
-        public Task<AreaDto> AreaManagementDelete(AreaRequestDto requestDto);
-        public Task<AreaDto> AreaManagementUpdate(AreaRequestDto requestDto);
+        public Task<AreaResponseDto> AreaManagementInsert(AreaRequestDto requestDto);
+        public Task<AreaResponseDto> AreaManagementDelete(AreaRequestDto requestDto);
+        public Task<AreaResponseDto> AreaManagementUpdate(AreaRequestDto requestDto);
         public Task<IEnumerable<AreaDto>> AreaManagementGetAll();
 
         public Task<TipoDocumentoDto> TipoDocumentoManagementGet(TipoDocumentoRequestDto requestDto);
-        public Task<TipoDocumentoDto> TipoDocumentoManagementInsert(TipoDocumentoRequestDto requestDto);
-        public Task<TipoDocumentoDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto);
-        public Task<TipoDocumentoDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto);
+        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementInsert(TipoDocumentoRequestDto requestDto);
+        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto);
+        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto);
         public Task<IEnumerable<TipoDocumentoDto>> TipoDocumentoManagementGetAll();
 
     }

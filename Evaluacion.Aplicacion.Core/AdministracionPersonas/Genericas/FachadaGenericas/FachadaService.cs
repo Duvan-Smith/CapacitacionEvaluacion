@@ -3,6 +3,7 @@ using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocumentos
 using Evaluacion.Aplicacion.Dto.Genericas.Areas;
 using Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGenericas
@@ -18,32 +19,50 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
             _tipoDocumentoService = tipoDocumentoService;
         }
 
-        public Task<AreaDto> AreaManagementDelete(AreaRequestDto requestDto)
+        public async Task<AreaResponseDto> AreaManagementDelete(AreaRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _areaService.DeleteArea(requestDto).ConfigureAwait(false);
+            return new AreaResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Delete" : "No delete"
+            };
         }
 
         public Task<AreaDto> AreaManagementGet(AreaRequestDto requestDto)
         {
-            return _areaService.GetAreaByArea(requestDto);
+            return _areaService.GetArea(requestDto);
         }
 
         public Task<IEnumerable<AreaDto>> AreaManagementGetAll()
         {
-            throw new System.NotImplementedException();
+            return _areaService.GetAllArea();
         }
 
-        public Task<AreaDto> AreaManagementInsert(AreaRequestDto requestDto)
+        public async Task<AreaResponseDto> AreaManagementInsert(AreaRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _areaService.InsertArea(requestDto).ConfigureAwait(false) != default;
+            return new AreaResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Insert" : "No insert"
+            };
         }
 
-        public Task<AreaDto> AreaManagementUpdate(AreaRequestDto requestDto)
+        public async Task<AreaResponseDto> AreaManagementUpdate(AreaRequestDto requestDto)
         {
-            throw new System.NotImplementedException();
+            var result = await _areaService.UpdateArea(requestDto).ConfigureAwait(false) != default;
+            return new AreaResponseDto
+            {
+                Aceptado = result,
+                StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
+                StatusDescription = result ? "Insert" : "No insert"
+            };
         }
 
-        public Task<TipoDocumentoDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto)
+        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto)
         {
             throw new System.NotImplementedException();
         }
@@ -58,12 +77,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
             throw new System.NotImplementedException();
         }
 
-        public Task<TipoDocumentoDto> TipoDocumentoManagementInsert(TipoDocumentoRequestDto requestDto)
+        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementInsert(TipoDocumentoRequestDto requestDto)
         {
             throw new System.NotImplementedException();
         }
 
-        public Task<TipoDocumentoDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto)
+        public Task<TipoDocumentoResponseDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto)
         {
             throw new System.NotImplementedException();
         }

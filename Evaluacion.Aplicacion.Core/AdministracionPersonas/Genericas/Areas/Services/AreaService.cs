@@ -7,17 +7,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 {
     public class AreaService : IAreaService
     {
-        public Task<bool> ActualizarArea(AreaRequestDto request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<Guid> Agregar(AreaRequestDto request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> Eliminar(AreaRequestDto request)
+        public Task<bool> DeleteArea(AreaRequestDto requestDto)
         {
             throw new NotImplementedException();
         }
@@ -27,7 +17,17 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
             throw new NotImplementedException();
         }
 
-        public Task<AreaDto> GetAreaByArea(AreaRequestDto request)
+        public Task<AreaDto> GetArea(AreaRequestDto requestDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<Guid> InsertArea(AreaRequestDto requestDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateArea(AreaRequestDto requestDto)
         {
             throw new NotImplementedException();
         }
