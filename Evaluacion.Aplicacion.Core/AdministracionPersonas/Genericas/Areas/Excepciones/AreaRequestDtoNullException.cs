@@ -1,7 +1,7 @@
 ﻿using Evaluacion.Aplicacion.Core.Base.Excepciones;
 using System;
 
-namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Services
+namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Excepciones
 {
     [Serializable]
     internal class AreaRequestDtoNullException : EvaluacionException

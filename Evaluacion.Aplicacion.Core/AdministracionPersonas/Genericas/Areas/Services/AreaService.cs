@@ -21,6 +21,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
         }
         public Task<bool> DeleteArea(AreaRequestDto requestDto)
         {
+            ValidationDto(requestDto);
             var entity = _mapper.Map<AreaEntity>(requestDto);
             return Task.FromResult(_areaRepositorio.Delete(entity));
         }
@@ -34,6 +35,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 
         public Task<AreaDto> GetArea(AreaRequestDto requestDto)
         {
+            ValidationDto(requestDto);
             var user = _areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.Id == requestDto.Id);
             return Task.FromResult(_mapper.Map<AreaDto>(user.FirstOrDefault()));
@@ -41,6 +43,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 
         public async Task<Guid> InsertArea(AreaRequestDto requestDto)
         {
+            ValidationDto(requestDto);
             var usernameExist = _areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == requestDto.NombreArea)
                 .Any();
@@ -55,13 +58,18 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 
         public Task<bool> UpdateArea(AreaRequestDto requestDto)
         {
-            if (requestDto == null)
-                throw new AreaRequestDtoNullException();
+            ValidationDto(requestDto);
             var entity = _areaRepositorio.SearchMatchingOneResult<AreaEntity>(x => x.Id == requestDto.Id);
             entity.NombreArea = requestDto.NombreArea;
             entity.EmpleadoResponsableId = requestDto.EmpleadoResponsableId;
 
             return Task.FromResult(_areaRepositorio.Update(entity));
+        }
+
+        private static void ValidationDto(AreaRequestDto requestDto)
+        {
+            if (requestDto == null)
+                throw new AreaRequestDtoNullException();
         }
     }
 }

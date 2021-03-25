@@ -2,6 +2,7 @@
 
 namespace Evaluacion.Aplicacion.Core.Base.Excepciones
 {
+    [Serializable]
     public class EvaluacionException : Exception
     {
         public EvaluacionException()
