@@ -14,12 +14,4 @@
     <ProjectReference Include="..\Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="AdministracionPersonas\Personas\Clientes\Services\" />
-    <Folder Include="AdministracionPersonas\Personas\Empleados\Services\" />
-    <Folder Include="AdministracionPersonas\Personas\Proveedores\Services\" />
-    <Folder Include="AdministracionPersonas\Genericas\Areas\Services\" />
-    <Folder Include="AdministracionPersonas\Genericas\TipoDocumentos\Services\" />
-  </ItemGroup>
-
 </Project>
