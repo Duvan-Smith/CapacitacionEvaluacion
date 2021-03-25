@@ -1,8 +1,8 @@
-﻿using Evaluacion.Aplicacion.Dto.Base;
+﻿using Evaluacion.Aplicacion.Dto.Especificas.Personas;
 
 namespace Evaluacion.Aplicacion.Dto.Especificas.Clientes
 {
-    public class ClienteDto : BaseEntity
+    public class ClienteDto : PersonaDto
     {
     }
 }
