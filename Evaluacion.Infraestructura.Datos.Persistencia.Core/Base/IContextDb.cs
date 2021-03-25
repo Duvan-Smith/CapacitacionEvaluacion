@@ -11,10 +11,10 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base
 {
     public interface IContextDb : IUnitOfWork, IDisposable
     {
-        DbSet<AreaEntity> Area { get; }
-        DbSet<TipoDocumentoEntity> TipoDocumento { get; }
-        DbSet<PersonaEntity> Persona { get; }
-        DbSet<EmpleadoEntity> Empleado { get; }
-        DbSet<ProveedorEntity> Proveedor { get; }
+        DbSet<AreaEntity> Areas { get; }
+        DbSet<TipoDocumentoEntity> TipoDocumentos { get; }
+        DbSet<PersonaEntity> Personas { get; }
+        DbSet<EmpleadoEntity> Empleados { get; }
+        DbSet<ProveedorEntity> Proveedores { get; }
     }
 }

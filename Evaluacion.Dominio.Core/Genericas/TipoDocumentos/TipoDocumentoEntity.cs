@@ -15,7 +15,6 @@ namespace Evaluacion.Dominio.Core.Genericas.TipoDocumentos
         [MinLength(8)]
         [MaxLength(50)]
         public string CodigoTipoDocumento { get; set; }
-        public IEnumerable<PersonaEntity> Persona { get; set; }
-
+        public IEnumerable<PersonaEntity> PersonaTipoDocumento { get; set; }
     }
 }

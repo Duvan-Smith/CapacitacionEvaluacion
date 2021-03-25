@@ -25,14 +25,14 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("AreaEntityId")
+                    b.Property<Guid?>("AreaEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("AreaEntityId");
 
-                    b.ToTable("Empleado");
+                    b.ToTable("Empleados");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Especificas.Personas.PersonaEntity", b =>
@@ -50,7 +50,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<Guid>("EmpleadoEntityId")
+                    b.Property<Guid?>("EmpleadoEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("FechaNacimiento")
@@ -67,13 +67,10 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                     b.Property<int>("NumeroTelefono")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ProveedorEntityId")
+                    b.Property<Guid?>("ProveedorEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("TipoDocumentoEntityId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("TipoDocumentoId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
@@ -84,7 +81,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 
                     b.HasIndex("TipoDocumentoEntityId");
 
-                    b.ToTable("Persona");
+                    b.ToTable("Personas");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Especificas.Proveedores.ProveedorEntity", b =>
@@ -95,7 +92,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Proveedor");
+                    b.ToTable("Proveedores");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Genericas.Areas.AreaEntity", b =>
@@ -109,14 +106,14 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<Guid>("PersonaEntityId")
+                    b.Property<Guid?>("PersonaEntityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PersonaEntityId");
 
-                    b.ToTable("Area");
+                    b.ToTable("Areas");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Genericas.TipoDocumentos.TipoDocumentoEntity", b =>
@@ -137,49 +134,51 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TipoDocumento");
+                    b.ToTable("TipoDocumentos");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Especificas.Empleados.EmpleadoEntity", b =>
                 {
-                    b.HasOne("Evaluacion.Dominio.Core.Genericas.Areas.AreaEntity", null)
+                    b.HasOne("Evaluacion.Dominio.Core.Genericas.Areas.AreaEntity", "AreaEntity")
                         .WithMany("Empleado")
-                        .HasForeignKey("AreaEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("AreaEntityId");
+
+                    b.Navigation("AreaEntity");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Especificas.Personas.PersonaEntity", b =>
                 {
-                    b.HasOne("Evaluacion.Dominio.Core.Especificas.Empleados.EmpleadoEntity", null)
-                        .WithMany("Persona")
-                        .HasForeignKey("EmpleadoEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Evaluacion.Dominio.Core.Especificas.Empleados.EmpleadoEntity", "EmpleadoEntity")
+                        .WithMany("PersonaEmpleado")
+                        .HasForeignKey("EmpleadoEntityId");
 
-                    b.HasOne("Evaluacion.Dominio.Core.Especificas.Proveedores.ProveedorEntity", null)
-                        .WithMany("Persona")
-                        .HasForeignKey("ProveedorEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Evaluacion.Dominio.Core.Especificas.Proveedores.ProveedorEntity", "ProveedorEntity")
+                        .WithMany("PersonaProveedor")
+                        .HasForeignKey("ProveedorEntityId");
 
-                    b.HasOne("Evaluacion.Dominio.Core.Genericas.TipoDocumentos.TipoDocumentoEntity", null)
-                        .WithMany("Persona")
+                    b.HasOne("Evaluacion.Dominio.Core.Genericas.TipoDocumentos.TipoDocumentoEntity", "TipoDocumentoEntity")
+                        .WithMany("PersonaTipoDocumento")
                         .HasForeignKey("TipoDocumentoEntityId");
+
+                    b.Navigation("EmpleadoEntity");
+
+                    b.Navigation("ProveedorEntity");
+
+                    b.Navigation("TipoDocumentoEntity");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Genericas.Areas.AreaEntity", b =>
                 {
-                    b.HasOne("Evaluacion.Dominio.Core.Especificas.Personas.PersonaEntity", null)
+                    b.HasOne("Evaluacion.Dominio.Core.Especificas.Personas.PersonaEntity", "PersonaEntity")
                         .WithMany("Area")
-                        .HasForeignKey("PersonaEntityId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PersonaEntityId");
+
+                    b.Navigation("PersonaEntity");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Especificas.Empleados.EmpleadoEntity", b =>
                 {
-                    b.Navigation("Persona");
+                    b.Navigation("PersonaEmpleado");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Especificas.Personas.PersonaEntity", b =>
@@ -189,7 +188,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Especificas.Proveedores.ProveedorEntity", b =>
                 {
-                    b.Navigation("Persona");
+                    b.Navigation("PersonaProveedor");
                 });
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Genericas.Areas.AreaEntity", b =>
@@ -199,7 +198,7 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 
             modelBuilder.Entity("Evaluacion.Dominio.Core.Genericas.TipoDocumentos.TipoDocumentoEntity", b =>
                 {
-                    b.Navigation("Persona");
+                    b.Navigation("PersonaTipoDocumento");
                 });
 #pragma warning restore 612, 618
         }

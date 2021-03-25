@@ -1,6 +1,6 @@
 ﻿using Evaluacion.Dominio.Core.Base;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
-using System;
+using Evaluacion.Dominio.Core.Especificas.Personas;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,6 +12,6 @@ namespace Evaluacion.Dominio.Core.Genericas.Areas
         [MaxLength(50)]
         public string NombreArea { get; set; }
         public IEnumerable<EmpleadoEntity> Empleado { get; set; }
-        public Guid PersonaEntityId { get; set; }
+        public PersonaEntity PersonaEntity { get; set; }
     }
 }

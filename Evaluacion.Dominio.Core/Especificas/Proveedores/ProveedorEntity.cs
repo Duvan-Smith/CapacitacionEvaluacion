@@ -6,6 +6,6 @@ namespace Evaluacion.Dominio.Core.Especificas.Proveedores
 {
     public class ProveedorEntity : EntidadBase
     {
-        public IEnumerable<PersonaEntity> Persona { get; set; }
+        public IEnumerable<PersonaEntity> PersonaProveedor { get; set; }
     }
 }

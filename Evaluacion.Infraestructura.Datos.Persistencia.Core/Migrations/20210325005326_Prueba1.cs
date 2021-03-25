@@ -3,23 +3,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 {
-    public partial class Prueba : Migration
+    public partial class Prueba1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Proveedor",
+                name: "Proveedores",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Proveedor", x => x.Id);
+                    table.PrimaryKey("PK_Proveedores", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "TipoDocumento",
+                name: "TipoDocumentos",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -28,23 +28,23 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_TipoDocumento", x => x.Id);
+                    table.PrimaryKey("PK_TipoDocumentos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Empleado",
+                name: "Empleados",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AreaEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    AreaEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Empleado", x => x.Id);
+                    table.PrimaryKey("PK_Empleados", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Persona",
+                name: "Personas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -54,107 +54,106 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                     FechaRegistro = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
                     NumeroTelefono = table.Column<int>(type: "int", nullable: false),
                     CorreoElectronico = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EmpleadoEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProveedorEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    TipoDocumentoId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    EmpleadoEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProveedorEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     TipoDocumentoEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Persona", x => x.Id);
+                    table.PrimaryKey("PK_Personas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Persona_Empleado_EmpleadoEntityId",
+                        name: "FK_Personas_Empleados_EmpleadoEntityId",
                         column: x => x.EmpleadoEntityId,
-                        principalTable: "Empleado",
+                        principalTable: "Empleados",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Persona_Proveedor_ProveedorEntityId",
+                        name: "FK_Personas_Proveedores_ProveedorEntityId",
                         column: x => x.ProveedorEntityId,
-                        principalTable: "Proveedor",
+                        principalTable: "Proveedores",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Persona_TipoDocumento_TipoDocumentoEntityId",
+                        name: "FK_Personas_TipoDocumentos_TipoDocumentoEntityId",
                         column: x => x.TipoDocumentoEntityId,
-                        principalTable: "TipoDocumento",
+                        principalTable: "TipoDocumentos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Area",
+                name: "Areas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     NombreArea = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    PersonaEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    PersonaEntityId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Area", x => x.Id);
+                    table.PrimaryKey("PK_Areas", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Area_Persona_PersonaEntityId",
+                        name: "FK_Areas_Personas_PersonaEntityId",
                         column: x => x.PersonaEntityId,
-                        principalTable: "Persona",
+                        principalTable: "Personas",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Area_PersonaEntityId",
-                table: "Area",
+                name: "IX_Areas_PersonaEntityId",
+                table: "Areas",
                 column: "PersonaEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Empleado_AreaEntityId",
-                table: "Empleado",
+                name: "IX_Empleados_AreaEntityId",
+                table: "Empleados",
                 column: "AreaEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Persona_EmpleadoEntityId",
-                table: "Persona",
+                name: "IX_Personas_EmpleadoEntityId",
+                table: "Personas",
                 column: "EmpleadoEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Persona_ProveedorEntityId",
-                table: "Persona",
+                name: "IX_Personas_ProveedorEntityId",
+                table: "Personas",
                 column: "ProveedorEntityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Persona_TipoDocumentoEntityId",
-                table: "Persona",
+                name: "IX_Personas_TipoDocumentoEntityId",
+                table: "Personas",
                 column: "TipoDocumentoEntityId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Empleado_Area_AreaEntityId",
-                table: "Empleado",
+                name: "FK_Empleados_Areas_AreaEntityId",
+                table: "Empleados",
                 column: "AreaEntityId",
-                principalTable: "Area",
+                principalTable: "Areas",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.Restrict);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Area_Persona_PersonaEntityId",
-                table: "Area");
+                name: "FK_Areas_Personas_PersonaEntityId",
+                table: "Areas");
 
             migrationBuilder.DropTable(
-                name: "Persona");
+                name: "Personas");
 
             migrationBuilder.DropTable(
-                name: "Empleado");
+                name: "Empleados");
 
             migrationBuilder.DropTable(
-                name: "Proveedor");
+                name: "Proveedores");
 
             migrationBuilder.DropTable(
-                name: "TipoDocumento");
+                name: "TipoDocumentos");
 
             migrationBuilder.DropTable(
-                name: "Area");
+                name: "Areas");
         }
     }
 }
