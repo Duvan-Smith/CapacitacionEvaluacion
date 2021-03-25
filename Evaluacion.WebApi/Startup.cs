@@ -22,9 +22,8 @@ namespace Evaluacion.WebApi
         {
             services.AddControllers();
             services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Evaluacion.WebApi", Version = "v1" });
-            });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Evaluacion.WebApi", Version = "v1" })
+            );
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddControllers();
@@ -51,9 +50,8 @@ namespace Evaluacion.WebApi
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+                endpoints.MapControllers()
+            );
         }
     }
 }

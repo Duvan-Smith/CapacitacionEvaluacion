@@ -48,7 +48,6 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Base
             modelBuilder.Entity<PersonaEntity>()
                 .HasOne(p => p.ClienteEntity)
                 .WithMany(b => b.PersonaCliente);
-
         }
         public ContextoDb(IOptions<DbSettings> settings) =>
            _settings = settings.Value;
