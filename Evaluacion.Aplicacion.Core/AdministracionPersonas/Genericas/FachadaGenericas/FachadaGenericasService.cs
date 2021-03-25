@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGenericas
 {
-    public class FachadaService : IFachadaService
+    public class FachadaGenericasService : IFachadaGenericasService
     {
         private readonly IAreaService _areaService;
         private readonly ITipoDocumentoService _tipoDocumentoService;
 
-        public FachadaService(IAreaService areaService, ITipoDocumentoService tipoDocumentoService)
+        public FachadaGenericasService(IAreaService areaService, ITipoDocumentoService tipoDocumentoService)
         {
             _areaService = areaService;
             _tipoDocumentoService = tipoDocumentoService;

@@ -23,10 +23,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Evaluacion.Aplicacion.Core\Evaluacion.Aplicacion.Core.csproj" />
+    <ProjectReference Include="..\Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj" />
     <ProjectReference Include="..\Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Aplicacion\Core\AdministracionPersonas\Genericas\FachadaGenericas\" />
+    <Folder Include="Aplicacion\Core\AdministracionPersonas\Genericas\TipoDocumentos\" />
     <Folder Include="Aplicacion\Dto\" />
   </ItemGroup>
 

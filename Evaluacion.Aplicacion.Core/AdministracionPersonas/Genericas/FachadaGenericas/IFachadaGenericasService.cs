@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGenericas
 {
-    public interface IFachadaService
+    public interface IFachadaGenericasService
     {
         public Task<AreaDto> AreaManagementGet(AreaRequestDto requestDto);
         public Task<AreaResponseDto> AreaManagementInsert(AreaRequestDto requestDto);
