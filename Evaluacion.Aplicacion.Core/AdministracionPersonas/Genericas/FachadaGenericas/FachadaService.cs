@@ -25,6 +25,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
         public Task<Tresponse> ManagementGet<Tresponse, Trequest>(Trequest requestDto) where Tresponse : DataTransferObject
         {
             throw new System.NotImplementedException();
+            //return _areaService.GetAreaByArea(requestDto);
         }
 
         public Task<IEnumerable<Tresponse>> ManagementGetAll<Tresponse>() where Tresponse : DataTransferObject
