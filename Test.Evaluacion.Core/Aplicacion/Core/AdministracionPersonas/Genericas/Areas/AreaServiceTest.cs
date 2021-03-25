@@ -29,10 +29,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             service.ConfigureGenericasService(new DbSettings());
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
-            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.UpdateArea(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.DeleteArea(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.GetArea(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.InsertArea(null)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Update(null)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Delete(null)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Get(null)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Insert(null)).ConfigureAwait(false);
         }
         //TODO: Criterio: No se pueden eliminar áreas que tengan empleados asociados
         [Fact]
@@ -56,7 +56,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
 
-            await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.DeleteArea(new AreaRequestDto())).ConfigureAwait(false);
+            await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.Delete(new AreaRequestDto())).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -80,7 +80,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
 
-            Assert.True(await areaService.DeleteArea(new AreaRequestDto()).ConfigureAwait(false));
+            Assert.True(await areaService.Delete(new AreaRequestDto()).ConfigureAwait(false));
         }
         [Fact]
         [IntegrationTest]
@@ -100,9 +100,9 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 NombreArea = "FakeAreaOk",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
-            areaService.InsertArea(dtoArea);
+            areaService.Insert(dtoArea);
 
-            var response = areaService.DeleteArea(dtoArea);
+            var response = areaService.Delete(dtoArea);
 
             Assert.NotNull(response);
             Assert.True(response.Result);
@@ -136,7 +136,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 NombreArea = "FakeArea",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
-            await areaService.InsertArea(dtoArea).ConfigureAwait(false);
+            await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
             {
@@ -155,10 +155,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
-            await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.DeleteArea(dtoArea)).ConfigureAwait(false);
+            await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.Delete(dtoArea)).ConfigureAwait(false);
 
             await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
-            await areaService.DeleteArea(dtoArea).ConfigureAwait(false);
+            await areaService.Delete(dtoArea).ConfigureAwait(false);
         }
         [Fact]
         [IntegrationTest]
@@ -188,7 +188,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 NombreArea = "FakeListEmpleado",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
-            await areaService.InsertArea(dtoArea).ConfigureAwait(false);
+            await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
             {
@@ -206,10 +206,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             };
             await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
-            await areaService.GetAllArea().ConfigureAwait(false);
+            await areaService.GetAll().ConfigureAwait(false);
 
             await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
-            await areaService.DeleteArea(dtoArea).ConfigureAwait(false);
+            await areaService.Delete(dtoArea).ConfigureAwait(false);
         }
         //TODO: Hacer primero Empleado para hacer las llamadas desde area
 

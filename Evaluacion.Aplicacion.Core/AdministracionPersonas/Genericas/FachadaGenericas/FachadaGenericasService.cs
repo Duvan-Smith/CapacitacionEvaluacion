@@ -21,7 +21,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
         #region AreaServices
         public async Task<AreaResponseDto> AreaManagementDelete(AreaRequestDto requestDto)
         {
-            var result = await _areaService.DeleteArea(requestDto).ConfigureAwait(false);
+            var result = await _areaService.Delete(requestDto).ConfigureAwait(false);
             return new AreaResponseDto
             {
                 Aceptado = result,
@@ -32,17 +32,17 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
 
         public Task<AreaDto> AreaManagementGet(AreaRequestDto requestDto)
         {
-            return _areaService.GetArea(requestDto);
+            return _areaService.Get(requestDto);
         }
 
         public Task<IEnumerable<AreaDto>> AreaManagementGetAll()
         {
-            return _areaService.GetAllArea();
+            return _areaService.GetAll();
         }
 
         public async Task<AreaResponseDto> AreaManagementInsert(AreaRequestDto requestDto)
         {
-            var result = await _areaService.InsertArea(requestDto).ConfigureAwait(false) != default;
+            var result = await _areaService.Insert(requestDto).ConfigureAwait(false) != default;
             return new AreaResponseDto
             {
                 Aceptado = result,
@@ -53,7 +53,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
 
         public async Task<AreaResponseDto> AreaManagementUpdate(AreaRequestDto requestDto)
         {
-            var result = await _areaService.UpdateArea(requestDto).ConfigureAwait(false) != default;
+            var result = await _areaService.Update(requestDto).ConfigureAwait(false) != default;
             return new AreaResponseDto
             {
                 Aceptado = result,
@@ -65,7 +65,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
         #region TipoDocumentoServices
         public async Task<TipoDocumentoResponseDto> TipoDocumentoManagementDelete(TipoDocumentoRequestDto requestDto)
         {
-            var result = await _tipoDocumentoService.DeleteTipoDocumento(requestDto).ConfigureAwait(false);
+            var result = await _tipoDocumentoService.Delete(requestDto).ConfigureAwait(false);
             return new TipoDocumentoResponseDto
             {
                 Aceptado = result,
@@ -76,17 +76,17 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
 
         public Task<TipoDocumentoDto> TipoDocumentoManagementGet(TipoDocumentoRequestDto requestDto)
         {
-            return _tipoDocumentoService.GetTipoDocumento(requestDto);
+            return _tipoDocumentoService.Get(requestDto);
         }
 
         public Task<IEnumerable<TipoDocumentoDto>> TipoDocumentoManagementGetAll()
         {
-            return _tipoDocumentoService.GetAllTipoDocumento();
+            return _tipoDocumentoService.GetAll();
         }
 
         public async Task<TipoDocumentoResponseDto> TipoDocumentoManagementInsert(TipoDocumentoRequestDto requestDto)
         {
-            var result = await _tipoDocumentoService.InsertTipoDocumento(requestDto).ConfigureAwait(false) != default;
+            var result = await _tipoDocumentoService.Insert(requestDto).ConfigureAwait(false) != default;
             return new TipoDocumentoResponseDto
             {
                 Aceptado = result,
@@ -97,7 +97,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGen
 
         public async Task<TipoDocumentoResponseDto> TipoDocumentoManagementUpdate(TipoDocumentoRequestDto requestDto)
         {
-            var result = await _tipoDocumentoService.UpdateTipoDocumento(requestDto).ConfigureAwait(false) != default;
+            var result = await _tipoDocumentoService.Update(requestDto).ConfigureAwait(false) != default;
             return new TipoDocumentoResponseDto
             {
                 Aceptado = result,

@@ -7,10 +7,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 {
     public interface IAreaService
     {
-        public Task<Guid> InsertArea(AreaRequestDto requestDto);
-        public Task<bool> DeleteArea(AreaRequestDto requestDto);
-        public Task<AreaDto> GetArea(AreaRequestDto requestDto);
-        public Task<IEnumerable<AreaDto>> GetAllArea();
-        public Task<bool> UpdateArea(AreaRequestDto requestDto);
+        public Task<Guid> Insert(AreaRequestDto requestDto);
+        public Task<bool> Delete(AreaRequestDto requestDto);
+        public Task<AreaDto> Get(AreaRequestDto requestDto);
+        public Task<IEnumerable<AreaDto>> GetAll();
+        public Task<bool> Update(AreaRequestDto requestDto);
     }
 }

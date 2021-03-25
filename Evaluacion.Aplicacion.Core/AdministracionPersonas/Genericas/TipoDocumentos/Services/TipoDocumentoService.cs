@@ -18,26 +18,26 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
             _mapper = mapper;
             _tipoDocumentoRepositorio = tipoDocumentoRepositorio;
         }
-        public Task<bool> DeleteTipoDocumento(TipoDocumentoRequestDto requestDto)
+        public Task<bool> Delete(TipoDocumentoRequestDto requestDto)
         {
             ValidationDto(requestDto);
             var entity = _mapper.Map<TipoDocumentoEntity>(requestDto);
             return Task.FromResult(_tipoDocumentoRepositorio.Delete(entity));
         }
-        public Task<IEnumerable<TipoDocumentoDto>> GetAllTipoDocumento()
+        public Task<IEnumerable<TipoDocumentoDto>> GetAll()
         {
             var area = _tipoDocumentoRepositorio
                 .GetAll<TipoDocumentoEntity>();
             return Task.FromResult(_mapper.Map<IEnumerable<TipoDocumentoDto>>(area));
         }
-        public Task<TipoDocumentoDto> GetTipoDocumento(TipoDocumentoRequestDto requestDto)
+        public Task<TipoDocumentoDto> Get(TipoDocumentoRequestDto requestDto)
         {
             ValidationDto(requestDto);
             var user = _tipoDocumentoRepositorio
                 .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.Id);
             return Task.FromResult(_mapper.Map<TipoDocumentoDto>(user.FirstOrDefault()));
         }
-        public async Task<Guid> InsertTipoDocumento(TipoDocumentoRequestDto requestDto)
+        public async Task<Guid> Insert(TipoDocumentoRequestDto requestDto)
         {
             ValidationDto(requestDto);
             var usernameExist = _tipoDocumentoRepositorio
@@ -51,7 +51,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
 
             return response.Id;
         }
-        public Task<bool> UpdateTipoDocumento(TipoDocumentoRequestDto requestDto)
+        public Task<bool> Update(TipoDocumentoRequestDto requestDto)
         {
             ValidationDto(requestDto);
             var entity = _tipoDocumentoRepositorio.SearchMatchingOneResult<TipoDocumentoEntity>(x => x.Id == requestDto.Id);
