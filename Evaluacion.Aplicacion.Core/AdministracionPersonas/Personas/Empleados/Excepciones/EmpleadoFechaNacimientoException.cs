@@ -7,8 +7,9 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.E
     [Serializable]
     internal class EmpleadoFechaNacimientoException : EvaluacionException
     {
-        private DateTimeOffset fechaNacimiento;
-
+#pragma warning disable IDE0052 // Quitar miembros privados no leídos
+        private readonly DateTimeOffset fechaNacimiento;
+#pragma warning restore IDE0052 // Quitar miembros privados no leídos
         public EmpleadoFechaNacimientoException()
         {
         }

@@ -57,21 +57,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
                 throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
             #endregion
-            var usernameExist = _empleadoRepositorio
-                .SearchMatching<EmpleadoEntity>(x => x.Nombre == requestDto.Nombre)
-                .Any();
-            if (usernameExist)
-                throw new EmpleadonameAlreadyExistException(requestDto.Nombre);
-
-            var idExist = _empleadoRepositorio
-                .SearchMatching<EmpleadoEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);
-            if (idExist.Any())
-                throw new EmpleadoCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento.ToString());
-
-            if (requestDto.FechaNacimiento == default)
-                throw new EmpleadoFechaNacimientoException(requestDto.FechaNacimiento);
-            if (requestDto.FechaRegistro == default)
-                throw new EmpleadoFechaRegistroException(requestDto.FechaRegistro);
+            ValidationParameterInsert(requestDto);
 
             var response = await _empleadoRepositorio.Insert(_mapper.Map<EmpleadoEntity>(requestDto)).ConfigureAwait(false);
 
@@ -96,6 +82,24 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         {
             if (requestDto == null)
                 throw new EmpleadoRequestDtoNullException();
+        }
+        private void ValidationParameterInsert(EmpleadoRequestDto requestDto)
+        {
+            var usernameExist = _empleadoRepositorio
+                            .SearchMatching<EmpleadoEntity>(x => x.Nombre == requestDto.Nombre)
+                            .Any();
+            if (usernameExist)
+                throw new EmpleadonameAlreadyExistException(requestDto.Nombre);
+
+            var idExist = _empleadoRepositorio
+                .SearchMatching<EmpleadoEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);
+            if (idExist.Any())
+                throw new EmpleadoCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento.ToString());
+
+            if (requestDto.FechaNacimiento == default)
+                throw new EmpleadoFechaNacimientoException(requestDto.FechaNacimiento);
+            if (requestDto.FechaRegistro == default)
+                throw new EmpleadoFechaRegistroException(requestDto.FechaRegistro);
         }
     }
 }

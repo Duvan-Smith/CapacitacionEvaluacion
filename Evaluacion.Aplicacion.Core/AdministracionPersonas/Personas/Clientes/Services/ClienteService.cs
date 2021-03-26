@@ -1,35 +1,97 @@
-﻿using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
+﻿using AutoMapper;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Excepciones;
+using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
+using Evaluacion.Dominio.Core.Especificas.Clientes;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Services
 {
     public class ClienteService : IClienteService
     {
+        private readonly IClienteRepositorio _clienteRepositorio;
+        private readonly IMapper _mapper;
+
+        public ClienteService(IClienteRepositorio clienteRepositorio, IMapper mapper)
+        {
+            _mapper = mapper;
+            _clienteRepositorio = clienteRepositorio;
+        }
         public Task<bool> Delete(ClienteRequestDto requestDto)
         {
-            throw new NotImplementedException();
+            ValidationDto(requestDto);
+            var entity = _mapper.Map<ClienteEntity>(requestDto);
+            return Task.FromResult(_clienteRepositorio.Delete(entity));
         }
 
         public Task<ClienteDto> Get(ClienteRequestDto requestDto)
         {
-            throw new NotImplementedException();
+            ValidationDto(requestDto);
+            var user = _clienteRepositorio
+                .SearchMatching<ClienteEntity>(x => x.Id == requestDto.Id);
+            return Task.FromResult(_mapper.Map<ClienteDto>(user.FirstOrDefault()));
         }
 
         public Task<IEnumerable<ClienteDto>> GetAll()
         {
-            throw new NotImplementedException();
+            var area = _clienteRepositorio
+                .GetAll<ClienteEntity>();
+            return Task.FromResult(_mapper.Map<IEnumerable<ClienteDto>>(area));
         }
 
-        public Task<Guid> Insert(ClienteRequestDto requestDto)
+        public async Task<Guid> Insert(ClienteRequestDto requestDto)
         {
-            throw new NotImplementedException();
+            ValidationDto(requestDto);
+            #region Empleado_Cliente
+            if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
+                throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
+            #endregion
+            ValidationParameterInsert(requestDto);
+
+            var response = await _clienteRepositorio.Insert(_mapper.Map<ClienteEntity>(requestDto)).ConfigureAwait(false);
+
+            return response.Id;
+
         }
 
         public Task<bool> Update(ClienteRequestDto requestDto)
         {
-            throw new NotImplementedException();
+            ValidationDto(requestDto);
+            var entity = _clienteRepositorio.SearchMatchingOneResult<ClienteEntity>(x => x.Id == requestDto.Id);
+            entity.Nombre = requestDto.Nombre;
+            entity.Apellido = requestDto.Apellido;
+            entity.FechaNacimiento = requestDto.FechaNacimiento;
+            entity.FechaRegistro = requestDto.FechaRegistro;
+            entity.NumeroTelefono = requestDto.NumeroTelefono;
+            entity.CorreoElectronico = requestDto.CorreoElectronico;
+            entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
+            //TODO: Agregar demas datos a actualizar
+            return Task.FromResult(_clienteRepositorio.Update(entity));
+        }
+        private static void ValidationDto(ClienteRequestDto requestDto)
+        {
+            if (requestDto == null)
+                throw new ClienteRequestDtoNullException();
+        }
+        private void ValidationParameterInsert(ClienteRequestDto requestDto)
+        {
+            var usernameExist = _clienteRepositorio
+                            .SearchMatching<ClienteEntity>(x => x.Nombre == requestDto.Nombre)
+                            .Any();
+            if (usernameExist)
+                throw new ClientenameAlreadyExistException(requestDto.Nombre);
+
+            var idExist = _clienteRepositorio
+                .SearchMatching<ClienteEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);
+            if (idExist.Any())
+                throw new ClienteCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento.ToString());
+
+            if (requestDto.FechaNacimiento == default)
+                throw new ClienteFechaNacimientoException(requestDto.FechaNacimiento);
+            if (requestDto.FechaRegistro == default)
+                throw new ClienteFechaRegistroException(requestDto.FechaRegistro);
         }
     }
 }
