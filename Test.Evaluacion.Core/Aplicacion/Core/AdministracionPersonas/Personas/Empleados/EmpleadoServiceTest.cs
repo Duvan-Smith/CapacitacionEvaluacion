@@ -381,7 +381,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         //TODO: Test de integracion para empleado
         [Fact]
         [IntegrationTest]
-        public async void No_Se_Repite_Nombre_Empleado_Integration()
+        public async void Validacion_Parametros_Empleado_Integration()
         {
             var service = new ServiceCollection();
             var serviceP = new ServiceCollection();
@@ -531,7 +531,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var responseI2 = await empleadoService.Insert(dtoEmpleadoI2).ConfigureAwait(false);
             Assert.NotNull(responseI2.ToString());
             Assert.NotEqual(default, responseI2);
-
 
             _ = empleadoService.Delete(dtoEmpleado);
             _ = empleadoService.Delete(dtoEmpleadoI2);

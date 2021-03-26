@@ -308,5 +308,110 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
             })).ConfigureAwait(false);
         }
+        //TODO: Cliente, Test de integracion para el cliente
+        [Fact]
+        [IntegrationTest]
+        public async void Validacion_Parametros_Cliente_Integration()
+        {
+            var serviceP = new ServiceCollection();
+
+            serviceP.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+
+            var providerP = serviceP.BuildServiceProvider();
+
+            var clienteService = providerP.GetRequiredService<IClienteService>();
+
+            var dtoCliente = new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+            var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
+            Assert.NotNull(response.ToString());
+            Assert.NotEqual(default, response);
+
+            await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+
+            dtoCliente.Nombre = "Fake2";
+            await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+
+            dtoCliente.CodigoTipoDocumento = "345678912";
+            dtoCliente.FechaNacimiento = default;
+            await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+
+            dtoCliente.FechaNacimiento = DateTimeOffset.Now;
+            dtoCliente.FechaRegistro = default;
+            await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+
+            dtoCliente.FechaRegistro = DateTimeOffset.Now;
+            dtoCliente.TipoDocumentoId = Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376");
+            await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+
+            _ = clienteService.Delete(dtoCliente);
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Validar_Identificacion_Tipo_Empleado_Integration()
+        {
+            var serviceP = new ServiceCollection();
+
+            serviceP.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+
+            var providerP = serviceP.BuildServiceProvider();
+
+            var clienteService = providerP.GetRequiredService<IClienteService>();
+
+            var dtoCliente = new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+            var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
+            Assert.NotNull(response.ToString());
+            Assert.NotEqual(default, response);
+
+            var dtoClienteI2 = new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake2",
+                Apellido = "fake2",
+                NumeroTelefono = 223456789,
+                CorreoElectronico = "fake2@fake2.fake2",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("12427378-28E4-48CB-8ED7-097116F8064E"),
+            };
+
+            var responseI2 = await clienteService.Insert(dtoClienteI2).ConfigureAwait(false);
+            Assert.NotNull(responseI2.ToString());
+            Assert.NotEqual(default, responseI2);
+
+            _ = clienteService.Delete(dtoCliente);
+            _ = clienteService.Delete(dtoClienteI2);
+        }
     }
 }
