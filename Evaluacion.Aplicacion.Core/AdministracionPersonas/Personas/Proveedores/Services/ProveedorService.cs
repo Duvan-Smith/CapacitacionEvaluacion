@@ -76,7 +76,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
                             .SearchMatching<ProveedorEntity>(x => x.Nombre == requestDto.Nombre)
                             .Any();
             if (usernameExist)
-                throw new ProveedorAlreadyExistException(requestDto.Nombre);
+                throw new ProveedornameAlreadyExistException(requestDto.Nombre);
 
             var idExist = _proveedorRepositorio
                 .SearchMatching<ProveedorEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);

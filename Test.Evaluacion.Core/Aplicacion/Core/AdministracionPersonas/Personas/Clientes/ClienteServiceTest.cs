@@ -362,7 +362,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         }
         [Fact]
         [IntegrationTest]
-        public async void Validar_Identificacion_Tipo_Empleado_Integration()
+        public async void Validar_Identificacion_Tipo_Cliente_Integration()
         {
             var serviceP = new ServiceCollection();
 
