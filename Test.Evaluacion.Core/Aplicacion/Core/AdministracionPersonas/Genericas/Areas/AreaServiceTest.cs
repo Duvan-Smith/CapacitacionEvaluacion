@@ -36,7 +36,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Get(null)).ConfigureAwait(false);
             await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Insert(null)).ConfigureAwait(false);
         }
-        //TODO: Criterio: No se pueden eliminar áreas que tengan empleados asociados
+        //TODO: Area, No se pueden eliminar áreas que tengan empleados asociados
         [Fact]
         [UnitTest]
         public async Task No_se_pueden_eliminar_areas_que_tengan_empleados_asociados()
