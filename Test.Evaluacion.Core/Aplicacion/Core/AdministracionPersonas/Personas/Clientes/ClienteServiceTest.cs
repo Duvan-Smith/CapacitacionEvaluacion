@@ -96,6 +96,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var result = await clienteService.Insert(new ClienteRequestDto
             {
                 Nombre = "fake",
+                //TODO: Debe poderse distinguir entre jurídicas y naturales
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
