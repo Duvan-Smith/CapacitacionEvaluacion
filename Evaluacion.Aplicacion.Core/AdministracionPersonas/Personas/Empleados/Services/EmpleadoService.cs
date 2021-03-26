@@ -9,6 +9,11 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Services
 {
+    public enum TipoPersona
+    {
+        Natural = 1,
+        Juridico = 2,
+    }
     public class EmpleadoService : IEmpleadoService
     {
         private readonly IEmpleadoRepositorio _empleadoRepositorio;
@@ -44,19 +49,29 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         public async Task<Guid> Insert(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
+            #region SoloEmpleado
+            if (nameof(TipoPersona.Juridico) == requestDto.TipoPersona.ToString())
+                throw new EmpleadoErrorTipoPersonaException(requestDto.TipoPersona.ToString());
+            #endregion
+            #region Empleado_Cliente
+            if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
+                throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
+            #endregion
             var usernameExist = _empleadoRepositorio
                 .SearchMatching<EmpleadoEntity>(x => x.Nombre == requestDto.Nombre)
                 .Any();
-
             if (usernameExist)
                 throw new EmpleadonameAlreadyExistException(requestDto.Nombre);
 
             var idExist = _empleadoRepositorio
-                .SearchMatching<EmpleadoEntity>(x => x.Id == requestDto.Id)
-                ;
-
+                .SearchMatching<EmpleadoEntity>(x => x.Id == requestDto.Id && x.TipoDocumentoId == requestDto.TipoDocumentoId);
             if (idExist.Any())
-                throw new EmpleadoidAlreadyExistException(idExist.First().Id.ToString());
+                throw new EmpleadoIdTipoDocumentoException(idExist.First().Id.ToString());
+
+            if (requestDto.FechaNacimiento == default)
+                throw new EmpleadoFechaNacimientoException(requestDto.FechaNacimiento);
+            if (requestDto.FechaRegistro == default)
+                throw new EmpleadoFechaRegistroException(requestDto.FechaRegistro);
 
             var response = await _empleadoRepositorio.Insert(_mapper.Map<EmpleadoEntity>(requestDto)).ConfigureAwait(false);
 

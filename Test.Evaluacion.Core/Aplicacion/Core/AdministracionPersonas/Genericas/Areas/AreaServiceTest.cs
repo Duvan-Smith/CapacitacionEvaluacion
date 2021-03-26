@@ -1,4 +1,5 @@
-﻿using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Excepciones;
+﻿using AutoMapper;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
@@ -12,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
@@ -129,6 +131,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             var areaService = provider.GetRequiredService<IAreaService>();
             var empleadoService = providerP.GetRequiredService<IEmpleadoService>();
+            var areaRepositorio = providerP.GetRequiredService<IAreaRepositorio>();
+            var mapper = providerP.GetRequiredService<IMapper>();
 
             var dtoArea = new AreaRequestDto
             {
@@ -136,6 +140,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 NombreArea = "FakeArea",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
+            var empleado = areaRepositorio
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
+                .FirstOrDefault();
+            //var entity = mapper.Map<AreaEntity>(dtoArea);
+            areaRepositorio.Delete(empleado);
             await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -158,7 +167,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.Delete(dtoArea)).ConfigureAwait(false);
 
             await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
-            await areaService.Delete(dtoArea).ConfigureAwait(false);
+            var empleadoEnd = areaRepositorio
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
+                .FirstOrDefault();
+            areaRepositorio.Delete(empleadoEnd);
         }
         [Fact]
         [IntegrationTest]

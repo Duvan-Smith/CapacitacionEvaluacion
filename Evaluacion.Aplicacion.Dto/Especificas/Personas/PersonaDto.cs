@@ -5,6 +5,11 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Evaluacion.Aplicacion.Dto.Especificas.Personas
 {
+    public enum TipoPersona
+    {
+        Natural = 1,
+        Juridico = 2,
+    }
     public class PersonaDto : BaseEntity
     {
         [Required]
@@ -34,5 +39,6 @@ namespace Evaluacion.Aplicacion.Dto.Especificas.Personas
         [MinLength(8)]
         [MaxLength(50)]
         public string CodigoTipoDocumento { get; set; }
+        public virtual TipoPersona TipoPersona { get; set; }
     }
 }
