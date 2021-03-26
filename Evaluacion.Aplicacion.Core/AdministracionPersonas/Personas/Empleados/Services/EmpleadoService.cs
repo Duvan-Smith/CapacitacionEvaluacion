@@ -30,7 +30,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             var entity = _mapper.Map<EmpleadoEntity>(requestDto);
             return Task.FromResult(_empleadoRepositorio.Delete(entity));
         }
-
         public Task<EmpleadoDto> Get(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -38,14 +37,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
                 .SearchMatching<EmpleadoEntity>(x => x.Id == requestDto.Id);
             return Task.FromResult(_mapper.Map<EmpleadoDto>(user.FirstOrDefault()));
         }
-
         public Task<IEnumerable<EmpleadoDto>> GetAll()
         {
             var area = _empleadoRepositorio
                 .GetAll<EmpleadoEntity>();
             return Task.FromResult(_mapper.Map<IEnumerable<EmpleadoDto>>(area));
         }
-
         public async Task<Guid> Insert(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -63,7 +60,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
             return response.Id;
         }
-
         public Task<bool> Update(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
