@@ -69,6 +69,8 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
         {
             ValidationDto(requestDto);
             var entity = _areaRepositorio.SearchMatchingOneResult<AreaEntity>(x => x.Id == requestDto.Id);
+            if (entity == null || entity == default)
+                throw new AreaNoExistException(requestDto.NombreArea);
             entity.NombreArea = requestDto.NombreArea;
             entity.EmpleadoResponsableId = requestDto.EmpleadoResponsableId;
 

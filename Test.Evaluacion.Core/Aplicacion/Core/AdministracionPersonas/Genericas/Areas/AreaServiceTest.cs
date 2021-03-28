@@ -137,13 +137,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoArea = new AreaRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreArea = "FakeArea",
+                NombreArea = "FakeArea3",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
             var empleado = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            //var entity = mapper.Map<AreaEntity>(dtoArea);
             areaRepositorio.Delete(empleado);
             await areaService.Insert(dtoArea).ConfigureAwait(false);
 
@@ -174,7 +173,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         }
         [Fact]
         [IntegrationTest]
-        public async void No_Test_Get_Tabla_Relaciones()
+        public async void No_Test_Get_Tabla_RelacionesAreas()
         {
             var service = new ServiceCollection();
             var serviceP = new ServiceCollection();
@@ -223,7 +222,110 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
             await areaService.Delete(dtoArea).ConfigureAwait(false);
         }
-        //TODO: Hacer primero Empleado para hacer las llamadas desde area
+        //Anotacion: Pruebas unitarias del crud: Insert, Update
+        [Fact]
+        [UnitTest]
+        public async Task Area_Insert_Test_Fail()
+        {
+            var areaRepoMock = new Mock<IAreaRepositorio>();
+            areaRepoMock
+                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<AreaEntity, bool>>>()))
+                .Returns(new List<AreaEntity> { new AreaEntity
+                {
+                    Id=Guid.NewGuid(),
+                }});
 
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => areaRepoMock.Object);
+
+            service.ConfigureGenericasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            await Assert.ThrowsAsync<AreanameAlreadyExistException>(() => areaService.Insert(new AreaRequestDto())).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Area_Insert_Test_Full()
+        {
+            var areaRepoMock = new Mock<IAreaRepositorio>();
+            var areaInsertRepoMock = new Mock<IAreaRepositorio>();
+
+            areaRepoMock
+                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<AreaEntity, bool>>>()));
+            areaInsertRepoMock
+                .Setup(m => m.Insert(It.IsAny<AreaEntity>()))
+                .Returns(Task.FromResult(new AreaEntity { Id = Guid.NewGuid() }));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => areaRepoMock.Object);
+            service.AddTransient(_ => areaInsertRepoMock.Object);
+
+            service.ConfigureGenericasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            var result = await areaService.Insert(new AreaRequestDto()).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.NotEqual(default, result);
+
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Area_Update_Test_Fail()
+        {
+            var areaRepoMock = new Mock<IAreaRepositorio>();
+            areaRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<AreaEntity, bool>>>()));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => areaRepoMock.Object);
+
+            service.ConfigureGenericasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            await Assert.ThrowsAsync<AreaNoExistException>(() => areaService.Update(new AreaRequestDto { NombreArea = "AreaPrueba" })).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Area_Update_Test_Full()
+        {
+            var areaRepoMock = new Mock<IAreaRepositorio>();
+            var entity = new AreaEntity
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "AreaPrueba"
+            };
+            areaRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<AreaEntity, bool>>>()))
+                .Returns(entity);
+            areaRepoMock
+                //.Setup(m => m.Update(It.Is<AreaEntity>(x => x.Id == entity.Id)))
+                .Setup(m => m.Update(It.IsAny<AreaEntity>()))
+                .Returns(true);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => areaRepoMock.Object);
+
+            service.ConfigureGenericasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            var result = await areaService.Update(new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "AreaPrueba"
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.True(result);
+
+        }
     }
 }

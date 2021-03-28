@@ -88,9 +88,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
                 throw new EmpleadonameAlreadyExistException(requestDto.Nombre);
 
             var idExist = _empleadoRepositorio
-                .SearchMatching<EmpleadoEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);
-            if (idExist.Any())
-                throw new EmpleadoCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento.ToString());
+                .SearchMatching<EmpleadoEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId)
+                .Any();
+            if (idExist)
+                throw new EmpleadoCodigoTipoDocumentoException(requestDto.CodigoTipoDocumento);
 
             if (requestDto.FechaNacimiento == default)
                 throw new EmpleadoFechaNacimientoException(requestDto.FechaNacimiento);
