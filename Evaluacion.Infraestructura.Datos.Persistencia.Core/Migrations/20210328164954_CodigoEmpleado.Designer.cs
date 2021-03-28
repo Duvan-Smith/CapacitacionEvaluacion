@@ -4,14 +4,16 @@ using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
 {
     [DbContext(typeof(ContextoDb))]
-    partial class ContextoDbModelSnapshot : ModelSnapshot
+    [Migration("20210328164954_CodigoEmpleado")]
+    partial class CodigoEmpleado
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,9 +82,8 @@ namespace Evaluacion.Infraestructura.Datos.Persistencia.Core.Migrations
                     b.Property<Guid>("AreaId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("CodigoEmpleado")
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
+                    b.Property<double>("CodigoEmpleado")
+                        .HasColumnType("float");
 
                     b.Property<string>("CodigoTipoDocumento")
                         .IsRequired()

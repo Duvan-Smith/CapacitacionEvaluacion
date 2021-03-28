@@ -37,9 +37,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Insert(null)).ConfigureAwait(false);
         }
         //TODO: Area, No se pueden eliminar áreas que tengan empleados asociados
+        #region No_se_pueden_eliminar_areas_que_tengan_empleados_asociados
         [Fact]
         [UnitTest]
-        public async Task No_se_pueden_eliminar_areas_que_tengan_empleados_asociados()
+        public async Task No_Eliminar_areas_que_tengan_empleados_asociados_Fail()
         {
             var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
             empleadoRepoMock
@@ -62,12 +63,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         }
         [Fact]
         [UnitTest]
-        public async Task Si_se_pueden_eliminar_areas_que_no_tengan_empleados_asociados()
+        public async Task No_Eliminar_areas_que_tengan_empleados_asociados_Full()
         {
-            var empleadoGetRepoMock = new Mock<IEmpleadoRepositorio>();
+            var empleadoReposMock = new Mock<IEmpleadoRepositorio>();
             var areaDeleteRepoMock = new Mock<IAreaRepositorio>();
 
-            empleadoGetRepoMock
+            empleadoReposMock
                 .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<EmpleadoEntity, bool>>>()));
             areaDeleteRepoMock
                 .Setup(m => m.Delete(It.IsAny<AreaEntity>()))
@@ -75,7 +76,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             var service = new ServiceCollection();
 
-            service.AddTransient(_ => empleadoGetRepoMock.Object);
+            service.AddTransient(_ => empleadoReposMock.Object);
             service.AddTransient(_ => areaDeleteRepoMock.Object);
 
             service.ConfigureGenericasService(new DbSettings());
@@ -86,7 +87,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         }
         [Fact]
         [IntegrationTest]
-        public void Eliminar_areas_que_no_tengan_empleados_asociados()
+        public void No_Eliminar_areas_que_tengan_empleados_asociados_Full_IntegrationTest()
         {
             var service = new ServiceCollection();
             service.ConfigureGenericasService(new DbSettings
@@ -112,7 +113,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         }
         [Fact]
         [IntegrationTest]
-        public async void Eliminar_areas_que_tengan_empleados_asociados()
+        public async void No_Eliminar_areas_que_tengan_empleados_asociados_Fail_IntegrationTest()
         {
             var service = new ServiceCollection();
             var serviceP = new ServiceCollection();
@@ -149,8 +150,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoEmpleado = new EmpleadoRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "Fake",
+                Nombre = "Fake_Empleado_Area_1",
+                Apellido = "Fake_Empleado_Area_1",
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 NumeroTelefono = 0,
@@ -158,7 +159,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 TipoDocumentoId = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
                 CodigoTipoDocumento = "12345678",
                 Salario = 20000,
-                AreaId = dtoArea.Id
+                AreaId = dtoArea.Id,
+                CodigoEmpleado = "Prueba21"
             };
 
             await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
@@ -171,6 +173,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 .FirstOrDefault();
             areaRepositorio.Delete(empleadoEnd);
         }
+        #endregion
+
         [Fact]
         [IntegrationTest]
         public async void No_Test_Get_Tabla_RelacionesAreas()
@@ -204,8 +208,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoEmpleado = new EmpleadoRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "Fake",
+                Nombre = "Fake_Empleado_Area_2",
+                Apellido = "Fake_Empleado_Area_2",
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 NumeroTelefono = 0,
@@ -213,7 +217,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 TipoDocumentoId = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
                 CodigoTipoDocumento = "12345678",
                 Salario = 20000,
-                AreaId = dtoArea.Id
+                AreaId = dtoArea.Id,
+                CodigoEmpleado = "Prueba21"
             };
             await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 

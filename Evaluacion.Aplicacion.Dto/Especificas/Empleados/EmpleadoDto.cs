@@ -9,6 +9,7 @@ namespace Evaluacion.Aplicacion.Dto.Especificas.Empleados
     {
         [Required]
         public double Salario { get; set; }
+        public string CodigoEmpleado { get; set; }
         public AreaDto Area { get; set; }
         public Guid AreaId { get; set; }
         public override TipoPersona TipoPersona => TipoPersona.Natural;
