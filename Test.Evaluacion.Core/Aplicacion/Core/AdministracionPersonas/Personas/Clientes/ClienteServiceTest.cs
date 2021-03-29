@@ -411,23 +411,21 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
-
-            await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(new ClienteRequestDto
-            {
-                Nombre = "FakePrueba",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-                FechaNacimiento = default,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-            })).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(new ClienteRequestDto
+            var clienteDto = new ClienteRequestDto
             {
                 Nombre = "FakePrueba",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = default,
+                FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-            })).ConfigureAwait(false);
+            };
+
+            clienteDto.FechaNacimiento = default;
+            await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
+
+            clienteDto.FechaNacimiento = DateTimeOffset.Now;
+            clienteDto.FechaRegistro = default;
+            await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -562,29 +560,33 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
 
-            await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(new ClienteRequestDto
+            var result = await clienteService.Insert(new ClienteRequestDto
             {
-                Nombre = "FakePrueba",
+                Nombre = "fake",
+                //TODO: Debe poderse distinguir entre jurídicas y naturales
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-                FechaNacimiento = default,
+                FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-            })).ConfigureAwait(false);
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.NotEqual(default, result);
         }
         [Fact]
         [IntegrationTest]
         public async void Cliente_Validar_NIT_IntegrationTest()
         {
-            var serviceP = new ServiceCollection();
+            var service = new ServiceCollection();
 
-            serviceP.ConfigurePersonasService(new DbSettings
+            service.ConfigurePersonasService(new DbSettings
             {
                 ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
             });
 
-            var providerP = serviceP.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
 
-            var clienteService = providerP.GetRequiredService<IClienteService>();
+            var clienteService = provider.GetRequiredService<IClienteService>();
 
             var dtoCliente = new ClienteRequestDto
             {

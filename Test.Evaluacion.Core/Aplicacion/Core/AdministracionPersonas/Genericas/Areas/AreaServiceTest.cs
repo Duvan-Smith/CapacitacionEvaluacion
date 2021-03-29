@@ -59,7 +59,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
 
-            await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.Delete(new AreaRequestDto())).ConfigureAwait(false);
+            await Assert.ThrowsAsync<EmpleadoAreaAlreadyExistException>(() => areaService.Delete(new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "Fake_Area_1",
+                EmpleadoResponsableId = Guid.NewGuid()
+            })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -83,7 +88,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
 
-            Assert.True(await areaService.Delete(new AreaRequestDto()).ConfigureAwait(false));
+            Assert.True(await areaService.Delete(new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "Fake_Area_1",
+                EmpleadoResponsableId = Guid.NewGuid()
+            }).ConfigureAwait(false));
         }
         [Fact]
         [IntegrationTest]
@@ -174,7 +184,91 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             areaRepositorio.Delete(empleadoEnd);
         }
         #endregion
+        //TODO: Las área deben tener una persona encargada
+        #region Empleado_Encargado_Area
+        [Fact]
+        [UnitTest]
+        public async Task Empleado_Encargado_Area_Fail()
+        {
+            var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
+            empleadoRepoMock
+                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<EmpleadoEntity, bool>>>()));
 
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => empleadoRepoMock.Object);
+
+            service.ConfigureGenericasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            await Assert.ThrowsAsync<AreaEmpleadoResponsableIdNullException>(() => areaService.Delete(new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "Fake_Area_1",
+                EmpleadoResponsableId = Guid.Empty
+            })).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Empleado_Encargado_Area_Full()
+        {
+            var empleadoReposMock = new Mock<IEmpleadoRepositorio>();
+            var areaDeleteRepoMock = new Mock<IAreaRepositorio>();
+
+            empleadoReposMock
+                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<EmpleadoEntity, bool>>>()));
+            areaDeleteRepoMock
+                .Setup(m => m.Delete(It.IsAny<AreaEntity>()))
+                .Returns(true);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => empleadoReposMock.Object);
+            service.AddTransient(_ => areaDeleteRepoMock.Object);
+
+            service.ConfigureGenericasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            Assert.True(await areaService.Delete(new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "Fake_Area_1",
+                EmpleadoResponsableId = Guid.NewGuid()
+            }).ConfigureAwait(false));
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Empleado_Encargado_Area_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            var dtoArea = new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "FakeAreaOk",
+                EmpleadoResponsableId = Guid.Empty
+            };
+
+            _ = await Assert.ThrowsAsync<AreaEmpleadoResponsableIdNullException>(() => areaService.Delete(dtoArea)).ConfigureAwait(false);
+
+            dtoArea.EmpleadoResponsableId = Guid.NewGuid();
+            _ = areaService.Insert(dtoArea);
+
+            var response = areaService.Delete(dtoArea);
+
+            Assert.NotNull(response);
+            Assert.True(response.Result);
+            Assert.NotEqual(default, response);
+        }
+        #endregion
         [Fact]
         [IntegrationTest]
         public async void No_Test_Get_Tabla_RelacionesAreas()
@@ -248,7 +342,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
 
-            await Assert.ThrowsAsync<AreanameAlreadyExistException>(() => areaService.Insert(new AreaRequestDto())).ConfigureAwait(false);
+            await Assert.ThrowsAsync<AreanameAlreadyExistException>(() => areaService.Insert(new AreaRequestDto { EmpleadoResponsableId = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -272,7 +366,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
 
-            var result = await areaService.Insert(new AreaRequestDto()).ConfigureAwait(false);
+            var result = await areaService.Insert(new AreaRequestDto { EmpleadoResponsableId = Guid.NewGuid() }).ConfigureAwait(false);
 
             Assert.NotNull(result.ToString());
             Assert.NotEqual(default, result);
@@ -294,7 +388,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
 
-            await Assert.ThrowsAsync<AreaNoExistException>(() => areaService.Update(new AreaRequestDto { NombreArea = "AreaPrueba" })).ConfigureAwait(false);
+            await Assert.ThrowsAsync<AreaNoExistException>(() => areaService.Update(new AreaRequestDto { NombreArea = "AreaPrueba", EmpleadoResponsableId = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -325,7 +419,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var result = await areaService.Update(new AreaRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreArea = "AreaPrueba"
+                NombreArea = "AreaPrueba",
+                EmpleadoResponsableId = Guid.NewGuid()
             }).ConfigureAwait(false);
 
             Assert.NotNull(result.ToString());

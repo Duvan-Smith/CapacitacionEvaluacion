@@ -405,22 +405,21 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var provider = service.BuildServiceProvider();
             var proveedorService = provider.GetRequiredService<IProveedorService>();
 
-            await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(new ProveedorRequestDto
-            {
-                Nombre = "FakePrueba",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-                FechaNacimiento = default,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-            })).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(new ProveedorRequestDto
+            var proveedorDto = new ProveedorRequestDto
             {
                 Nombre = "FakePrueba",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = default,
+                FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-            })).ConfigureAwait(false);
+            };
+
+            proveedorDto.FechaNacimiento = default;
+            await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(proveedorDto)).ConfigureAwait(false);
+
+            proveedorDto.FechaNacimiento = DateTimeOffset.Now;
+            proveedorDto.FechaRegistro = default;
+            await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(proveedorDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]

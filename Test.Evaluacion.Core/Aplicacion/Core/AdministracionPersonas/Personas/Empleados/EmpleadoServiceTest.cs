@@ -500,26 +500,23 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var provider = service.BuildServiceProvider();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-            await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(new EmpleadoRequestDto
-            {
-                Nombre = "FakePrueba",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-                FechaNacimiento = default,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                CodigoEmpleado = "Prueba08",
-                AreaId = Guid.NewGuid()
-            })).ConfigureAwait(false);
-            await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(new EmpleadoRequestDto
+            var empleadoDto = new EmpleadoRequestDto
             {
                 Nombre = "FakePrueba",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = default,
+                FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                CodigoEmpleado = "Prueba09",
+                CodigoEmpleado = "Prueba08",
                 AreaId = Guid.NewGuid()
-            })).ConfigureAwait(false);
+            };
+
+            empleadoDto.FechaNacimiento = default;
+            await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+
+            empleadoDto.FechaNacimiento = DateTimeOffset.Now;
+            empleadoDto.FechaRegistro = default;
+            await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -787,16 +784,18 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var provider = service.BuildServiceProvider();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-            await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(new EmpleadoRequestDto
+            var result = await empleadoService.Insert(new EmpleadoRequestDto
             {
-                Nombre = "FakePrueba",
+                Nombre = "fake",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                CodigoEmpleado = "Prueba14",
+                CodigoEmpleado = "Prueba06",
                 AreaId = Guid.NewGuid()
-            })).ConfigureAwait(false);
+            }).ConfigureAwait(false);
+            Assert.NotNull(result.ToString());
+            Assert.NotEqual(default, result);
         }
         [Fact]
         [IntegrationTest]

@@ -81,6 +81,8 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
         {
             if (requestDto == null)
                 throw new AreaRequestDtoNullException();
+            if (requestDto.EmpleadoResponsableId == default)
+                throw new AreaEmpleadoResponsableIdNullException();
         }
     }
 }
