@@ -316,6 +316,13 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             };
             await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
+            var dtoArea2 = new AreaRequestDto
+            {
+                Id = dtoArea.Id,
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            await areaService.Update(dtoArea2).ConfigureAwait(false);
+
             await areaService.GetAll().ConfigureAwait(false);
 
             await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
@@ -419,7 +426,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var result = await areaService.Update(new AreaRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreArea = "AreaPrueba",
                 EmpleadoResponsableId = Guid.NewGuid()
             }).ConfigureAwait(false);
 
