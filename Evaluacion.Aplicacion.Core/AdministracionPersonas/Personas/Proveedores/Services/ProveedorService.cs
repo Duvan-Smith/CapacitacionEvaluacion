@@ -72,6 +72,8 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         }
         private void ValidationParameterInsert(ProveedorRequestDto requestDto)
         {
+            if (requestDto.TipoPersona == default)
+                throw new ProveedorTipoPersonaNullException(requestDto.TipoPersona);
             var usernameExist = _proveedorRepositorio
                             .SearchMatching<ProveedorEntity>(x => x.Nombre == requestDto.Nombre)
                             .Any();

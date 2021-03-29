@@ -77,6 +77,9 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         }
         private void ValidationParameterInsert(ClienteRequestDto requestDto)
         {
+            if (requestDto.TipoPersona == default)
+                throw new ClienteTipoPersonaNullException(requestDto.TipoPersona);
+
             var usernameExist = _clienteRepositorio
                             .SearchMatching<ClienteEntity>(x => x.Nombre == requestDto.Nombre)
                             .Any();

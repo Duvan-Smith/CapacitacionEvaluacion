@@ -37,45 +37,46 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Get(null)).ConfigureAwait(false);
             await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Insert(null)).ConfigureAwait(false);
         }
-        //TODO: Proveedor, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
-        //TODO: Proveedor, No puede haber dos personas con el mismo numero y tipo de identificación
-        #region No_Se_Repite_CodigoTipo_Proveedor
-        #region Test Funcional
-        //Se debe comentar el SearchMatching de nombre para que funcione 
-        //[Fact]
-        //[UnitTest]
-        //public async Task No_Se_Repite_CodigoTipo_Cliente_Fail()
-        //{
-        //    var proveedorRepoMock = new Mock<IProveedorRepositorio>();
-
-        //    proveedorRepoMock
-        //        .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
-        //        .Returns(new List<ProveedorEntity> { new ProveedorEntity
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Nombre = "FakePrueba"
-        //        }});
-
-        //    var service = new ServiceCollection();
-
-        //    service.AddTransient(_ => proveedorRepoMock.Object);
-
-        //    service.ConfigurePersonasService(new DbSettings());
-
-        //    var provider = service.BuildServiceProvider();
-        //    var proveedorService = provider.GetRequiredService<IProveedorService>();
-
-        //    var clienteDto = new ProveedorRequestDto
-        //    {
-        //        Nombre = "FakePrueba"
-        //    };
-
-        //    await Assert.ThrowsAsync<ProveedoridAlreadyExistException>(() => proveedorService.Insert(clienteDto)).ConfigureAwait(false);
-        //}
-        #endregion
+        //TODO: Proveedor, Debe poderse distinguir entre jurídicas y naturales
+        #region Validar_TipoPersona_Proveedor
         [Fact]
         [UnitTest]
-        public async Task No_Se_Repite_CodigoTipo_Proveedor_Full()
+        public async Task Validar_TipoPersona_Proveedor_Fail()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+
+            proveedorRepoMock
+                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
+                .Returns(new List<ProveedorEntity> { new ProveedorEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Nombre = "FakePrueba"
+                }});
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            var dtoProveedor = new ProveedorRequestDto
+            {
+                Nombre = "fake",
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
+            };
+            await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+
+            dtoProveedor.TipoPersona = 0;
+            await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Validar_TipoPersona_Proveedor_Full()
         {
             var clienteGetRepoMock = new Mock<IProveedorRepositorio>();
             var clienteInsertRepoMock = new Mock<IProveedorRepositorio>();
@@ -108,7 +109,118 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
         }
         [Fact]
         [IntegrationTest]
-        public async void No_Se_Repite_CodigoTipo_Proveedor_IntegrationTest()
+        public async void Validar_TipoPersona_Proveedor_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+
+            var providerP = service.BuildServiceProvider();
+
+            var proveedorService = providerP.GetRequiredService<IProveedorService>();
+
+            var dtoProveedor = new ProveedorRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+
+            await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+
+            dtoProveedor.TipoPersona = 0;
+            //await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+
+            dtoProveedor.TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico;
+            var response = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+            Assert.NotNull(response.ToString());
+            Assert.NotEqual(default, response);
+
+            _ = await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+
+            _ = proveedorService.Delete(dtoProveedor);
+        }
+        #endregion
+        //TODO: Proveedor, No puede haber dos personas con el mismo numero y tipo de identificación
+        #region No_Se_Repite_CodigoTipoDocumento_Proveedor
+        #region Test Funcional
+        //Se debe comentar el SearchMatching de nombre para que funcione 
+        //[Fact]
+        //[UnitTest]
+        //public async Task No_Se_Repite_CodigoTipoDocumento_Cliente_Fail()
+        //{
+        //    var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+
+        //    proveedorRepoMock
+        //        .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
+        //        .Returns(new List<ProveedorEntity> { new ProveedorEntity
+        //        {
+        //            Id = Guid.NewGuid(),
+        //            Nombre = "FakePrueba"
+        //        }});
+
+        //    var service = new ServiceCollection();
+
+        //    service.AddTransient(_ => proveedorRepoMock.Object);
+
+        //    service.ConfigurePersonasService(new DbSettings());
+
+        //    var provider = service.BuildServiceProvider();
+        //    var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+        //    var clienteDto = new ProveedorRequestDto
+        //    {
+        //        Nombre = "FakePrueba"
+        //    };
+
+        //    await Assert.ThrowsAsync<ProveedoridAlreadyExistException>(() => proveedorService.Insert(clienteDto)).ConfigureAwait(false);
+        //}
+        #endregion
+        [Fact]
+        [UnitTest]
+        public async Task No_Se_Repite_CodigoTipoDocumento_Proveedor_Full()
+        {
+            var clienteGetRepoMock = new Mock<IProveedorRepositorio>();
+            var clienteInsertRepoMock = new Mock<IProveedorRepositorio>();
+
+            clienteGetRepoMock
+                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
+            clienteInsertRepoMock
+                .Setup(m => m.Insert(It.IsAny<ProveedorEntity>()))
+                .Returns(Task.FromResult(new ProveedorEntity { Id = Guid.NewGuid() }));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => clienteGetRepoMock.Object);
+            service.AddTransient(_ => clienteInsertRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var result = await proveedorService.Insert(new ProveedorRequestDto
+            {
+                Nombre = "fake",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.NotEqual(default, result);
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void No_Se_Repite_CodigoTipoDocumento_Proveedor_IntegrationTest()
         {
             var service = new ServiceCollection();
 

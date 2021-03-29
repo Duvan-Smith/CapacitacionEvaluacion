@@ -88,6 +88,9 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         }
         private void ValidationParameterInsert(EmpleadoRequestDto requestDto)
         {
+            if (requestDto.TipoPersona == default)
+                throw new EmpleadoTipoPersonaNullException(requestDto.TipoPersona);
+
             var usernameExist = _empleadoRepositorio
                             .SearchMatching<EmpleadoEntity>(x => x.Nombre == requestDto.Nombre)
                             .Any();
