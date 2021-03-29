@@ -94,10 +94,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             if (usernameExist)
                 throw new EmpleadonameAlreadyExistException(requestDto.Nombre);
 
-            var idExist = _empleadoRepositorio
+            var codeExist = _empleadoRepositorio
                 .SearchMatching<EmpleadoEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId)
                 .Any();
-            if (idExist)
+            if (codeExist)
                 throw new EmpleadoCodigoTipoDocumentoException(requestDto.CodigoTipoDocumento);
 
             if (requestDto.FechaNacimiento == default)

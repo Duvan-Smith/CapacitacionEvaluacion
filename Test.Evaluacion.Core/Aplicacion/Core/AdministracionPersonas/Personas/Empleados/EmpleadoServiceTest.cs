@@ -184,6 +184,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            dtoEmpleado.Nombre = "Empleado_fake_Throws_1";
+            dtoEmpleado.CodigoEmpleado = "Throws03";
+            await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+
             var dtoEmpleadoI2 = new EmpleadoRequestDto
             {
                 Id = Guid.NewGuid(),

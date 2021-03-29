@@ -83,10 +83,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             if (usernameExist)
                 throw new ClientenameAlreadyExistException(requestDto.Nombre);
 
-            var idExist = _clienteRepositorio
+            var codeExist = _clienteRepositorio
                 .SearchMatching<ClienteEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);
-            if (idExist.Any())
-                throw new ClienteCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento.ToString());
+            if (codeExist.Any())
+                throw new ClienteCodigoTipoDocumentoException(requestDto.CodigoTipoDocumento);
 
             if (requestDto.FechaNacimiento == default)
                 throw new ClienteFechaNacimientoException(requestDto.FechaNacimiento);
