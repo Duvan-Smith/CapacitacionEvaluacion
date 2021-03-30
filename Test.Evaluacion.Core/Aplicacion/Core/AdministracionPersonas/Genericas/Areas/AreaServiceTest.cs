@@ -269,66 +269,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             Assert.NotEqual(default, response);
         }
         #endregion
-        [Fact]
-        [IntegrationTest]
-        public async void No_Test_Get_Tabla_RelacionesAreas()
-        {
-            var service = new ServiceCollection();
-            var serviceP = new ServiceCollection();
-
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
-            });
-            serviceP.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
-            });
-
-            var provider = service.BuildServiceProvider();
-            var providerP = serviceP.BuildServiceProvider();
-
-            var areaService = provider.GetRequiredService<IAreaService>();
-            var empleadoService = providerP.GetRequiredService<IEmpleadoService>();
-
-            var dtoArea = new AreaRequestDto
-            {
-                Id = Guid.NewGuid(),
-                NombreArea = "FakeListEmpleado",
-                EmpleadoResponsableId = Guid.NewGuid()
-            };
-            await areaService.Insert(dtoArea).ConfigureAwait(false);
-
-            var dtoEmpleado = new EmpleadoRequestDto
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "Fake_Empleado_Area_2",
-                Apellido = "Fake_Empleado_Area_2",
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                NumeroTelefono = 0,
-                CorreoElectronico = "fake@fake.fake",
-                TipoDocumentoId = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
-                CodigoTipoDocumento = "12345678",
-                Salario = 20000,
-                AreaId = dtoArea.Id,
-                CodigoEmpleado = "Prueba21"
-            };
-            await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
-
-            var dtoArea2 = new AreaRequestDto
-            {
-                Id = dtoArea.Id,
-                EmpleadoResponsableId = Guid.NewGuid()
-            };
-            await areaService.Update(dtoArea2).ConfigureAwait(false);
-
-            await areaService.GetAll().ConfigureAwait(false);
-
-            await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
-            await areaService.Delete(dtoArea).ConfigureAwait(false);
-        }
         //Anotacion: Pruebas unitarias del crud: Insert, Update
+        #region Insert
         [Fact]
         [UnitTest]
         public async Task Area_Insert_Test_Fail()
@@ -379,6 +321,36 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             Assert.NotEqual(default, result);
 
         }
+        [Fact]
+        [IntegrationTest]
+        public async void Area_Insert_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+
+            var provider = service.BuildServiceProvider();
+
+            var areaService = provider.GetRequiredService<IAreaService>();
+
+            var dtoArea = new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "FakeListEmpleado",
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            var result = await areaService.Insert(dtoArea).ConfigureAwait(false);
+
+            Assert.NotEqual(default, result);
+            Assert.Equal(dtoArea.Id, result);
+            _ = await Assert.ThrowsAsync<AreanameAlreadyExistException>(() => areaService.Insert(dtoArea)).ConfigureAwait(false);
+            _ = await areaService.Delete(dtoArea).ConfigureAwait(false);
+        }
+        #endregion
+        #region Updtade
         [Fact]
         [UnitTest]
         public async Task Area_Update_Test_Fail()
@@ -432,6 +404,111 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             Assert.NotNull(result.ToString());
             Assert.True(result);
 
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Area_Update_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var areaService = provider.GetRequiredService<IAreaService>();
+            var areaRepositorio = provider.GetRequiredService<IAreaRepositorio>();
+
+            var dtoArea = new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "FakeListEmpleado",
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+
+            var area = areaRepositorio
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
+                .FirstOrDefault();
+            if (area != null || area != default)
+                areaRepositorio.Delete(area);
+
+            await areaService.Insert(dtoArea).ConfigureAwait(false);
+
+            var dtoArea2 = new AreaRequestDto
+            {
+                Id = dtoArea.Id,
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            var result = await areaService.Update(dtoArea2).ConfigureAwait(false);
+
+            Assert.True(result);
+
+            //await areaService.GetAll().ConfigureAwait(false);
+
+            await areaService.Delete(dtoArea).ConfigureAwait(false);
+        }
+        #endregion
+        [Fact]
+        [IntegrationTest]
+        public async void No_Test_Get_Tabla_RelacionesAreas()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+
+            var provider = service.BuildServiceProvider();
+
+            var areaService = provider.GetRequiredService<IAreaService>();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+
+            var dtoArea = new AreaRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreArea = "FakeListEmpleado",
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            await areaService.Insert(dtoArea).ConfigureAwait(false);
+
+            var dtoEmpleado = new EmpleadoRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "Fake_Empleado_Area_2",
+                Apellido = "Fake_Empleado_Area_2",
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                NumeroTelefono = 0,
+                CorreoElectronico = "fake@fake.fake",
+                TipoDocumentoId = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                CodigoTipoDocumento = "12345678",
+                Salario = 20000,
+                AreaId = dtoArea.Id,
+                CodigoEmpleado = "Prueba21"
+            };
+            await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+
+            var dtoArea2 = new AreaRequestDto
+            {
+                Id = dtoArea.Id,
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            await areaService.Update(dtoArea2).ConfigureAwait(false);
+
+            await areaService.GetAll().ConfigureAwait(false);
+
+            await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
+            await areaService.Delete(dtoArea).ConfigureAwait(false);
         }
     }
 }

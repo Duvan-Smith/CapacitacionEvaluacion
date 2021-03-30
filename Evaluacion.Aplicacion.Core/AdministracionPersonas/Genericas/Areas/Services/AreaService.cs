@@ -73,7 +73,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
             if (entity == null || entity == default)
                 throw new AreaNoExistException(requestDto.NombreArea);
 
-            if (requestDto.NombreArea != string.Empty || requestDto.NombreArea != null)
+            if (!string.IsNullOrEmpty(requestDto.NombreArea))
                 entity.NombreArea = requestDto.NombreArea;
 
             entity.EmpleadoResponsableId = requestDto.EmpleadoResponsableId;
