@@ -2,6 +2,7 @@
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPersonas;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores.Services;
+using Evaluacion.Aplicacion.Core.IntegracionPersonas.Cofiguration;
 using Evaluacion.Aplicacion.Core.Mapper.Configuration;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configurati
             services.TryAddTransient<IProveedorService, ProveedorService>();
             services.TryAddTransient<IFachadaPersonasService, FachadaPersonasService>();
 
+            services.ConfigureIntegracionPersonaService();
             services.ConfigureMapper();
             services.ConfigureBaseRepository(settings);
         }
