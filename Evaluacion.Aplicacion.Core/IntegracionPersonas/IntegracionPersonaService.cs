@@ -1,12 +1,9 @@
-﻿using Evaluacion.Aplicacion.Core.IntegracionPersonas.Cofiguration;
-using Evaluacion.Aplicacion.Core.IntegracionPersonas.Exceptions;
+﻿using Evaluacion.Aplicacion.Core.IntegracionPersonas.Exceptions;
 using Evaluacion.Aplicacion.Dto.Base;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -15,19 +12,16 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
     public class IntegracionPersonaService : IIntegracionPersonaService
     {
         private readonly HttpClient _client;
-        public IntegracionPersonaService(IOptions<IntegracionPersonaSettings> settings, HttpClient client)
+        public IntegracionPersonaService(HttpClient client)
         {
-            if (settings == null)
-                throw new UriFormatException();
             _client = client ?? throw new IntegracionPersonaNotDefinedException();
-            _client.BaseAddress = settings.Value.GetServiceUrl();
         }
-        public async Task<string> Export<TRequest>(string path, TRequest request) where TRequest : DataTransferObject
+        public async Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : DataTransferObject
         {
             ValidatePath(path);
             var result = (JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json").ToString();
 
-            string pathTxt = @"D:\MyTestClient.txt";
+            string pathTxt = @"D:\" + path + ".txt";
 
             using (FileStream fs = File.Create(pathTxt))
             {
@@ -45,23 +39,26 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
             return result;
         }
 
-        public async Task<TResponse> Import<TResponse, TRequest>(string path, TRequest request)
+        public Task<TResponse> ImportJson<TResponse>(string path) where TResponse : DataTransferObject
         {
             string pathTxt = @"D:\MyTestClient.txt";
+            var request = "";
             using (StreamReader sr = File.OpenText(pathTxt))
             {
                 string s = "";
                 while ((s = sr.ReadLine()) != null)
                 {
                     Console.WriteLine(s);
-                    //request = s.ToString();
+                    request = s;
                 }
             }
-            var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var response = await _client.PostAsync(path, stringRequest).ConfigureAwait(false);
-            response.EnsureSuccessStatusCode();
-            return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            //var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            //_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            //var response = await _client.PostAsync(path, stringRequest).ConfigureAwait(false);
+            //response.EnsureSuccessStatusCode();
+            //return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            var result = JsonConvert.DeserializeObject<TResponse>(request);
+            return Task.FromResult(result);
         }
         private static void ValidatePath(string path)
         {

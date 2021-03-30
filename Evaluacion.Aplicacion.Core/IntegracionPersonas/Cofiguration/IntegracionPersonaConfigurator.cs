@@ -5,10 +5,9 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas.Cofiguration
 {
     public static class IntegracionPersonaConfigurator
     {
-        public static void ConfigureIntegracionPersonaService(this IServiceCollection services, IntegracionPersonaSettings settings)
+        public static void ConfigureIntegracionPersonaService(this IServiceCollection services)
         {
             services.AddHttpClient<IntegracionPersonaService>();
-            services.Configure<IntegracionPersonaSettings>(o => o.CopyFrom(settings));
             services.TryAddTransient<IIntegracionPersonaService, IntegracionPersonaService>();
         }
     }
