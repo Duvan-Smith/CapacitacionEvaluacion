@@ -22,25 +22,23 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         public Task<bool> Delete(ProveedorRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _mapper.Map<ProveedorEntity>(requestDto);
+            var entity = ValidationEntity(requestDto);
             return Task.FromResult(_proveedorRepositorio.Delete(entity));
         }
-
         public Task<ProveedorDto> Get(ProveedorRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var user = _proveedorRepositorio
-                .SearchMatching<ProveedorEntity>(x => x.Id == requestDto.Id);
-            return Task.FromResult(_mapper.Map<ProveedorDto>(user.FirstOrDefault()));
+            var entity = ValidationEntity(requestDto);
+            return Task.FromResult(_mapper.Map<ProveedorDto>(entity));
         }
-
         public Task<IEnumerable<ProveedorDto>> GetAll()
         {
-            var area = _proveedorRepositorio
+            var listentity = _proveedorRepositorio
                 .GetAll<ProveedorEntity>();
-            return Task.FromResult(_mapper.Map<IEnumerable<ProveedorDto>>(area));
+            if (!listentity.Any())
+                throw new ProveedorNoExistException();
+            return Task.FromResult(_mapper.Map<IEnumerable<ProveedorDto>>(listentity));
         }
-
         public async Task<Guid> Insert(ProveedorRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -50,18 +48,35 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
 
             return response.Id;
         }
-
         public Task<bool> Update(ProveedorRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _proveedorRepositorio.SearchMatchingOneResult<ProveedorEntity>(x => x.Id == requestDto.Id);
-            entity.Nombre = requestDto.Nombre;
-            entity.Apellido = requestDto.Apellido;
-            entity.FechaNacimiento = requestDto.FechaNacimiento;
-            entity.FechaRegistro = requestDto.FechaRegistro;
-            entity.NumeroTelefono = requestDto.NumeroTelefono;
-            entity.CorreoElectronico = requestDto.CorreoElectronico;
-            entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
+            var entity = ValidationEntity(requestDto);
+
+            if (!string.IsNullOrEmpty(requestDto.Nombre))
+                entity.Nombre = requestDto.Nombre;
+
+            if (!string.IsNullOrEmpty(requestDto.Apellido))
+                entity.Apellido = requestDto.Apellido;
+
+            if (requestDto.FechaNacimiento != default)
+                entity.FechaNacimiento = requestDto.FechaNacimiento;
+
+            if (requestDto.FechaRegistro != default)
+                entity.FechaRegistro = requestDto.FechaRegistro;
+
+            if (requestDto.NumeroTelefono != default)
+                entity.NumeroTelefono = requestDto.NumeroTelefono;
+
+            if (!string.IsNullOrEmpty(requestDto.CorreoElectronico))
+                entity.CorreoElectronico = requestDto.CorreoElectronico;
+
+            if (requestDto.TipoDocumentoId != default)
+                entity.TipoDocumentoId = requestDto.TipoDocumentoId;
+
+            if (!string.IsNullOrEmpty(requestDto.CodigoTipoDocumento))
+                entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
+
             //TODO: Agregar demas datos a actualizar
             return Task.FromResult(_proveedorRepositorio.Update(entity));
         }
@@ -90,5 +105,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             if (requestDto.FechaRegistro == default)
                 throw new ProveedorFechaRegistroException(requestDto.FechaRegistro);
         }
+        private ProveedorEntity ValidationEntity(ProveedorRequestDto requestDto)
+        {
+            var entity = _proveedorRepositorio.SearchMatchingOneResult<ProveedorEntity>(x => x.Id == requestDto.Id);
+            if (entity == null || entity == default)
+                throw new ProveedorNoExistException(requestDto.Nombre);
+            return entity;
+        }
+
     }
 }

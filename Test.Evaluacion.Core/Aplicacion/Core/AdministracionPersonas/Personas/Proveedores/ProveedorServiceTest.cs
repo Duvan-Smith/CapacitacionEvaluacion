@@ -1,4 +1,5 @@
-﻿using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
+﻿using AutoMapper;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores.Services;
 using Evaluacion.Aplicacion.Dto.Especificas.Proveedores;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Xunit;
@@ -499,6 +501,398 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
         }
         #endregion
         //TODO: Proveedor, Test de integracion para el Proveedor
+        #region Delect
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_Delete_Test_Fail()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            proveedorRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Delete(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_Delete_Test_Full()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            var entity = new ProveedorEntity
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "Nombre"
+            };
+            proveedorRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
+                .Returns(entity);
+            proveedorRepoMock
+                .Setup(m => m.Delete(It.IsAny<ProveedorEntity>()))
+                .Returns(true);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            var result = await proveedorService.Delete(new ProveedorRequestDto
+            {
+                Id = Guid.NewGuid(),
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.True(result);
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Proveedor_Delete_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
+
+            var dtoProveedor = new ProveedorRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
+            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+
+            var dtoProveedor2 = new ProveedorRequestDto
+            {
+                Id = dtoProveedor.Id,
+                Nombre = "fake2",
+                Apellido = "fake2",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+            var result = await proveedorService.Delete(dtoProveedor2).ConfigureAwait(false);
+
+            Assert.True(result);
+        }
+        #endregion
+        #region Update
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_Update_Test_Fail()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            proveedorRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Update(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_Update_Test_Full()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            var entity = new ProveedorEntity
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "Nombre"
+            };
+            proveedorRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
+                .Returns(entity);
+            proveedorRepoMock
+                .Setup(m => m.Update(It.IsAny<ProveedorEntity>()))
+                .Returns(true);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            var result = await proveedorService.Update(new ProveedorRequestDto
+            {
+                Id = Guid.NewGuid(),
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.True(result);
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Proveedor_Update_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
+
+            var dtoProveedor = new ProveedorRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "FakeListTipoDocumento1",
+            };
+
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
+            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+
+            var dtoProveedor2 = new ProveedorRequestDto
+            {
+                Id = dtoProveedor.Id,
+            };
+            var result = await proveedorService.Update(dtoProveedor2).ConfigureAwait(false);
+
+            Assert.True(result);
+
+            await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
+        }
+        #endregion
+        #region Get
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_Get_Test_Fail()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            proveedorRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Get(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_Get_Test_Full()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            var entity = new ProveedorEntity
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "Nombre"
+            };
+            proveedorRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
+                .Returns(entity);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            var result = await proveedorService.Get(new ProveedorRequestDto
+            {
+                Id = Guid.NewGuid(),
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.Equal(entity.Id, result.Id);
+
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Proveedor_Get_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
+
+            var dtoProveedor = new ProveedorRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "FakeListTipoDocumento1",
+            };
+
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
+            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+
+            var dtoProveedor2 = new ProveedorRequestDto
+            {
+                Id = dtoProveedor.Id,
+            };
+            var result = await proveedorService.Get(dtoProveedor2).ConfigureAwait(false);
+
+            Assert.Equal(dtoProveedor.Id, result.Id);
+        }
+        #endregion
+        #region GetAll
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_GetAll_Test_Fail()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            proveedorRepoMock
+                .Setup(m => m.GetAll<ProveedorEntity>());
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+
+            await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.GetAll()).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Proveedor_GetAll_Test_Full()
+        {
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            var Listentity = new List<ProveedorEntity>
+            {
+                new ProveedorEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Nombre = "Nombre"
+                }
+            };
+            proveedorRepoMock
+                .Setup(m => m.GetAll<ProveedorEntity>())
+                .Returns(Listentity);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => proveedorRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var mapper = provider.GetRequiredService<IMapper>();
+
+            var result = mapper.Map<IEnumerable<ProveedorEntity>>(await proveedorService.GetAll().ConfigureAwait(false));
+
+            Assert.NotNull(result.ToString());
+            Assert.Equal(Listentity[0].Id, result.First().Id);
+
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Proveedor_GetAll_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
+            var mapper = provider.GetRequiredService<IMapper>();
+
+            var dtoProveedor = new ProveedorRequestDto
+            {
+                Id = Guid.Parse("45c2a9b5-1eac-48d3-83a4-ff692326e4f7"),
+                Nombre = "FakeListTipoDocumento1",
+            };
+
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Id == dtoProveedor.Id)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
+            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+
+            var result = mapper.Map<IEnumerable<ProveedorEntity>>(await proveedorService.GetAll().ConfigureAwait(false));
+
+            Assert.NotNull(result.ToString());
+            Assert.True(result.Any());
+
+            await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
+        }
+        #endregion
         [Fact]
         [IntegrationTest]
         public async void Validacion_Parametros_Proveedor_Integration()
