@@ -1,5 +1,6 @@
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
+using Evaluacion.Aplicacion.Core.IntegracionPersonas.Cofiguration;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,9 +31,17 @@ namespace Evaluacion.WebApi
             services.AddServerSideBlazor();
 
             var dbSettings = Configuration.GetSection("ConnectionString").Get<string>();
+            var integracionPersonaSettings = Configuration.GetSection("IntegracionPersonaSettings").Get<IntegracionPersonaSettings>();
 
             services.ConfigurePersonasService(new DbSettings { ConnectionString = dbSettings });
             services.ConfigureGenericasService(new DbSettings { ConnectionString = dbSettings });
+            services.ConfigureIntegracionPersonaService(new IntegracionPersonaSettings
+            {
+                Context = integracionPersonaSettings.Context,
+                Hostname = integracionPersonaSettings.Hostname,
+                Port = integracionPersonaSettings.Port,
+                ServiceProtocol = integracionPersonaSettings.ServiceProtocol
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
