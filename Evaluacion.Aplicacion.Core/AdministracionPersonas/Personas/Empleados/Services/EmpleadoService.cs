@@ -46,17 +46,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         public async Task<Guid> Insert(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            #region SoloEmpleado
-            if (nameof(TipoPersona.Juridico) == requestDto.TipoPersona.ToString())
-                throw new EmpleadoErrorTipoPersonaException(requestDto.TipoPersona.ToString());
-            var usercodeExist = _empleadoRepositorio
-                            .SearchMatching<EmpleadoEntity>(x => x.CodigoEmpleado == requestDto.CodigoEmpleado)
-                            .Any();
-            if (usercodeExist)
-                throw new EmpleadocodeAlreadyExistException(requestDto.CodigoEmpleado);
-            if (requestDto.AreaId == default)
-                throw new EmpleadoAreaIdNullException(requestDto.AreaId);
-            #endregion
+            ValidationEmpleadoDto(requestDto);
             #region Empleado_Cliente
             if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
                 throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
@@ -67,6 +57,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
             return response.Id;
         }
+
         public Task<bool> Update(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -85,6 +76,23 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         {
             if (requestDto == null)
                 throw new EmpleadoRequestDtoNullException();
+        }
+        private void ValidationEmpleadoDto(EmpleadoRequestDto requestDto)
+        {
+            if (nameof(TipoPersona.Juridico) == requestDto.TipoPersona.ToString())
+                throw new EmpleadoErrorTipoPersonaException(requestDto.TipoPersona.ToString());
+            var usercodeExist = _empleadoRepositorio
+                            .SearchMatching<EmpleadoEntity>(x => x.CodigoEmpleado == requestDto.CodigoEmpleado)
+                            .Any();
+            if (usercodeExist)
+                throw new EmpleadocodeAlreadyExistException(requestDto.CodigoEmpleado);
+            if (requestDto.AreaId == default)
+                throw new EmpleadoAreaIdNullException(requestDto.AreaId);
+            var AreaIdExist = _empleadoRepositorio
+                            .SearchMatching<EmpleadoEntity>(x => x.Id == requestDto.Id && x.AreaId == requestDto.AreaId)
+                            .Any();
+            if (AreaIdExist)
+                throw new EmpleadoAreaIdAlreadyExistException(requestDto.AreaId);
         }
         private void ValidationParameterInsert(EmpleadoRequestDto requestDto)
         {

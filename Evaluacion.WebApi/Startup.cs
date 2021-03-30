@@ -28,7 +28,6 @@ namespace Evaluacion.WebApi
             );
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddControllers();
 
             var dbSettings = Configuration.GetSection("ConnectionString").Get<string>();
 

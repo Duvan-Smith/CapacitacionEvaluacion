@@ -320,6 +320,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             dtoEmpleado.Nombre = "Empleado_fake_Throws_1";
             dtoEmpleado.CodigoEmpleado = "Throws03";
+            dtoEmpleado.AreaId = Guid.NewGuid();
             await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             var dtoEmpleadoI2 = new EmpleadoRequestDto
@@ -370,6 +371,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             };
             var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
 
+            empleadoRepoMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Id == empleadoDto.Id && x.AreaId == empleadoDto.AreaId)));
+            empleadoRepoMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoTipoDocumento == empleadoDto.CodigoTipoDocumento && x.TipoDocumentoId == empleadoDto.TipoDocumentoId)));
             empleadoRepoMock
                 .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)));
             empleadoRepoMock
@@ -469,6 +474,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
             dtoEmpleado.CodigoEmpleado = "Otro01";
+            dtoEmpleado.AreaId = Guid.NewGuid();
             await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             _ = empleadoService.Delete(dtoEmpleado);
@@ -875,6 +881,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             empleadoReposMock
                 .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)));
             empleadoReposMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Id == empleadoDto.Id && x.AreaId == empleadoDto.AreaId)));
+            empleadoReposMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoTipoDocumento == empleadoDto.CodigoTipoDocumento && x.TipoDocumentoId == empleadoDto.TipoDocumentoId)));
+            empleadoReposMock
                 .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)))
                 .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
                 {
@@ -981,6 +991,49 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         }
         [Fact]
         [UnitTest]
+        public async Task Emplado_Asociado_Area_Unica_Fail()
+        {
+            var empleadoDto = new EmpleadoRequestDto
+            {
+                Nombre = "FakePrueba",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("12427378-28e4-48cb-8ed7-097116f8064e"),
+                AreaId = Guid.NewGuid()
+            };
+            var empleadoReposMock = new Mock<IEmpleadoRepositorio>();
+
+            empleadoReposMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)));
+            empleadoReposMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoTipoDocumento == empleadoDto.CodigoTipoDocumento && x.TipoDocumentoId == empleadoDto.TipoDocumentoId)));
+            empleadoReposMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)));
+            empleadoReposMock
+                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Id == empleadoDto.Id && x.AreaId == empleadoDto.AreaId)))
+                .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Nombre = "FakePrueba",
+                    CodigoEmpleado = "Prueba17"
+                }});
+            empleadoReposMock
+                .Setup(m => m.Insert(It.IsAny<EmpleadoEntity>()))
+                .Returns(Task.FromResult(new EmpleadoEntity { Id = Guid.NewGuid() }));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => empleadoReposMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+
+            await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
         public async void Emplado_Asociado_Area_Full()
         {
             var empleadoDto = new EmpleadoRequestDto
@@ -1019,6 +1072,117 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             Assert.NotNull(result.ToString());
             Assert.NotEqual(default, result);
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Emplado_Asociado_Codigo_Unico_IntegrationTest()
+        {
+            ServiceProvider provider = ServiceCollectionEmpleado();
+
+            var areaService = provider.GetRequiredService<IAreaService>();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+            var areaRepositorio = provider.GetRequiredService<IAreaRepositorio>();
+            var mapper = provider.GetRequiredService<IMapper>();
+
+            var dtoArea = new AreaRequestDto
+            {
+                Id = Guid.Parse("11111111-5717-4562-b3fc-2c963f66afa1"),
+                NombreArea = "FakeArea1",
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            var area = areaRepositorio
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
+                .FirstOrDefault();
+            if (area != null || area != default)
+                areaRepositorio.Delete(area);
+            var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
+
+            var dtoEmpleado = new EmpleadoRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake_empleado_area_1",
+                Apellido = "fake_empleado_area_1",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                Salario = 20000,
+                CodigoEmpleado = "Prueba19"
+            };
+
+            await Assert.ThrowsAsync<EmpleadoAreaIdNullException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+
+            dtoEmpleado.AreaId = guidArea;
+            var response = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+            Assert.NotNull(response.ToString());
+            Assert.NotEqual(default, response);
+
+            await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+
+            _ = empleadoService.Delete(dtoEmpleado);
+            var areaEnd = areaRepositorio
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
+                .FirstOrDefault();
+            areaRepositorio.Delete(areaEnd);
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Emplado_Asociado_Area_Unica_IntegrationTest()
+        {
+            ServiceProvider provider = ServiceCollectionEmpleado();
+
+            var areaService = provider.GetRequiredService<IAreaService>();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+            var areaRepositorio = provider.GetRequiredService<IAreaRepositorio>();
+            var mapper = provider.GetRequiredService<IMapper>();
+
+            var dtoArea = new AreaRequestDto
+            {
+                Id = Guid.Parse("11111111-5717-4562-b3fc-2c963f66afa1"),
+                NombreArea = "FakeArea1",
+                EmpleadoResponsableId = Guid.NewGuid()
+            };
+            var area = areaRepositorio
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
+                .FirstOrDefault();
+            if (area != null || area != default)
+                areaRepositorio.Delete(area);
+            var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
+
+            var dtoEmpleado = new EmpleadoRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake_empleado_area_1",
+                Apellido = "fake_empleado_area_1",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                Salario = 20000,
+                CodigoEmpleado = "Prueba19"
+            };
+
+            await Assert.ThrowsAsync<EmpleadoAreaIdNullException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+
+            dtoEmpleado.AreaId = guidArea;
+            var response = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+            Assert.NotNull(response.ToString());
+            Assert.NotEqual(default, response);
+
+            dtoEmpleado.CodigoEmpleado = "Prueba19_Throws";
+            await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+
+            _ = empleadoService.Delete(dtoEmpleado);
+            var areaEnd = areaRepositorio
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
+                .FirstOrDefault();
+            areaRepositorio.Delete(areaEnd);
         }
         #endregion
         //TODO: Test de integracion para empleado
@@ -1066,6 +1230,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            dtoEmpleado.CodigoEmpleado = "Prueba19_Throws";
+            await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+
+            dtoEmpleado.AreaId = Guid.NewGuid();
             dtoEmpleado.CodigoEmpleado = "Otro01";
             await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
