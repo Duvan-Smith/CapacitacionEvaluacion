@@ -37,17 +37,18 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 
         public Task<IEnumerable<AreaDto>> GetAll()
         {
-            var area = _areaRepositorio
+            var listentity = _areaRepositorio
                 .GetAll<AreaEntity>();
-            return Task.FromResult(_mapper.Map<IEnumerable<AreaDto>>(area));
+            if (!listentity.Any())
+                throw new AreaNoExistException();
+            return Task.FromResult(_mapper.Map<IEnumerable<AreaDto>>(listentity));
         }
 
         public Task<AreaDto> Get(AreaRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var area = _areaRepositorio
-                .SearchMatching<AreaEntity>(x => x.Id == requestDto.Id);
-            return Task.FromResult(_mapper.Map<AreaDto>(area.FirstOrDefault()));
+            var entity = ValidationEntity(requestDto);
+            return Task.FromResult(_mapper.Map<AreaDto>(entity));
         }
 
         public async Task<Guid> Insert(AreaRequestDto requestDto)
@@ -68,10 +69,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
         public Task<bool> Update(AreaRequestDto requestDto)
         {
             ValidationDto(requestDto);
-
-            var entity = _areaRepositorio.SearchMatchingOneResult<AreaEntity>(x => x.Id == requestDto.Id);
-            if (entity == null || entity == default)
-                throw new AreaNoExistException(requestDto.NombreArea);
+            var entity = ValidationEntity(requestDto);
 
             if (!string.IsNullOrEmpty(requestDto.NombreArea))
                 entity.NombreArea = requestDto.NombreArea;
@@ -87,6 +85,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
                 throw new AreaRequestDtoNullException();
             if (requestDto.EmpleadoResponsableId == default)
                 throw new AreaEmpleadoResponsableIdNullException();
+        }
+        private AreaEntity ValidationEntity(AreaRequestDto requestDto)
+        {
+            var entity = _areaRepositorio.SearchMatchingOneResult<AreaEntity>(x => x.Id == requestDto.Id);
+            if (entity == null || entity == default)
+                throw new AreaNoExistException(requestDto.NombreArea);
+            return entity;
         }
     }
 }
