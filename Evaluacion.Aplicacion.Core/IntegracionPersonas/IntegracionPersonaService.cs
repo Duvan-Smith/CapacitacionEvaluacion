@@ -29,15 +29,11 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
 
             string pathTxt = @"D:\MyTestClient.txt";
 
-            // Create the file, or overwrite if the file exists.
             using (FileStream fs = File.Create(pathTxt))
             {
                 byte[] info = new UTF8Encoding(true).GetBytes(result);
-                // Add some information to the file.
                 fs.Write(info, 0, info.Length);
             }
-
-            // Open the stream and read it back.
             using (StreamReader sr = File.OpenText(pathTxt))
             {
                 string s = "";
@@ -49,8 +45,18 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
             return result;
         }
 
-        public async Task<TResponse> Import<TResponse, TRequest>(string path, TRequest request) where TResponse : DataTransferObject
+        public async Task<TResponse> Import<TResponse, TRequest>(string path, TRequest request)
         {
+            string pathTxt = @"D:\MyTestClient.txt";
+            using (StreamReader sr = File.OpenText(pathTxt))
+            {
+                string s = "";
+                while ((s = sr.ReadLine()) != null)
+                {
+                    Console.WriteLine(s);
+                    //request = s.ToString();
+                }
+            }
             var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var response = await _client.PostAsync(path, stringRequest).ConfigureAwait(false);
