@@ -2,8 +2,8 @@
 using Evaluacion.Aplicacion.Dto.Base;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -11,15 +11,10 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
 {
     public class IntegracionPersonaService : IIntegracionPersonaService
     {
-        private readonly HttpClient _client;
-        public IntegracionPersonaService(HttpClient client)
-        {
-            _client = client ?? throw new IntegracionPersonaNotDefinedException();
-        }
-        public async Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : DataTransferObject
+        public Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<DataTransferObject>
         {
             ValidatePath(path);
-            var result = (JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json").ToString();
+            var result = JsonConvert.SerializeObject(request);
 
             string pathTxt = @"D:\" + path + ".txt";
 
@@ -36,13 +31,13 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
                     Console.WriteLine(s);
                 }
             }
-            return result;
+            return Task.FromResult(result);
         }
-
-        public Task<TResponse> ImportJson<TResponse>(string path) where TResponse : DataTransferObject
+        public Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<DataTransferObject>
         {
-            string pathTxt = @"D:\MyTestClient.txt";
             var request = "";
+            string pathTxt = @"D:\" + path + ".txt";
+
             using (StreamReader sr = File.OpenText(pathTxt))
             {
                 string s = "";
@@ -52,11 +47,6 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
                     request = s;
                 }
             }
-            //var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
-            //_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            //var response = await _client.PostAsync(path, stringRequest).ConfigureAwait(false);
-            //response.EnsureSuccessStatusCode();
-            //return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             var result = JsonConvert.DeserializeObject<TResponse>(request);
             return Task.FromResult(result);
         }

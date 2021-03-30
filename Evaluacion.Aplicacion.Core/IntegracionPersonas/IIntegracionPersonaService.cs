@@ -1,11 +1,12 @@
 ﻿using Evaluacion.Aplicacion.Dto.Base;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
 {
     public interface IIntegracionPersonaService
     {
-        Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : DataTransferObject;
-        Task<TResponse> ImportJson<TResponse>(string path) where TResponse : DataTransferObject;
+        Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<DataTransferObject>;
+        Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<DataTransferObject>;
     }
 }

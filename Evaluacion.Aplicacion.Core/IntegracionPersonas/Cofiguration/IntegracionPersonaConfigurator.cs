@@ -7,7 +7,6 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas.Cofiguration
     {
         public static void ConfigureIntegracionPersonaService(this IServiceCollection services)
         {
-            services.AddHttpClient<IntegracionPersonaService>();
             services.TryAddTransient<IIntegracionPersonaService, IntegracionPersonaService>();
         }
     }

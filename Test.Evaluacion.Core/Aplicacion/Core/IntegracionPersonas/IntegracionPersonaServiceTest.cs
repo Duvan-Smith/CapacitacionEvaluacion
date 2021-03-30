@@ -4,6 +4,7 @@ using Evaluacion.Aplicacion.Core.IntegracionPersonas.Exceptions;
 using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Categories;
@@ -19,21 +20,14 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.IntegracionPersonas
             var service = new ServiceCollection();
 
             service.ConfigureIntegracionPersonaService();
-            //service.ConfigureIntegracionPersonaService(new IntegracionPersonaSettings
-            //{
-            //    Context = "",
-            //    Hostname = "localhost",
-            //    Port = 44334,
-            //    ServiceProtocol = "http"
-            //});
             var provider = service.BuildServiceProvider();
             var integracionPersonaService = provider.GetRequiredService<IIntegracionPersonaService>();
 
-            var dtoCliente = new ClienteDto
+            var dtoCliente = new List<ClienteDto>{ new ClienteDto
             {
                 Nombre = "IntegracionPersona",
                 Apellido = "IntegracionPersona"
-            };
+            } };
 
             await Assert.ThrowsAsync<IntegracionPersonaArgumentPathException>(async () => await integracionPersonaService.ExportJson("", dtoCliente).ConfigureAwait(false)).ConfigureAwait(false);
         }
@@ -44,13 +38,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.IntegracionPersonas
             var service = new ServiceCollection();
 
             service.ConfigureIntegracionPersonaService();
-            //service.ConfigureIntegracionPersonaService(new IntegracionPersonaSettings
-            //{
-            //    Context = "",
-            //    Hostname = "localhost",
-            //    Port = 44334,
-            //    ServiceProtocol = "http"
-            //});
             var provider = service.BuildServiceProvider();
             var integracionPersonaService = provider.GetRequiredService<IIntegracionPersonaService>();
 
@@ -65,9 +52,31 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.IntegracionPersonas
                 CorreoElectronico = "fake@fake.fake",
             };
 
-            var result = await integracionPersonaService.ExportJson("Export", dtoCliente).ConfigureAwait(false);
+            var result = await integracionPersonaService.ExportJson("ExportCliente", new List<ClienteDto> { dtoCliente }).ConfigureAwait(false);
+            var dtoClienteList = new List<ClienteDto>{ new ClienteDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "IntegracionPersona",
+                Apellido = "IntegracionPersona",
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+            },
+            new ClienteDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "IntegracionPersona",
+                Apellido = "IntegracionPersona",
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+            }};
+            var result2 = await integracionPersonaService.ExportJson("ExportListCliente", dtoClienteList).ConfigureAwait(false);
 
             Assert.NotNull(result);
+            Assert.NotNull(result2);
         }
         [Fact]
         [UnitTest]
@@ -76,30 +85,14 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.IntegracionPersonas
             var service = new ServiceCollection();
 
             service.ConfigureIntegracionPersonaService();
-            //service.ConfigureIntegracionPersonaService(new IntegracionPersonaSettings
-            //{
-            //    Context = "",
-            //    Hostname = "localhost",
-            //    Port = 44334,
-            //    ServiceProtocol = "http"
-            //});
             var provider = service.BuildServiceProvider();
             var integracionPersonaService = provider.GetRequiredService<IIntegracionPersonaService>();
 
-            //var cliente = new HttpClient();
-            //cliente.BaseAddress= "http://any-url.com"
-            //var client = new FakeHttpClient(cliente);
-
-            var dtoCliente = new ClienteDto
-            {
-                Nombre = "IntegracionPersona",
-                Apellido = "IntegracionPersona"
-            };
-
-            var result = await integracionPersonaService.ImportJson<ClienteDto>("Import").ConfigureAwait(false);
-            var result2 = await integracionPersonaService.ImportJson<ClienteDto>("Import").ConfigureAwait(false);
+            var result = await integracionPersonaService.ImportJson<IEnumerable<ClienteDto>>("ExportCliente").ConfigureAwait(false);
+            var result2 = await integracionPersonaService.ImportJson<IEnumerable<ClienteDto>>("ExportListCliente").ConfigureAwait(false);
 
             Assert.NotNull(result);
+            Assert.NotNull(result2);
         }
     }
 }

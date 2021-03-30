@@ -31,19 +31,11 @@ namespace Evaluacion.WebApi
             services.AddServerSideBlazor();
 
             var dbSettings = Configuration.GetSection("ConnectionString").Get<string>();
-            var integracionPersonaSettings = Configuration.GetSection("IntegracionPersonaSettings").Get<IntegracionPersonaSettings>();
 
             services.ConfigurePersonasService(new DbSettings { ConnectionString = dbSettings });
             services.ConfigureGenericasService(new DbSettings { ConnectionString = dbSettings });
             //TODO: ConfigureIntegracionPersonaService, Este debe estar en Personas
             services.ConfigureIntegracionPersonaService();
-            //services.ConfigureIntegracionPersonaService(new IntegracionPersonaSettings
-            //{
-            //    Context = integracionPersonaSettings.Context,
-            //    Hostname = integracionPersonaSettings.Hostname,
-            //    Port = integracionPersonaSettings.Port,
-            //    ServiceProtocol = integracionPersonaSettings.ServiceProtocol
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
