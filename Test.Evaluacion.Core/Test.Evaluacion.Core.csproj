@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Aplicacion\Core\AdministracionPersonas\Genericas\FachadaGenericas\" />
-    <Folder Include="Aplicacion\Core\AdministracionPersonas\Genericas\TipoDocumentos\" />
     <Folder Include="Aplicacion\Core\AdministracionPersonas\Personas\FachadaPersonas\" />
     <Folder Include="Aplicacion\Dto\" />
   </ItemGroup>

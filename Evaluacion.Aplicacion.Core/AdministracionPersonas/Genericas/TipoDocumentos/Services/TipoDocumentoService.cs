@@ -21,21 +21,24 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
         public Task<bool> Delete(TipoDocumentoRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _mapper.Map<TipoDocumentoEntity>(requestDto);
+            var entity = ValidationEntity(requestDto);
             return Task.FromResult(_tipoDocumentoRepositorio.Delete(entity));
         }
+
+
         public Task<IEnumerable<TipoDocumentoDto>> GetAll()
         {
-            var area = _tipoDocumentoRepositorio
+            var listentity = _tipoDocumentoRepositorio
                 .GetAll<TipoDocumentoEntity>();
-            return Task.FromResult(_mapper.Map<IEnumerable<TipoDocumentoDto>>(area));
+            if (!listentity.Any())
+                throw new TipoDocumentoNoExistException();
+            return Task.FromResult(_mapper.Map<IEnumerable<TipoDocumentoDto>>(listentity));
         }
         public Task<TipoDocumentoDto> Get(TipoDocumentoRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var user = _tipoDocumentoRepositorio
-                .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.Id);
-            return Task.FromResult(_mapper.Map<TipoDocumentoDto>(user.FirstOrDefault()));
+            var entity = ValidationEntity(requestDto);
+            return Task.FromResult(_mapper.Map<TipoDocumentoDto>(entity));
         }
         public async Task<Guid> Insert(TipoDocumentoRequestDto requestDto)
         {
@@ -54,8 +57,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
         public Task<bool> Update(TipoDocumentoRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _tipoDocumentoRepositorio.SearchMatchingOneResult<TipoDocumentoEntity>(x => x.Id == requestDto.Id);
-            entity.NombreTipoDocumento = requestDto.NombreTipoDocumento;
+            var entity = ValidationEntity(requestDto);
+
+            if (!string.IsNullOrEmpty(requestDto.NombreTipoDocumento))
+                entity.NombreTipoDocumento = requestDto.NombreTipoDocumento;
 
             return Task.FromResult(_tipoDocumentoRepositorio.Update(entity));
         }
@@ -63,6 +68,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
         {
             if (requestDto == null)
                 throw new TipoDocumentoRequestDtoNullException();
+        }
+        private TipoDocumentoEntity ValidationEntity(TipoDocumentoRequestDto requestDto)
+        {
+            var entity = _tipoDocumentoRepositorio.SearchMatchingOneResult<TipoDocumentoEntity>(x => x.Id == requestDto.Id);
+            if (entity == null || entity == default)
+                throw new TipoDocumentoNoExistException(requestDto.NombreTipoDocumento);
+            return entity;
         }
     }
 }
