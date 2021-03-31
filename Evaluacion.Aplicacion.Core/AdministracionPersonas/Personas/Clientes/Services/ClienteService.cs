@@ -97,7 +97,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         }
         public async Task<IEnumerable<ClienteRequestDto>> ImportAll()
         {
-            var clienteDto = await _integracionPersonaService.ImportJson<IEnumerable<ClienteRequestDto>>("ExportAllEmpleado").ConfigureAwait(false);
+            var clienteDto = await _integracionPersonaService.ImportJson<IEnumerable<ClienteRequestDto>>("ExportAllCliente").ConfigureAwait(false);
             foreach (ClienteRequestDto element in clienteDto)
             {
                 await Update(element).ConfigureAwait(false);
