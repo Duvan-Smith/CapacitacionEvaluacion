@@ -85,6 +85,9 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             if (!string.IsNullOrEmpty(requestDto.CodigoTipoDocumento))
                 entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
 
+            if (requestDto.TipoPersona != default)
+                entity.TipoPersona = (Dominio.Core.Especificas.Personas.TipoPersona)requestDto.TipoPersona;
+
             var listentity = _clienteRepositorio
                 .GetAll<ClienteEntity>();
 

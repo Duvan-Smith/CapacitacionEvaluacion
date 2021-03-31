@@ -77,17 +77,22 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 AreaId = Guid.NewGuid()
             };
             var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
-
-            empleadoRepoMock
-                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)));
-            empleadoRepoMock
-                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)))
-                .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
+            var Listentity = new List<EmpleadoEntity>
+            {
+                new EmpleadoEntity
                 {
                     Id = Guid.NewGuid(),
-                    Nombre = "FakePrueba",
+                    Nombre = "Nombre",
+                    FechaNacimiento = DateTimeOffset.Now,
+                    FechaRegistro = DateTimeOffset.Now,
+                    TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                    CodigoEmpleado = "Prueba05",
                     AreaId = Guid.NewGuid()
-                }});
+                }
+            };
+            empleadoRepoMock
+                .Setup(m => m.GetAll<EmpleadoEntity>())
+                .Returns(Listentity);
 
             var service = new ServiceCollection();
 
@@ -196,51 +201,51 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         #endregion
         //TODO: Empleado, No puede haber dos personas con el mismo numero y tipo de identificación
         #region No_Se_Repite_CodigoTipoDocumento_Empleado
-        #region Test Funcional
-        //Se debe comentar el SearchMatching de nombre para que funcione 
-        //[Fact]
-        //[UnitTest]
-        //public async Task No_Se_Repite_CodigoTipoDocumento_Empleado_Fail()
-        //{
-        //    var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
+        [Fact]
+        [UnitTest]
+        public async Task No_Se_Repite_CodigoTipoDocumento_Empleado_Fail()
+        {
+            var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
 
-        //    var empleadoDto = new EmpleadoRequestDto
-        //    {
-        //        Nombre = "fake",
-        //        FechaNacimiento = DateTimeOffset.Now,
-        //        FechaRegistro = DateTimeOffset.Now,
-        //        CodigoTipoDocumento = "123456789",
-        //        TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-        //    };
+            var Listentity = new List<EmpleadoEntity>
+            {
+                new EmpleadoEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Nombre = "Nombre",
+                    CodigoTipoDocumento="123456789",
+                    TipoDocumentoId=Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                    TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                    CodigoEmpleado="04",
+                }
+            };
+            empleadoRepoMock
+                .Setup(m => m.GetAll<EmpleadoEntity>())
+                .Returns(Listentity);
 
+            var service = new ServiceCollection();
 
-        //    empleadoRepoMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)).Any());
+            service.AddTransient(_ => empleadoRepoMock.Object);
 
-        //    empleadoRepoMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoTipoDocumento == empleadoDto.CodigoTipoDocumento && x.TipoDocumentoId == empleadoDto.TipoDocumentoId)))
-        //        .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Nombre = "FakePrueba",
-        //            FechaNacimiento = DateTimeOffset.Now,
-        //            FechaRegistro = DateTimeOffset.Now,
-        //            CodigoTipoDocumento="123456789",
-        //            TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-        //        }});
+            service.ConfigurePersonasService(new DbSettings());
 
-        //    var service = new ServiceCollection();
+            var provider = service.BuildServiceProvider();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-        //    service.AddTransient(_ => empleadoRepoMock.Object);
+            var empleadoDto = new EmpleadoRequestDto
+            {
+                Nombre = "Nombre2",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                CodigoTipoDocumento = "123456789",
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                CodigoEmpleado = "03",
+                AreaId = Guid.NewGuid()
+            };
 
-        //    service.ConfigurePersonasService(new DbSettings());
-
-        //    var provider = service.BuildServiceProvider();
-        //    var empleadoService = provider.GetRequiredService<IEmpleadoService>();
-
-        //    await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
-        //}
-        #endregion
+            await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+        }
         [Fact]
         [UnitTest]
         public async Task No_Se_Repite_CodigoTipoDocumento_Empleado_Full()
@@ -357,49 +362,50 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         #endregion
         //TODO: Empleado, No puede haber dos personas con el mismo nombre / razón social
         #region No_Se_Repite_Nombre_Empleado
-        //[Fact]
-        //[UnitTest]
-        //public async Task No_Se_Repite_Nombre_Empleado_Fail()
-        //{
-        //    var empleadoDto = new EmpleadoRequestDto
-        //    {
-        //        Nombre = "fake",
-        //        //TODO: Debe poderse distinguir entre jurídicas y naturales
-        //        TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-        //        FechaNacimiento = DateTimeOffset.Now,
-        //        FechaRegistro = DateTimeOffset.Now,
-        //        TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-        //        CodigoEmpleado = "Prueba05",
-        //        AreaId = Guid.NewGuid()
-        //    };
-        //    var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
+        [Fact]
+        [UnitTest]
+        public async Task No_Se_Repite_Nombre_Empleado_Fail()
+        {
+            var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
+            var Listentity = new List<EmpleadoEntity>
+            {
+                new EmpleadoEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Nombre = "Nombre",
+                    CodigoTipoDocumento="123456789",
+                    TipoDocumentoId=Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                    TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                    CodigoEmpleado="02",
+                }
+            };
+            empleadoRepoMock
+                .Setup(m => m.GetAll<EmpleadoEntity>())
+                .Returns(Listentity);
 
-        //    empleadoRepoMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Id == empleadoDto.Id && x.AreaId == empleadoDto.AreaId)));
-        //    empleadoRepoMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoTipoDocumento == empleadoDto.CodigoTipoDocumento && x.TipoDocumentoId == empleadoDto.TipoDocumentoId)));
-        //    empleadoRepoMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)));
-        //    empleadoRepoMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)))
-        //        .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Nombre = "FakePrueba",
-        //            AreaId = Guid.NewGuid()
-        //        }});
+            var service = new ServiceCollection();
 
-        //    var service = new ServiceCollection();
+            service.AddTransient(_ => empleadoRepoMock.Object);
 
-        //    service.AddTransient(_ => empleadoRepoMock.Object);
+            service.ConfigurePersonasService(new DbSettings());
 
-        //    service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-        //    var provider = service.BuildServiceProvider();
-        //    var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+            var empleadoDto = new EmpleadoRequestDto
+            {
+                Nombre = "Nombre",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                CodigoTipoDocumento = "123456789",
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                CodigoEmpleado = "01",
+                AreaId = Guid.NewGuid()
+            };
 
-        //    await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
-        //}
+            await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+        }
         [Fact]
         [UnitTest]
         public async Task No_Se_Repite_Nombre_Empleado_Full()
@@ -868,51 +874,50 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         #endregion
         //TODO: Deben tener un código único y estar asociados a un área.
         #region Emplado_Asociado_Area_Codigo_Unico
-        //[Fact]
-        //[UnitTest]
-        //public async Task Emplado_Codigo_Unico_Fail()
-        //{
-        //    //TODO: Solucionar
-        //    var empleadoDto = new EmpleadoRequestDto
-        //    {
-        //        Nombre = "FakePrueba",
-        //        TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-        //        FechaNacimiento = DateTimeOffset.Now,
-        //        FechaRegistro = DateTimeOffset.Now,
-        //        TipoDocumentoId = Guid.Parse("12427378-28e4-48cb-8ed7-097116f8064e"),
-        //        CodigoEmpleado = "123456789",
-        //        AreaId = Guid.NewGuid()
-        //    };
-        //    var empleadoReposMock = new Mock<IEmpleadoRepositorio>();
+        [Fact]
+        [UnitTest]
+        public async Task Emplado_Codigo_Unico_Fail()
+        {
+            var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
 
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)));
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Id == empleadoDto.Id && x.AreaId == empleadoDto.AreaId)));
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoTipoDocumento == empleadoDto.CodigoTipoDocumento && x.TipoDocumentoId == empleadoDto.TipoDocumentoId)));
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)))
-        //        .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Nombre = "FakePrueba",
-        //            CodigoEmpleado = "Prueba16"
-        //        }});
-        //    empleadoReposMock
-        //        .Setup(m => m.Insert(It.IsAny<EmpleadoEntity>()))
-        //        .Returns(Task.FromResult(new EmpleadoEntity { Id = Guid.NewGuid() }));
+            var Listentity = new List<EmpleadoEntity>
+            {
+                new EmpleadoEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Nombre = "Nombre",
+                    CodigoTipoDocumento="123456789",
+                    TipoDocumentoId=Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                    TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                    CodigoEmpleado="empleado01w"
+                }
+            };
+            empleadoRepoMock
+                .Setup(m => m.GetAll<EmpleadoEntity>())
+                .Returns(Listentity);
 
-        //    var service = new ServiceCollection();
+            var service = new ServiceCollection();
 
-        //    service.AddTransient(_ => empleadoReposMock.Object);
+            service.AddTransient(_ => empleadoRepoMock.Object);
 
-        //    service.ConfigurePersonasService(new DbSettings());
-        //    var provider = service.BuildServiceProvider();
-        //    var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-        //    await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
-        //}
+            var empleadoDto = new EmpleadoRequestDto
+            {
+                Nombre = "Nombre2",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                CodigoTipoDocumento = "123456789",
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                AreaId = Guid.NewGuid(),
+                CodigoEmpleado = "empleado01w"
+            };
+
+            await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+        }
         [Fact]
         [UnitTest]
         public async void Emplado_Codigo_Unico_Full()
@@ -960,85 +965,53 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         }
         [Fact]
         [UnitTest]
-        public async Task Emplado_Asociado_Area_Fail()
+        public async Task Emplado_Asociado_Area_Unica_Fail()
         {
-            var empleadoDto = new EmpleadoRequestDto
-            {
-                Nombre = "FakePrueba",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("12427378-28e4-48cb-8ed7-097116f8064e")
-            };
-            var empleadoReposMock = new Mock<IEmpleadoRepositorio>();
+            var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
 
-            empleadoReposMock
-                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)));
-            empleadoReposMock
-                .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)))
-                .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
+            var Listentity = new List<EmpleadoEntity>
+            {
+                new EmpleadoEntity
                 {
                     Id = Guid.NewGuid(),
-                    Nombre = "FakePrueba",
-                    CodigoEmpleado = "Prueba17"
-                }});
-            empleadoReposMock
+                    Nombre = "Nombre",
+                    CodigoTipoDocumento="123456789",
+                    TipoDocumentoId=Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                    TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                    CodigoEmpleado="empleado01w",
+                    AreaId=Guid.NewGuid()
+                }
+            };
+            empleadoRepoMock
+                .Setup(m => m.GetAll<EmpleadoEntity>())
+                .Returns(Listentity);
+            empleadoRepoMock
                 .Setup(m => m.Insert(It.IsAny<EmpleadoEntity>()))
                 .Returns(Task.FromResult(new EmpleadoEntity { Id = Guid.NewGuid() }));
 
             var service = new ServiceCollection();
 
-            service.AddTransient(_ => empleadoReposMock.Object);
+            service.AddTransient(_ => empleadoRepoMock.Object);
 
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-            await Assert.ThrowsAsync<EmpleadoAreaIdNullException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+            var empleadoDto = new EmpleadoRequestDto
+            {
+                Id = Listentity.First().Id,
+                Nombre = "Nombre2",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                CodigoTipoDocumento = "13447164800",
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                AreaId = Listentity.First().AreaId,
+                CodigoEmpleado = "empleado01"
+            };
+
+            await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
         }
-        //[Fact]
-        //[UnitTest]
-        //public async Task Emplado_Asociado_Area_Unica_Fail()
-        //{
-        //    var empleadoDto = new EmpleadoRequestDto
-        //    {
-        //        Nombre = "FakePrueba",
-        //        TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-        //        FechaNacimiento = DateTimeOffset.Now,
-        //        FechaRegistro = DateTimeOffset.Now,
-        //        TipoDocumentoId = Guid.Parse("12427378-28e4-48cb-8ed7-097116f8064e"),
-        //        AreaId = Guid.NewGuid()
-        //    };
-        //    var empleadoReposMock = new Mock<IEmpleadoRepositorio>();
-
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Nombre == empleadoDto.Nombre)));
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoTipoDocumento == empleadoDto.CodigoTipoDocumento && x.TipoDocumentoId == empleadoDto.TipoDocumentoId)));
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.CodigoEmpleado == empleadoDto.CodigoEmpleado)));
-        //    empleadoReposMock
-        //        .Setup(m => m.SearchMatching(It.IsIn<Expression<Func<EmpleadoEntity, bool>>>(x => x.Id == empleadoDto.Id && x.AreaId == empleadoDto.AreaId)))
-        //        .Returns(new List<EmpleadoEntity> { new EmpleadoEntity
-        //        {
-        //            Id = Guid.NewGuid(),
-        //            Nombre = "FakePrueba",
-        //            CodigoEmpleado = "Prueba17"
-        //        }});
-        //    empleadoReposMock
-        //        .Setup(m => m.Insert(It.IsAny<EmpleadoEntity>()))
-        //        .Returns(Task.FromResult(new EmpleadoEntity { Id = Guid.NewGuid() }));
-
-        //    var service = new ServiceCollection();
-
-        //    service.AddTransient(_ => empleadoReposMock.Object);
-
-        //    service.ConfigurePersonasService(new DbSettings());
-        //    var provider = service.BuildServiceProvider();
-        //    var empleadoService = provider.GetRequiredService<IEmpleadoService>();
-
-        //    await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
-        //}
         [Fact]
         [UnitTest]
         public async void Emplado_Asociado_Area_Full()
@@ -1127,7 +1100,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            //dtoEmpleado.Id = Guid.NewGuid();
+            //await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             _ = empleadoService.Delete(dtoEmpleado);
             var areaEnd = areaRepositorio
@@ -1417,6 +1391,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                CodigoEmpleado = "faka01fake",
                 AreaId = guidArea
             };
 

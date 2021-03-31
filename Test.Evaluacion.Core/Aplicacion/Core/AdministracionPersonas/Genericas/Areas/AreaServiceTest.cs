@@ -556,24 +556,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         }
         #endregion
         #region GetAll
-        //[Fact]
-        //[UnitTest]
-        //public async Task Area_GetAll_Test_Fail()
-        //{
-        //    var areaRepoMock = new Mock<IAreaRepositorio>();
-        //    areaRepoMock
-        //        .Setup(m => m.GetAll<AreaEntity>());
-
-        //    var service = new ServiceCollection();
-
-        //    service.AddTransient(_ => areaRepoMock.Object);
-
-        //    service.ConfigureGenericasService(new DbSettings());
-        //    var provider = service.BuildServiceProvider();
-        //    var areaService = provider.GetRequiredService<IAreaService>();
-
-        //    await Assert.ThrowsAsync<AreaNoExistException>(() => areaService.GetAll()).ConfigureAwait(false);
-        //}
         [Fact]
         [UnitTest]
         public async Task Area_GetAll_Test_Full()

@@ -11,7 +11,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
 {
     public class IntegracionPersonaService : IIntegracionPersonaService
     {
-        public Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<DataTransferObject>
+        public async Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<DataTransferObject>
         {
             ValidatePath(path);
             var result = JsonConvert.SerializeObject(request);
@@ -31,9 +31,9 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
                     Console.WriteLine(s);
                 }
             }
-            return Task.FromResult(result);
+            return await Task.FromResult(result).ConfigureAwait(false);
         }
-        public Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<DataTransferObject>
+        public async Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<DataTransferObject>
         {
             var request = "";
             string pathTxt = @"D:\" + path + ".txt";
@@ -47,7 +47,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
                     request = s;
                 }
             }
-            return Task.FromResult(JsonConvert.DeserializeObject<TResponse>(request));
+            return await Task.FromResult(JsonConvert.DeserializeObject<TResponse>(request)).ConfigureAwait(false);
         }
         private static void ValidatePath(string path)
         {
