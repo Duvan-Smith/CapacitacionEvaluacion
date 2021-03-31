@@ -1,4 +1,5 @@
-﻿using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Excepciones;
+﻿using AutoMapper;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
 using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
@@ -138,7 +139,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
 
+            var id = dtoCliente.Id;
+            dtoCliente.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ClienteTipoPersonaNullException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            dtoCliente.Id = id;
 
             dtoCliente.TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico;
             var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
@@ -253,8 +257,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            var id = dtoCliente.Id;
+            dtoCliente.Id = Guid.NewGuid();
             dtoCliente.Nombre = "Cliente_fake_Throws_1";
             await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            dtoCliente.Id = id;
 
             var dtoCliente2 = new ClienteRequestDto
             {
@@ -383,7 +390,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            var id = dtoCliente.Id;
+            dtoCliente.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            dtoCliente.Id = id;
 
             _ = clienteService.Delete(dtoCliente);
         }
@@ -613,6 +623,423 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = clienteService.Delete(dtoCliente);
         }
         #endregion
+        #region Delect
+        [Fact]
+        [UnitTest]
+        public async Task Cliente_Delete_Test_Fail()
+        {
+            var clienteRepoMock = new Mock<IClienteRepositorio>();
+            clienteRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => clienteRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+
+            await Assert.ThrowsAsync<ClienteNoExistException>(() => clienteService.Delete(new ClienteRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Cliente_Delete_Test_Full()
+        {
+            var clienteRepoMock = new Mock<IClienteRepositorio>();
+            var entity = new ClienteEntity
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "Nombre"
+            };
+            clienteRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()))
+                .Returns(entity);
+            clienteRepoMock
+                .Setup(m => m.Delete(It.IsAny<ClienteEntity>()))
+                .Returns(true);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => clienteRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+
+            var result = await clienteService.Delete(new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.True(result);
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Cliente_Delete_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+
+            var dtoCliente = new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fakeProveedorDeleteTestI1",
+                Apellido = "fakeProveedorDeleteTestI1",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "000000001",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+
+            var cliente = clienteRepositorio
+                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
+                .FirstOrDefault();
+            if (cliente != null || cliente != default)
+                clienteRepositorio.Delete(cliente);
+
+            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
+
+            var dtoCliente2 = new ClienteRequestDto
+            {
+                Id = dtoCliente.Id
+            };
+            var result = await clienteService.Delete(dtoCliente2).ConfigureAwait(false);
+
+            Assert.True(result);
+        }
+        #endregion
+        #region Update
+        [Fact]
+        [UnitTest]
+        public async Task Cliente_Update_Test_Fail()
+        {
+            var clienteRepoMock = new Mock<IClienteRepositorio>();
+            clienteRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => clienteRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+
+            await Assert.ThrowsAsync<ClienteNoExistException>(() => clienteService.Update(new ClienteRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+        }
+        //[Fact]
+        //[UnitTest]
+        //public async Task Proveedor_Update_Test_Full()
+        //{
+        //    var clienteRepoMock = new Mock<IClienteRepositorio>();
+        //    var entity = new ClienteEntity
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Nombre = "Nombre"
+        //    };
+        //    clienteRepoMock
+        //        .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()))
+        //        .Returns(entity);
+        //    clienteRepoMock
+        //        .Setup(m => m.Update(It.IsAny<ClienteEntity>()))
+        //        .Returns(true);
+
+        //    var service = new ServiceCollection();
+
+        //    service.AddTransient(_ => clienteRepoMock.Object);
+
+        //    service.ConfigurePersonasService(new DbSettings());
+        //    var provider = service.BuildServiceProvider();
+        //    var clienteService = provider.GetRequiredService<IClienteService>();
+
+        //    var result = await clienteService.Update(new ClienteRequestDto
+        //    {
+        //        Id = Guid.NewGuid(),
+        //    }).ConfigureAwait(false);
+
+        //    Assert.NotNull(result.ToString());
+        //    Assert.True(result);
+        //}
+        [Fact]
+        [IntegrationTest]
+        public async void Cliente_Update_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+
+            var dtoCliente = new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "0000000011",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+
+            var cliente = clienteRepositorio
+                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
+                .FirstOrDefault();
+            if (cliente != null || cliente != default)
+                clienteRepositorio.Delete(cliente);
+
+            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
+
+            var dtoCliente2 = new ClienteRequestDto
+            {
+                Id = dtoCliente.Id,
+                Nombre = "fake2",
+                Apellido = "fake2",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake2",
+                //CodigoTipoDocumento = "223456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now.AddHours(1),
+                //FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+            var result = await clienteService.Update(dtoCliente2).ConfigureAwait(false);
+
+            Assert.True(result);
+
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
+        }
+        #endregion
+        #region Get
+        [Fact]
+        [UnitTest]
+        public async Task Cliente_Get_Test_Fail()
+        {
+            var clienteRepoMock = new Mock<IClienteRepositorio>();
+            clienteRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()));
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => clienteRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+
+            await Assert.ThrowsAsync<ClienteNoExistException>(() => clienteService.Get(new ClienteRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+        }
+        [Fact]
+        [UnitTest]
+        public async Task Cliente_Get_Test_Full()
+        {
+            var clienteRepoMock = new Mock<IClienteRepositorio>();
+            var entity = new ClienteEntity
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "Nombre"
+            };
+            clienteRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()))
+                .Returns(entity);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => clienteRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+
+            var result = await clienteService.Get(new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+            }).ConfigureAwait(false);
+
+            Assert.NotNull(result.ToString());
+            Assert.Equal(entity.Id, result.Id);
+
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Cliente_Get_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+
+            var dtoCliente = new ClienteRequestDto
+            {
+                Id = Guid.NewGuid(),
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "000000002",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+
+            var cliente = clienteRepositorio
+                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
+                .FirstOrDefault();
+            if (cliente != null || cliente != default)
+                clienteRepositorio.Delete(cliente);
+
+            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
+
+            var dtoCliente2 = new ClienteRequestDto
+            {
+                Id = dtoCliente.Id,
+            };
+            var result = await clienteService.Get(dtoCliente2).ConfigureAwait(false);
+
+            Assert.Equal(dtoCliente.Id, result.Id);
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
+        }
+        #endregion
+        #region GetAll
+        //[Fact]
+        //[UnitTest]
+        //public async Task Cliente_GetAll_Test_Fail()
+        //{
+        //    var clienteRepoMock = new Mock<IClienteRepositorio>();
+        //    clienteRepoMock
+        //        .Setup(m => m.GetAll<ClienteEntity>());
+
+        //    var service = new ServiceCollection();
+
+        //    service.AddTransient(_ => clienteRepoMock.Object);
+
+        //    service.ConfigurePersonasService(new DbSettings());
+        //    var provider = service.BuildServiceProvider();
+        //    var clienteService = provider.GetRequiredService<IClienteService>();
+
+        //    await Assert.ThrowsAsync<ClienteNoExistException>(() => clienteService.GetAll()).ConfigureAwait(false);
+        //}
+        [Fact]
+        [UnitTest]
+        public async Task Cliente_GetAll_Test_Full()
+        {
+            var clienteRepoMock = new Mock<IClienteRepositorio>();
+            var Listentity = new List<ClienteEntity>
+            {
+                new ClienteEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Nombre = "Nombre"
+                }
+            };
+            clienteRepoMock
+                .Setup(m => m.GetAll<ClienteEntity>())
+                .Returns(Listentity);
+
+            var service = new ServiceCollection();
+
+            service.AddTransient(_ => clienteRepoMock.Object);
+
+            service.ConfigurePersonasService(new DbSettings());
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var mapper = provider.GetRequiredService<IMapper>();
+
+            var result = mapper.Map<IEnumerable<ClienteEntity>>(await clienteService.GetAll().ConfigureAwait(false));
+
+            Assert.NotNull(result.ToString());
+            Assert.Equal(Listentity[0].Id, result.First().Id);
+
+        }
+        [Fact]
+        [IntegrationTest]
+        public async void Cliente_GetAll_Test_IntegrationTest()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+            });
+            var provider = service.BuildServiceProvider();
+
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+            var mapper = provider.GetRequiredService<IMapper>();
+
+            var dtoCliente = new ClienteRequestDto
+            {
+                Id = Guid.Parse("45c2a9b5-1eac-48d3-83a4-ff692326e4f7"),
+                Nombre = "FakeListTipoDocumento1",
+                Apellido = "FakeListTipoDocumento1",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "000000008",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+            };
+
+            var cliente = clienteRepositorio
+                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
+                .FirstOrDefault();
+            if (cliente != null || cliente != default)
+                clienteRepositorio.Delete(cliente);
+
+            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
+
+            var result = mapper.Map<IEnumerable<ClienteEntity>>(await clienteService.GetAll().ConfigureAwait(false));
+
+            Assert.NotNull(result.ToString());
+            Assert.True(result.Any());
+
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
+        }
+        #endregion
         //TODO: Cliente, Test de integracion para el cliente
         [Fact]
         [IntegrationTest]
@@ -646,10 +1073,13 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            var id = dtoCliente.Id;
+            dtoCliente.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.Nombre = "Fake2";
             await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            dtoCliente.Id = id;
 
             dtoCliente.CodigoTipoDocumento = "000000002";
             dtoCliente.FechaNacimiento = default;

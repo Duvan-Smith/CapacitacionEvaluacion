@@ -25,21 +25,21 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         public Task<bool> Delete(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _mapper.Map<ClienteEntity>(requestDto);
+            var entity = ValidationEntity(requestDto);
             return Task.FromResult(_clienteRepositorio.Delete(entity));
         }
         public Task<ClienteDto> Get(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var user = _clienteRepositorio
-                .SearchMatching<ClienteEntity>(x => x.Id == requestDto.Id);
-            return Task.FromResult(_mapper.Map<ClienteDto>(user.FirstOrDefault()));
+            var entity = ValidationEntity(requestDto);
+            return Task.FromResult(_mapper.Map<ClienteDto>(entity));
         }
         public Task<IEnumerable<ClienteDto>> GetAll()
         {
-            var area = _clienteRepositorio
+            var listentity = _clienteRepositorio
                 .GetAll<ClienteEntity>();
-            return Task.FromResult(_mapper.Map<IEnumerable<ClienteDto>>(area));
+
+            return Task.FromResult(_mapper.Map<IEnumerable<ClienteDto>>(listentity));
         }
         public async Task<Guid> Insert(ClienteRequestDto requestDto)
         {
@@ -58,15 +58,34 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         public Task<bool> Update(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _clienteRepositorio.SearchMatchingOneResult<ClienteEntity>(x => x.Id == requestDto.Id);
-            entity.Nombre = requestDto.Nombre;
-            entity.Apellido = requestDto.Apellido;
-            entity.FechaNacimiento = requestDto.FechaNacimiento;
-            entity.FechaRegistro = requestDto.FechaRegistro;
-            entity.NumeroTelefono = requestDto.NumeroTelefono;
-            entity.CorreoElectronico = requestDto.CorreoElectronico;
-            entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
-            //TODO: Agregar demas datos a actualizar
+            var entity = ValidationEntity(requestDto);
+
+            if (!string.IsNullOrEmpty(requestDto.Nombre))
+                entity.Nombre = requestDto.Nombre;
+
+            if (!string.IsNullOrEmpty(requestDto.Apellido))
+                entity.Apellido = requestDto.Apellido;
+
+            if (requestDto.FechaNacimiento != default)
+                entity.FechaNacimiento = requestDto.FechaNacimiento;
+
+            if (requestDto.FechaRegistro != default)
+                entity.FechaRegistro = requestDto.FechaRegistro;
+
+            if (requestDto.NumeroTelefono != default)
+                entity.NumeroTelefono = requestDto.NumeroTelefono;
+
+            if (!string.IsNullOrEmpty(requestDto.CorreoElectronico))
+                entity.CorreoElectronico = requestDto.CorreoElectronico;
+
+            if (requestDto.TipoDocumentoId != default)
+                entity.TipoDocumentoId = requestDto.TipoDocumentoId;
+
+            if (!string.IsNullOrEmpty(requestDto.CodigoTipoDocumento))
+                entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
+
+            ValidationParameterInsert(_mapper.Map<ClienteRequestDto>(entity));
+
             return Task.FromResult(_clienteRepositorio.Update(entity));
         }
         public async Task<string> ExportAll()
@@ -96,13 +115,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
                 throw new ClienteTipoPersonaNullException(requestDto.TipoPersona);
 
             var usernameExist = _clienteRepositorio
-                            .SearchMatching<ClienteEntity>(x => x.Nombre == requestDto.Nombre)
+                            .SearchMatching<ClienteEntity>(x => x.Nombre == requestDto.Nombre && x.Id != requestDto.Id)
                             .Any();
             if (usernameExist)
                 throw new ClientenameAlreadyExistException(requestDto.Nombre);
 
             var codeExist = _clienteRepositorio
-                .SearchMatching<ClienteEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);
+                .SearchMatching<ClienteEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId && x.Id != requestDto.Id);
             if (codeExist.Any())
                 throw new ClienteCodigoTipoDocumentoException(requestDto.CodigoTipoDocumento);
 
@@ -111,5 +130,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             if (requestDto.FechaRegistro == default)
                 throw new ClienteFechaRegistroException(requestDto.FechaRegistro);
         }
+        private ClienteEntity ValidationEntity(ClienteRequestDto requestDto)
+        {
+            var entity = _clienteRepositorio.SearchMatchingOneResult<ClienteEntity>(x => x.Id == requestDto.Id);
+            if (entity == null || entity == default)
+                throw new ClienteNoExistException(requestDto.Nombre);
+            return entity;
+        }
+
     }
 }
