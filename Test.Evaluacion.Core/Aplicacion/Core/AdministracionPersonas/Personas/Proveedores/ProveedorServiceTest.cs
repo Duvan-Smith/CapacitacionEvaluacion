@@ -120,9 +120,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
             });
 
-            var providerP = service.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
 
-            var proveedorService = providerP.GetRequiredService<IProveedorService>();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
 
             var dtoProveedor = new ProveedorRequestDto
             {
@@ -137,6 +138,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
 
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
             await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             dtoProveedor.TipoPersona = 0;
@@ -149,7 +156,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
 
             _ = await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
-            _ = proveedorService.Delete(dtoProveedor);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
         #endregion
         //TODO: Proveedor, No puede haber dos personas con el mismo numero y tipo de identificación
@@ -231,9 +238,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
             });
 
-            var providerP = service.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
 
-            var proveedorService = providerP.GetRequiredService<IProveedorService>();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
 
             var dtoProveedor = new ProveedorRequestDto
             {
@@ -248,18 +256,28 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
+
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
             var response = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            var id = dtoProveedor.Id;
             dtoProveedor.Nombre = "fake_proveedor_Throws";
+            dtoProveedor.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ProveedorCodigoTipoDocumentoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            dtoProveedor.Id = id;
 
             var dtoProveedorI2 = new ProveedorRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "fake2",
-                Apellido = "fake2",
+                Nombre = "fake_proveerdor_2",
+                Apellido = "fake_proveerdor_2",
                 NumeroTelefono = 223456789,
                 CorreoElectronico = "fake2@fake2.fake2",
                 CodigoTipoDocumento = "123456789",
@@ -269,12 +287,18 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 TipoDocumentoId = Guid.Parse("12427378-28E4-48CB-8ED7-097116F8064E"),
             };
 
+            var proveedor2 = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedorI2.Nombre || x.Id == dtoProveedorI2.Id)
+                .FirstOrDefault();
+            if (proveedor2 != null || proveedor2 != default)
+                proveedorRepositorio.Delete(proveedor2);
+
             var responseI2 = await proveedorService.Insert(dtoProveedorI2).ConfigureAwait(false);
             Assert.NotNull(responseI2.ToString());
             Assert.NotEqual(default, responseI2);
 
-            _ = proveedorService.Delete(dtoProveedor);
-            _ = proveedorService.Delete(dtoProveedorI2);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
+            _ = await proveedorService.Delete(dtoProveedorI2).ConfigureAwait(false);
         }
         #endregion
         //TODO: Proveedor, No puede haber dos personas con el mismo nombre / razón social
@@ -357,9 +381,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
             });
 
-            var providerP = service.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
 
-            var proveedorService = providerP.GetRequiredService<IProveedorService>();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
 
             var dtoProveedor = new ProveedorRequestDto
             {
@@ -374,13 +399,20 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
+
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
             var response = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
             await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
-            _ = proveedorService.Delete(dtoProveedor);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
         #endregion
         //TODO: Proveedor, La fecha de nacimiento / creación es obligatoria
@@ -497,7 +529,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            _ = proveedorService.Delete(dtoProveedor);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
         #endregion
         //TODO: Proveedor, Test de integracion para el Proveedor
@@ -575,8 +607,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var dtoProveedor = new ProveedorRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "fake",
+                Nombre = "fakeProveedorDeleteTestI1",
+                Apellido = "fakeProveedorDeleteTestI1",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
                 CodigoTipoDocumento = "123456789",
@@ -587,7 +619,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             };
 
             var proveedor = proveedorRepositorio
-                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre)
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
@@ -596,16 +628,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
 
             var dtoProveedor2 = new ProveedorRequestDto
             {
-                Id = dtoProveedor.Id,
-                Nombre = "fake2",
-                Apellido = "fake2",
-                NumeroTelefono = 123456789,
-                CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                Id = dtoProveedor.Id
             };
             var result = await proveedorService.Delete(dtoProveedor2).ConfigureAwait(false);
 
@@ -631,39 +654,39 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
 
             await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Update(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
         }
-        [Fact]
-        [UnitTest]
-        public async Task Proveedor_Update_Test_Full()
-        {
-            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
-            var entity = new ProveedorEntity
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "Nombre"
-            };
-            proveedorRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
-                .Returns(entity);
-            proveedorRepoMock
-                .Setup(m => m.Update(It.IsAny<ProveedorEntity>()))
-                .Returns(true);
+        //[Fact]
+        //[UnitTest]
+        //public async Task Proveedor_Update_Test_Full()
+        //{
+        //    var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+        //    var entity = new ProveedorEntity
+        //    {
+        //        Id = Guid.NewGuid(),
+        //        Nombre = "Nombre"
+        //    };
+        //    proveedorRepoMock
+        //        .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
+        //        .Returns(entity);
+        //    proveedorRepoMock
+        //        .Setup(m => m.Update(It.IsAny<ProveedorEntity>()))
+        //        .Returns(true);
 
-            var service = new ServiceCollection();
+        //    var service = new ServiceCollection();
 
-            service.AddTransient(_ => proveedorRepoMock.Object);
+        //    service.AddTransient(_ => proveedorRepoMock.Object);
 
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var proveedorService = provider.GetRequiredService<IProveedorService>();
+        //    service.ConfigurePersonasService(new DbSettings());
+        //    var provider = service.BuildServiceProvider();
+        //    var proveedorService = provider.GetRequiredService<IProveedorService>();
 
-            var result = await proveedorService.Update(new ProveedorRequestDto
-            {
-                Id = Guid.NewGuid(),
-            }).ConfigureAwait(false);
+        //    var result = await proveedorService.Update(new ProveedorRequestDto
+        //    {
+        //        Id = Guid.NewGuid(),
+        //    }).ConfigureAwait(false);
 
-            Assert.NotNull(result.ToString());
-            Assert.True(result);
-        }
+        //    Assert.NotNull(result.ToString());
+        //    Assert.True(result);
+        //}
         [Fact]
         [IntegrationTest]
         public async void Proveedor_Update_Test_IntegrationTest()
@@ -686,11 +709,19 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var dtoProveedor = new ProveedorRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "FakeListTipoDocumento1",
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
 
             var proveedor = proveedorRepositorio
-                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre)
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
@@ -700,12 +731,21 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var dtoProveedor2 = new ProveedorRequestDto
             {
                 Id = dtoProveedor.Id,
+                Nombre = "fake2",
+                Apellido = "fake2",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake2",
+                //CodigoTipoDocumento = "223456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now.AddHours(1),
+                //FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
             var result = await proveedorService.Update(dtoProveedor2).ConfigureAwait(false);
 
             Assert.True(result);
 
-            await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
         #endregion
         #region Get
@@ -780,11 +820,19 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var dtoProveedor = new ProveedorRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "FakeListTipoDocumento1",
+                Nombre = "fake",
+                Apellido = "fake",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
 
             var proveedor = proveedorRepositorio
-                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre)
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
@@ -798,6 +846,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var result = await proveedorService.Get(dtoProveedor2).ConfigureAwait(false);
 
             Assert.Equal(dtoProveedor.Id, result.Id);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
         #endregion
         #region GetAll
@@ -875,10 +924,18 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             {
                 Id = Guid.Parse("45c2a9b5-1eac-48d3-83a4-ff692326e4f7"),
                 Nombre = "FakeListTipoDocumento1",
+                Apellido = "FakeListTipoDocumento1",
+                NumeroTelefono = 123456789,
+                CorreoElectronico = "fake@fake.fake",
+                CodigoTipoDocumento = "123456789",
+                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
+                FechaNacimiento = DateTimeOffset.Now,
+                FechaRegistro = DateTimeOffset.Now,
+                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
 
             var proveedor = proveedorRepositorio
-                .SearchMatching<ProveedorEntity>(x => x.Id == dtoProveedor.Id)
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
@@ -890,7 +947,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             Assert.NotNull(result.ToString());
             Assert.True(result.Any());
 
-            await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
         #endregion
         [Fact]
@@ -904,15 +961,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
             });
 
-            var providerP = service.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
 
-            var proveedorService = providerP.GetRequiredService<IProveedorService>();
+            var proveedorService = provider.GetRequiredService<IProveedorService>();
+            var proveedorRepositorio = provider.GetRequiredService<IProveedorRepositorio>();
 
             var dtoProveedor = new ProveedorRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "fake",
+                Nombre = "Validacion_Parametros_Proveedor",
+                Apellido = "Validacion_Parametros_Proveedor",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
                 CodigoTipoDocumento = "123456789",
@@ -921,14 +979,25 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
             };
+
+            var proveedor = proveedorRepositorio
+                .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
+                .FirstOrDefault();
+            if (proveedor != null || proveedor != default)
+                proveedorRepositorio.Delete(proveedor);
+
             var response = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            //dtoProveedor.CodigoTipoDocumento = "345678913";
             await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
-            dtoProveedor.Nombre = "Fake2";
+            var id = dtoProveedor.Id;
+            dtoProveedor.Nombre = "Fake2_Throws";
+            dtoProveedor.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ProveedorCodigoTipoDocumentoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            dtoProveedor.Id = id;
 
             dtoProveedor.CodigoTipoDocumento = "345678912";
             dtoProveedor.FechaNacimiento = default;
@@ -938,7 +1007,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             dtoProveedor.FechaRegistro = default;
             await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
-            _ = proveedorService.Delete(dtoProveedor);
+            _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
     }
 }

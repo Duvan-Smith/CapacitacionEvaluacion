@@ -77,7 +77,8 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             if (!string.IsNullOrEmpty(requestDto.CodigoTipoDocumento))
                 entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
 
-            //TODO: Agregar demas datos a actualizar
+            ValidationParameterInsert(_mapper.Map<ProveedorRequestDto>(entity));
+
             return Task.FromResult(_proveedorRepositorio.Update(entity));
         }
         private static void ValidationDto(ProveedorRequestDto requestDto)
@@ -96,9 +97,9 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
                 throw new ProveedornameAlreadyExistException(requestDto.Nombre);
 
             var idExist = _proveedorRepositorio
-                .SearchMatching<ProveedorEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId);
+                .SearchMatching<ProveedorEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId && x.Id != requestDto.Id);
             if (idExist.Any())
-                throw new ProveedorCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento.ToString());
+                throw new ProveedorCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento);
 
             if (requestDto.FechaNacimiento == default)
                 throw new ProveedorFechaNacimientoException(requestDto.FechaNacimiento);
