@@ -13,12 +13,14 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         public Task<ClienteResponseDto> ClienteManagementDelete(ClienteRequestDto requestDto);
         public Task<ClienteResponseDto> ClienteManagementUpdate(ClienteRequestDto requestDto);
         public Task<IEnumerable<ClienteDto>> ClienteManagementGetAll();
+        public Task<string> ClienteManagementExportAll();
 
         public Task<EmpleadoDto> EmpleadoManagementGet(EmpleadoRequestDto requestDto);
         public Task<EmpleadoResponseDto> EmpleadoManagementInsert(EmpleadoRequestDto requestDto);
         public Task<EmpleadoResponseDto> EmpleadoManagementDelete(EmpleadoRequestDto requestDto);
         public Task<EmpleadoResponseDto> EmpleadoManagementUpdate(EmpleadoRequestDto requestDto);
         public Task<IEnumerable<EmpleadoDto>> EmpleadoManagementGetAll();
+        public Task<string> EmpleadoManagementExportAll();
 
         public Task<ProveedorDto> ProveedorManagementGet(ProveedorRequestDto requestDto);
         public Task<ProveedorResponseDto> ProveedorManagementInsert(ProveedorRequestDto requestDto);

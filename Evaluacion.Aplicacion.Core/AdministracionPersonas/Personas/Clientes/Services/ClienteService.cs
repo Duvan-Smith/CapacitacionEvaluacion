@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Excepciones;
+using Evaluacion.Aplicacion.Core.IntegracionPersonas;
 using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
 using Evaluacion.Dominio.Core.Especificas.Clientes;
 using System;
@@ -13,11 +14,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
     {
         private readonly IClienteRepositorio _clienteRepositorio;
         private readonly IMapper _mapper;
+        private readonly IIntegracionPersonaService _integracionPersonaService;
 
-        public ClienteService(IClienteRepositorio clienteRepositorio, IMapper mapper)
+        public ClienteService(IClienteRepositorio clienteRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService)
         {
             _mapper = mapper;
             _clienteRepositorio = clienteRepositorio;
+            _integracionPersonaService = integracionPersonaService;
         }
         public Task<bool> Delete(ClienteRequestDto requestDto)
         {
@@ -69,6 +72,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
             //TODO: Agregar demas datos a actualizar
             return Task.FromResult(_clienteRepositorio.Update(entity));
+        }
+        public async Task<string> ExportAll()
+        {
+            var listentity = _clienteRepositorio
+                .GetAll<ClienteEntity>();
+
+            return await _integracionPersonaService.ExportJson("ExportAllCliente", _mapper.Map<IEnumerable<ClienteDto>>(listentity)).ConfigureAwait(false);
         }
         private static void ValidationDto(ClienteRequestDto requestDto)
         {

@@ -12,5 +12,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         public Task<EmpleadoDto> Get(EmpleadoRequestDto requestDto);
         public Task<IEnumerable<EmpleadoDto>> GetAll();
         public Task<bool> Update(EmpleadoRequestDto requestDto);
+        public Task<string> ExportAll();
     }
 }

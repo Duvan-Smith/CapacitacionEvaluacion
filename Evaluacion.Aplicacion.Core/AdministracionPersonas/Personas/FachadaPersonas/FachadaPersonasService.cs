@@ -33,17 +33,14 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusDescription = result ? "Delete" : "No delete"
             };
         }
-
         public Task<ClienteDto> ClienteManagementGet(ClienteRequestDto requestDto)
         {
             return _clienteService.Get(requestDto);
         }
-
         public Task<IEnumerable<ClienteDto>> ClienteManagementGetAll()
         {
             return _clienteService.GetAll();
         }
-
         public async Task<ClienteResponseDto> ClienteManagementInsert(ClienteRequestDto requestDto)
         {
             var result = await _clienteService.Insert(requestDto).ConfigureAwait(false) != default;
@@ -54,7 +51,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusDescription = result ? "Insert" : "No insert"
             };
         }
-
         public async Task<ClienteResponseDto> ClienteManagementUpdate(ClienteRequestDto requestDto)
         {
             var result = await _clienteService.Update(requestDto).ConfigureAwait(false) != default;
@@ -64,6 +60,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
                 StatusDescription = result ? "Update" : "No Update"
             };
+        }
+        public async Task<string> ClienteManagementExportAll()
+        {
+            return await _clienteService.ExportAll().ConfigureAwait(false);
         }
         #endregion
         #region EmpleadoServices
@@ -77,17 +77,14 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusDescription = result ? "Delete" : "No delete"
             };
         }
-
         public Task<EmpleadoDto> EmpleadoManagementGet(EmpleadoRequestDto requestDto)
         {
             return _empleadoService.Get(requestDto);
         }
-
         public Task<IEnumerable<EmpleadoDto>> EmpleadoManagementGetAll()
         {
             return _empleadoService.GetAll();
         }
-
         public async Task<EmpleadoResponseDto> EmpleadoManagementInsert(EmpleadoRequestDto requestDto)
         {
             var result = await _empleadoService.Insert(requestDto).ConfigureAwait(false) != default;
@@ -98,7 +95,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusDescription = result ? "Insert" : "No insert"
             };
         }
-
         public async Task<EmpleadoResponseDto> EmpleadoManagementUpdate(EmpleadoRequestDto requestDto)
         {
             var result = await _empleadoService.Update(requestDto).ConfigureAwait(false) != default;
@@ -108,6 +104,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
                 StatusDescription = result ? "Update" : "No Update"
             };
+        }
+        public async Task<string> EmpleadoManagementExportAll()
+        {
+            return await _empleadoService.ExportAll().ConfigureAwait(false);
         }
         #endregion
         #region ProveedorServices

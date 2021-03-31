@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Excepciones;
+using Evaluacion.Aplicacion.Core.IntegracionPersonas;
 using Evaluacion.Aplicacion.Dto.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
 using System;
@@ -18,11 +19,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
     {
         private readonly IEmpleadoRepositorio _empleadoRepositorio;
         private readonly IMapper _mapper;
+        private readonly IIntegracionPersonaService _integracionPersonaService;
 
-        public EmpleadoService(IEmpleadoRepositorio empleadoRepositorio, IMapper mapper)
+        public EmpleadoService(IEmpleadoRepositorio empleadoRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService)
         {
             _mapper = mapper;
             _empleadoRepositorio = empleadoRepositorio;
+            _integracionPersonaService = integracionPersonaService;
         }
         public Task<bool> Delete(EmpleadoRequestDto requestDto)
         {
@@ -71,6 +74,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
             //TODO: Agregar demas datos a actualizar
             return Task.FromResult(_empleadoRepositorio.Update(entity));
+        }
+        public async Task<string> ExportAll()
+        {
+            var listentity = _empleadoRepositorio
+                .GetAll<EmpleadoEntity>();
+
+            return await _integracionPersonaService.ExportJson("ExportAllEmpleado", _mapper.Map<IEnumerable<EmpleadoDto>>(listentity)).ConfigureAwait(false);
         }
         private static void ValidationDto(EmpleadoRequestDto requestDto)
         {
