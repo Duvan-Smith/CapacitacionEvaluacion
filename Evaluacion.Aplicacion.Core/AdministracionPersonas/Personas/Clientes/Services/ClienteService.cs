@@ -44,11 +44,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         public async Task<Guid> Insert(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            #region Empleado_Cliente
-            if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
-                throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
-            #endregion
-            ValidationParameterInsert(requestDto);
+            ValidationCliente(requestDto);
+
+            var listentity = _clienteRepositorio
+                .GetAll<ClienteEntity>();
+
+            ValidationParameterDB(requestDto, listentity);
 
             var response = await _clienteRepositorio.Insert(_mapper.Map<ClienteEntity>(requestDto)).ConfigureAwait(false);
 
@@ -84,7 +85,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             if (!string.IsNullOrEmpty(requestDto.CodigoTipoDocumento))
                 entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
 
-            ValidationParameterInsert(_mapper.Map<ClienteRequestDto>(entity));
+            var listentity = _clienteRepositorio
+                .GetAll<ClienteEntity>();
+
+            ValidationParameterDB(_mapper.Map<ClienteRequestDto>(entity), listentity);
 
             return Task.FromResult(_clienteRepositorio.Update(entity));
         }
@@ -109,19 +113,18 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             if (requestDto == null)
                 throw new ClienteRequestDtoNullException();
         }
-        private void ValidationParameterInsert(ClienteRequestDto requestDto)
+        private void ValidationParameterDB(ClienteRequestDto requestDto, IEnumerable<ClienteEntity> listEntity)
         {
             if (requestDto.TipoPersona == default)
                 throw new ClienteTipoPersonaNullException(requestDto.TipoPersona);
 
-            var usernameExist = _clienteRepositorio
-                            .SearchMatching<ClienteEntity>(x => x.Nombre == requestDto.Nombre && x.Id != requestDto.Id)
-                            .Any();
+            var usernameExist = listEntity.Where(x => x.Nombre == requestDto.Nombre && x.Id != requestDto.Id).Any();
             if (usernameExist)
                 throw new ClientenameAlreadyExistException(requestDto.Nombre);
 
-            var codeExist = _clienteRepositorio
-                .SearchMatching<ClienteEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId && x.Id != requestDto.Id);
+            var codeExist = listEntity.Where(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento &&
+                                                x.TipoDocumentoId == requestDto.TipoDocumentoId &&
+                                                x.Id != requestDto.Id);
             if (codeExist.Any())
                 throw new ClienteCodigoTipoDocumentoException(requestDto.CodigoTipoDocumento);
 
@@ -136,6 +139,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             if (entity == null || entity == default)
                 throw new ClienteNoExistException(requestDto.Nombre);
             return entity;
+        }
+        private static void ValidationCliente(ClienteRequestDto requestDto)
+        {
+            #region Empleado_Cliente
+            if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
+                throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
+            #endregion
         }
 
     }

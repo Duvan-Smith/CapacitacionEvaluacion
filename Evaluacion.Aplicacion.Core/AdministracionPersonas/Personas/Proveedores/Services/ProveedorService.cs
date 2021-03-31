@@ -44,7 +44,11 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         public async Task<Guid> Insert(ProveedorRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            ValidationParameterInsert(requestDto);
+
+            var listentity = _proveedorRepositorio
+                .GetAll<ProveedorEntity>();
+
+            ValidationParameterDB(requestDto, listentity);
 
             var response = await _proveedorRepositorio.Insert(_mapper.Map<ProveedorEntity>(requestDto)).ConfigureAwait(false);
 
@@ -79,7 +83,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             if (!string.IsNullOrEmpty(requestDto.CodigoTipoDocumento))
                 entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
 
-            ValidationParameterInsert(_mapper.Map<ProveedorRequestDto>(entity));
+            var listentity = _proveedorRepositorio
+                .GetAll<ProveedorEntity>();
+
+            ValidationParameterDB(_mapper.Map<ProveedorRequestDto>(entity), listentity);
 
             return Task.FromResult(_proveedorRepositorio.Update(entity));
         }
@@ -104,20 +111,20 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             if (requestDto == null)
                 throw new ProveedorRequestDtoNullException();
         }
-        private void ValidationParameterInsert(ProveedorRequestDto requestDto)
+        private void ValidationParameterDB(ProveedorRequestDto requestDto, IEnumerable<ProveedorEntity> listEntity)
         {
             if (requestDto.TipoPersona == default)
                 throw new ProveedorTipoPersonaNullException(requestDto.TipoPersona);
-            var usernameExist = _proveedorRepositorio
-                            .SearchMatching<ProveedorEntity>(x => x.Nombre == requestDto.Nombre && x.Id != requestDto.Id)
-                            .Any();
+
+            var usernameExist = listEntity.Where(x => x.Nombre == requestDto.Nombre && x.Id != requestDto.Id).Any();
             if (usernameExist)
                 throw new ProveedornameAlreadyExistException(requestDto.Nombre);
 
-            var idExist = _proveedorRepositorio
-                .SearchMatching<ProveedorEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId && x.Id != requestDto.Id);
-            if (idExist.Any())
-                throw new ProveedorCodigoTipoDocumentoException(idExist.First().CodigoTipoDocumento);
+            var codeExist = listEntity.Where(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento &&
+                                                x.TipoDocumentoId == requestDto.TipoDocumentoId &&
+                                                x.Id != requestDto.Id);
+            if (codeExist.Any())
+                throw new ProveedorCodigoTipoDocumentoException(codeExist.First().CodigoTipoDocumento);
 
             if (requestDto.FechaNacimiento == default)
                 throw new ProveedorFechaNacimientoException(requestDto.FechaNacimiento);
