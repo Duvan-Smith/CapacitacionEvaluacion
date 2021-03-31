@@ -30,21 +30,21 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         public Task<bool> Delete(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _mapper.Map<EmpleadoEntity>(requestDto);
+            var entity = ValidationEntity(requestDto);
             return Task.FromResult(_empleadoRepositorio.Delete(entity));
         }
         public Task<EmpleadoDto> Get(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var user = _empleadoRepositorio
-                .SearchMatching<EmpleadoEntity>(x => x.Id == requestDto.Id);
-            return Task.FromResult(_mapper.Map<EmpleadoDto>(user.FirstOrDefault()));
+            var entity = ValidationEntity(requestDto);
+            return Task.FromResult(_mapper.Map<EmpleadoDto>(entity));
         }
         public Task<IEnumerable<EmpleadoDto>> GetAll()
         {
-            var area = _empleadoRepositorio
+            var listentity = _empleadoRepositorio
                 .GetAll<EmpleadoEntity>();
-            return Task.FromResult(_mapper.Map<IEnumerable<EmpleadoDto>>(area));
+
+            return Task.FromResult(_mapper.Map<IEnumerable<EmpleadoDto>>(listentity));
         }
         public async Task<Guid> Insert(EmpleadoRequestDto requestDto)
         {
@@ -63,15 +63,43 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         public Task<bool> Update(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            var entity = _empleadoRepositorio.SearchMatchingOneResult<EmpleadoEntity>(x => x.Id == requestDto.Id);
-            entity.Nombre = requestDto.Nombre;
-            entity.Apellido = requestDto.Apellido;
-            entity.FechaNacimiento = requestDto.FechaNacimiento;
-            entity.FechaRegistro = requestDto.FechaRegistro;
-            entity.NumeroTelefono = requestDto.NumeroTelefono;
-            entity.CorreoElectronico = requestDto.CorreoElectronico;
-            entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
-            //TODO: Agregar demas datos a actualizar
+            var entity = ValidationEntity(requestDto);
+
+            if (!string.IsNullOrEmpty(requestDto.Nombre))
+                entity.Nombre = requestDto.Nombre;
+
+            if (!string.IsNullOrEmpty(requestDto.Apellido))
+                entity.Apellido = requestDto.Apellido;
+
+            if (requestDto.FechaNacimiento != default)
+                entity.FechaNacimiento = requestDto.FechaNacimiento;
+
+            if (requestDto.FechaRegistro != default)
+                entity.FechaRegistro = requestDto.FechaRegistro;
+
+            if (requestDto.NumeroTelefono != default)
+                entity.NumeroTelefono = requestDto.NumeroTelefono;
+
+            if (!string.IsNullOrEmpty(requestDto.CorreoElectronico))
+                entity.CorreoElectronico = requestDto.CorreoElectronico;
+
+            if (requestDto.TipoDocumentoId != default)
+                entity.TipoDocumentoId = requestDto.TipoDocumentoId;
+
+            if (!string.IsNullOrEmpty(requestDto.CodigoTipoDocumento))
+                entity.CodigoTipoDocumento = requestDto.CodigoTipoDocumento;
+
+            if (requestDto.Salario != default)
+                entity.Salario = requestDto.Salario;
+
+            if (!string.IsNullOrEmpty(requestDto.CodigoEmpleado))
+                entity.CodigoEmpleado = requestDto.CodigoEmpleado;
+
+            if (requestDto.AreaId != default)
+                entity.AreaId = requestDto.AreaId;
+
+            ValidationParameterInsert(_mapper.Map<EmpleadoRequestDto>(entity));
+
             return Task.FromResult(_empleadoRepositorio.Update(entity));
         }
         public async Task<string> ExportAll()
@@ -118,13 +146,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
                 throw new EmpleadoTipoPersonaNullException(requestDto.TipoPersona);
 
             var usernameExist = _empleadoRepositorio
-                            .SearchMatching<EmpleadoEntity>(x => x.Nombre == requestDto.Nombre)
+                            .SearchMatching<EmpleadoEntity>(x => x.Nombre == requestDto.Nombre && x.Id != requestDto.Id)
                             .Any();
             if (usernameExist)
                 throw new EmpleadonameAlreadyExistException(requestDto.Nombre);
 
             var codeExist = _empleadoRepositorio
-                .SearchMatching<EmpleadoEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId)
+                .SearchMatching<EmpleadoEntity>(x => x.CodigoTipoDocumento == requestDto.CodigoTipoDocumento && x.TipoDocumentoId == requestDto.TipoDocumentoId && x.Id != requestDto.Id)
                 .Any();
             if (codeExist)
                 throw new EmpleadoCodigoTipoDocumentoException(requestDto.CodigoTipoDocumento);
@@ -133,6 +161,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
                 throw new EmpleadoFechaNacimientoException(requestDto.FechaNacimiento);
             if (requestDto.FechaRegistro == default)
                 throw new EmpleadoFechaRegistroException(requestDto.FechaRegistro);
+        }
+        private EmpleadoEntity ValidationEntity(EmpleadoRequestDto requestDto)
+        {
+            var entity = _empleadoRepositorio.SearchMatchingOneResult<EmpleadoEntity>(x => x.Id == requestDto.Id);
+            if (entity == null || entity == default)
+                throw new EmpleadoNoExistException(requestDto.Nombre);
+            return entity;
         }
     }
 }
