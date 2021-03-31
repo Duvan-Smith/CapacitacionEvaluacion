@@ -132,7 +132,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 Apellido = "fake",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
+                CodigoTipoDocumento = "000000006",
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
@@ -237,7 +237,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 Apellido = "fake_Cliente_1",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
+                CodigoTipoDocumento = "000000005",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -263,7 +263,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 Apellido = "Fake_Cliente_2",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
+                CodigoTipoDocumento = "000000005",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -373,7 +373,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 Apellido = "fake",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
+                CodigoTipoDocumento = "000000004",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -595,7 +595,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 Apellido = "fake",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
+                CodigoTipoDocumento = "000000003",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -636,7 +636,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 Apellido = "fake",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
+                CodigoTipoDocumento = "000000001",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -651,7 +651,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             dtoCliente.Nombre = "Fake2";
             await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
-            dtoCliente.CodigoTipoDocumento = "345678912";
+            dtoCliente.CodigoTipoDocumento = "000000002";
             dtoCliente.FechaNacimiento = default;
             await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
