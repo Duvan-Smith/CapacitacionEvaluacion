@@ -76,9 +76,14 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
 
             return await _integracionPersonaService.ExportJson("ExportAllCliente", _mapper.Map<IEnumerable<ClienteDto>>(listentity)).ConfigureAwait(false);
         }
-        public async Task<IEnumerable<ClienteDto>> ImportAll()
+        public async Task<IEnumerable<ClienteRequestDto>> ImportAll()
         {
-            return await _integracionPersonaService.ImportJson<IEnumerable<ClienteDto>>("ExportAllCliente").ConfigureAwait(false);
+            var clienteDto = await _integracionPersonaService.ImportJson<IEnumerable<ClienteRequestDto>>("ExportAllEmpleado").ConfigureAwait(false);
+            foreach (ClienteRequestDto element in clienteDto)
+            {
+                await Update(element).ConfigureAwait(false);
+            }
+            return clienteDto;
         }
         private static void ValidationDto(ClienteRequestDto requestDto)
         {
