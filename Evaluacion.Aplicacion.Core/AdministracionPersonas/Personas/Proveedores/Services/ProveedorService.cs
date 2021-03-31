@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores.Excepciones;
+using Evaluacion.Aplicacion.Core.IntegracionPersonas;
 using Evaluacion.Aplicacion.Dto.Especificas.Proveedores;
 using Evaluacion.Dominio.Core.Especificas.Proveedores;
 using System;
@@ -13,11 +14,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
     {
         private readonly IProveedorRepositorio _proveedorRepositorio;
         private readonly IMapper _mapper;
+        private readonly IIntegracionPersonaService _integracionPersonaService;
 
-        public ProveedorService(IProveedorRepositorio proveedorRepositorio, IMapper mapper)
+        public ProveedorService(IProveedorRepositorio proveedorRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService)
         {
             _mapper = mapper;
             _proveedorRepositorio = proveedorRepositorio;
+            _integracionPersonaService = integracionPersonaService;
         }
         public Task<bool> Delete(ProveedorRequestDto requestDto)
         {
@@ -35,8 +38,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         {
             var listentity = _proveedorRepositorio
                 .GetAll<ProveedorEntity>();
-            if (!listentity.Any())
-                throw new ProveedorNoExistException();
+
             return Task.FromResult(_mapper.Map<IEnumerable<ProveedorDto>>(listentity));
         }
         public async Task<Guid> Insert(ProveedorRequestDto requestDto)
@@ -81,6 +83,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
 
             return Task.FromResult(_proveedorRepositorio.Update(entity));
         }
+        public async Task<string> ExportAll()
+        {
+            var listentity = _proveedorRepositorio
+                .GetAll<ProveedorEntity>();
+
+            return await _integracionPersonaService.ExportJson("ExportAllProveedor", _mapper.Map<IEnumerable<ProveedorDto>>(listentity)).ConfigureAwait(false);
+        }
         private static void ValidationDto(ProveedorRequestDto requestDto)
         {
             if (requestDto == null)
@@ -113,6 +122,5 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
                 throw new ProveedorNoExistException(requestDto.Nombre);
             return entity;
         }
-
     }
 }

@@ -39,8 +39,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
         {
             var listentity = _areaRepositorio
                 .GetAll<AreaEntity>();
-            if (!listentity.Any())
-                throw new AreaNoExistException();
+
             return Task.FromResult(_mapper.Map<IEnumerable<AreaDto>>(listentity));
         }
 

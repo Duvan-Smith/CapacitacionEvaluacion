@@ -121,17 +121,14 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusDescription = result ? "Delete" : "No delete"
             };
         }
-
         public Task<ProveedorDto> ProveedorManagementGet(ProveedorRequestDto requestDto)
         {
             return _proveedorService.Get(requestDto);
         }
-
         public Task<IEnumerable<ProveedorDto>> ProveedorManagementGetAll()
         {
             return _proveedorService.GetAll();
         }
-
         public async Task<ProveedorResponseDto> ProveedorManagementInsert(ProveedorRequestDto requestDto)
         {
             var result = await _proveedorService.Insert(requestDto).ConfigureAwait(false) != default;
@@ -142,7 +139,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusDescription = result ? "Insert" : "No insert"
             };
         }
-
         public async Task<ProveedorResponseDto> ProveedorManagementUpdate(ProveedorRequestDto requestDto)
         {
             var result = await _proveedorService.Update(requestDto).ConfigureAwait(false) != default;
@@ -152,6 +148,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
                 StatusCode = result ? HttpStatusCode.OK : HttpStatusCode.Unauthorized,
                 StatusDescription = result ? "Update" : "No Update"
             };
+        }
+        public async Task<string> ProveedorManagementExportAll()
+        {
+            return await _proveedorService.ExportAll().ConfigureAwait(false);
         }
         #endregion
     }

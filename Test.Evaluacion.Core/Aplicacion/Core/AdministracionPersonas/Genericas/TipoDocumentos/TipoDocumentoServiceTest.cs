@@ -393,24 +393,24 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         }
         #endregion
         #region GetAll
-        [Fact]
-        [UnitTest]
-        public async Task TipoDocumento_GetAll_Test_Fail()
-        {
-            var areaRepoMock = new Mock<ITipoDocumentoRepositorio>();
-            areaRepoMock
-                .Setup(m => m.GetAll<TipoDocumentoEntity>());
+        //[Fact]
+        //[UnitTest]
+        //public async Task TipoDocumento_GetAll_Test_Fail()
+        //{
+        //    var areaRepoMock = new Mock<ITipoDocumentoRepositorio>();
+        //    areaRepoMock
+        //        .Setup(m => m.GetAll<TipoDocumentoEntity>());
 
-            var service = new ServiceCollection();
+        //    var service = new ServiceCollection();
 
-            service.AddTransient(_ => areaRepoMock.Object);
+        //    service.AddTransient(_ => areaRepoMock.Object);
 
-            service.ConfigureGenericasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
+        //    service.ConfigureGenericasService(new DbSettings());
+        //    var provider = service.BuildServiceProvider();
+        //    var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
 
-            await Assert.ThrowsAsync<TipoDocumentoNoExistException>(() => tipoDocumentoService.GetAll()).ConfigureAwait(false);
-        }
+        //    await Assert.ThrowsAsync<TipoDocumentoNoExistException>(() => tipoDocumentoService.GetAll()).ConfigureAwait(false);
+        //}
         [Fact]
         [UnitTest]
         public async Task TipoDocumento_GetAll_Test_Full()

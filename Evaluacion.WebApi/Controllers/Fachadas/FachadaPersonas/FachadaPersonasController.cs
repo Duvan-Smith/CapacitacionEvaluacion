@@ -63,25 +63,29 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
             await _fachadaPersonasService.EmpleadoManagementGetAll().ConfigureAwait(false);
         #endregion
         #region ProveedorController
-        [HttpPost(nameof(InsertTipoDocumento))]
-        public async Task<ProveedorResponseDto> InsertTipoDocumento(ProveedorRequestDto requestDto) =>
+        [HttpPost(nameof(InsertProveedor))]
+        public async Task<ProveedorResponseDto> InsertProveedor(ProveedorRequestDto requestDto) =>
             await _fachadaPersonasService.ProveedorManagementInsert(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(UpdateTipoDocumento))]
-        public async Task<ProveedorResponseDto> UpdateTipoDocumento(ProveedorRequestDto requestDto) =>
+        [HttpPost(nameof(UpdateProveedor))]
+        public async Task<ProveedorResponseDto> UpdateProveedor(ProveedorRequestDto requestDto) =>
             await _fachadaPersonasService.ProveedorManagementUpdate(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(DeleteTipoDocumento))]
-        public async Task<ProveedorResponseDto> DeleteTipoDocumento(ProveedorRequestDto requestDto) =>
+        [HttpPost(nameof(DeleteProveedor))]
+        public async Task<ProveedorResponseDto> DeleteProveedor(ProveedorRequestDto requestDto) =>
             await _fachadaPersonasService.ProveedorManagementDelete(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(GetTipoDocumento))]
-        public async Task<ProveedorDto> GetTipoDocumento(ProveedorRequestDto requestDto) =>
+        [HttpPost(nameof(GetProveedor))]
+        public async Task<ProveedorDto> GetProveedor(ProveedorRequestDto requestDto) =>
             await _fachadaPersonasService.ProveedorManagementGet(requestDto).ConfigureAwait(false);
 
-        [HttpGet(nameof(GetAllTipoDocumento))]
-        public async Task<IEnumerable<ProveedorDto>> GetAllTipoDocumento() =>
+        [HttpGet(nameof(GetAllProveedor))]
+        public async Task<IEnumerable<ProveedorDto>> GetAllProveedor() =>
             await _fachadaPersonasService.ProveedorManagementGetAll().ConfigureAwait(false);
+
+        [HttpGet(nameof(ExportAllProveedor))]
+        public async Task<string> ExportAllProveedor() =>
+            await _fachadaPersonasService.ProveedorManagementExportAll().ConfigureAwait(false);
         #endregion
     }
 }

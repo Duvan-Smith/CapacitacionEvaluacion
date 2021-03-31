@@ -25,5 +25,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         public Task<ProveedorResponseDto> ProveedorManagementDelete(ProveedorRequestDto requestDto);
         public Task<ProveedorResponseDto> ProveedorManagementUpdate(ProveedorRequestDto requestDto);
         public Task<IEnumerable<ProveedorDto>> ProveedorManagementGetAll();
+        public Task<string> ProveedorManagementExportAll();
     }
 }

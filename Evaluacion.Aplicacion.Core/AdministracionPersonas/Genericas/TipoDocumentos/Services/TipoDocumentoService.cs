@@ -30,8 +30,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
         {
             var listentity = _tipoDocumentoRepositorio
                 .GetAll<TipoDocumentoEntity>();
-            if (!listentity.Any())
-                throw new TipoDocumentoNoExistException();
+
             return Task.FromResult(_mapper.Map<IEnumerable<TipoDocumentoDto>>(listentity));
         }
         public Task<TipoDocumentoDto> Get(TipoDocumentoRequestDto requestDto)

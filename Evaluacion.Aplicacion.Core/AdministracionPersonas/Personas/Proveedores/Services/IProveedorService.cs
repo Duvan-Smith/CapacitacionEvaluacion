@@ -12,5 +12,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         public Task<ProveedorDto> Get(ProveedorRequestDto requestDto);
         public Task<IEnumerable<ProveedorDto>> GetAll();
         public Task<bool> Update(ProveedorRequestDto requestDto);
+        public Task<string> ExportAll();
     }
 }
