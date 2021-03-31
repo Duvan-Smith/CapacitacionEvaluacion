@@ -88,11 +88,16 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             var listentity = _proveedorRepositorio
                 .GetAll<ProveedorEntity>();
 
-            return await _integracionPersonaService.ExportJson("ExportAllProveedor", _mapper.Map<IEnumerable<ProveedorDto>>(listentity)).ConfigureAwait(false);
+            return await _integracionPersonaService.ExportJson("ExportAllProveedor", _mapper.Map<IEnumerable<ProveedorRequestDto>>(listentity)).ConfigureAwait(false);
         }
-        public async Task<IEnumerable<ProveedorDto>> ImportAll()
+        public async Task<IEnumerable<ProveedorRequestDto>> ImportAll()
         {
-            return await _integracionPersonaService.ImportJson<IEnumerable<ProveedorDto>>("ExportAllProveedor").ConfigureAwait(false);
+            var proveedorDto = await _integracionPersonaService.ImportJson<IEnumerable<ProveedorRequestDto>>("ExportAllProveedor").ConfigureAwait(false);
+            foreach (ProveedorRequestDto element in proveedorDto)
+            {
+                await Update(element).ConfigureAwait(false);
+            }
+            return proveedorDto;
         }
         private static void ValidationDto(ProveedorRequestDto requestDto)
         {
@@ -104,7 +109,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             if (requestDto.TipoPersona == default)
                 throw new ProveedorTipoPersonaNullException(requestDto.TipoPersona);
             var usernameExist = _proveedorRepositorio
-                            .SearchMatching<ProveedorEntity>(x => x.Nombre == requestDto.Nombre)
+                            .SearchMatching<ProveedorEntity>(x => x.Nombre == requestDto.Nombre && x.Id != requestDto.Id)
                             .Any();
             if (usernameExist)
                 throw new ProveedornameAlreadyExistException(requestDto.Nombre);

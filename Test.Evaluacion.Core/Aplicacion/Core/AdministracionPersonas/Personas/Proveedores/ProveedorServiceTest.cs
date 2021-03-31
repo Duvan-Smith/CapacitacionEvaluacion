@@ -153,9 +153,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var response = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
-
+            var id = dtoProveedor.Id;
+            dtoProveedor.Id = Guid.NewGuid();
             _ = await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
-
+            dtoProveedor.Id = id;
             _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
         #endregion
@@ -410,7 +411,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
+            var id = dtoProveedor.Id;
+            dtoProveedor.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            dtoProveedor.Id = id;
 
             _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
         }
@@ -990,12 +994,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            //dtoProveedor.CodigoTipoDocumento = "345678913";
+            var id = dtoProveedor.Id;
+            dtoProveedor.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
-            var id = dtoProveedor.Id;
             dtoProveedor.Nombre = "Fake2_Throws";
-            dtoProveedor.Id = Guid.NewGuid();
             await Assert.ThrowsAsync<ProveedorCodigoTipoDocumentoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
             dtoProveedor.Id = id;
 

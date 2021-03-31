@@ -47,8 +47,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
                     request = s;
                 }
             }
-            var result = JsonConvert.DeserializeObject<TResponse>(request);
-            return Task.FromResult(result);
+            return Task.FromResult(JsonConvert.DeserializeObject<TResponse>(request));
         }
         private static void ValidatePath(string path)
         {

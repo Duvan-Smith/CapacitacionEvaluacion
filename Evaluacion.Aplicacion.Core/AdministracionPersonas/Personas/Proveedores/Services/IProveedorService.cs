@@ -13,6 +13,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         public Task<IEnumerable<ProveedorDto>> GetAll();
         public Task<bool> Update(ProveedorRequestDto requestDto);
         public Task<string> ExportAll();
-        public Task<IEnumerable<ProveedorDto>> ImportAll();
+        public Task<IEnumerable<ProveedorRequestDto>> ImportAll();
     }
 }
