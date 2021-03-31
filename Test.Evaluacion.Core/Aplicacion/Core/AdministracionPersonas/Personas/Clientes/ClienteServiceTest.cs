@@ -482,7 +482,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 Apellido = "fake",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "123456789",
+                CodigoTipoDocumento = "000000007",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,

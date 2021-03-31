@@ -40,6 +40,10 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         [HttpGet(nameof(GetAllCliente))]
         public async Task<IEnumerable<ClienteDto>> GetAllCliente() =>
             await _fachadaPersonasService.ClienteManagementGetAll().ConfigureAwait(false);
+
+        [HttpGet(nameof(ExportAllCliente))]
+        public async Task<string> ExportAllCliente() =>
+            await _fachadaPersonasService.ClienteManagementExportAll().ConfigureAwait(false);
         #endregion
         #region EmpleadoController
         [HttpPost(nameof(InsertEmpleado))]
