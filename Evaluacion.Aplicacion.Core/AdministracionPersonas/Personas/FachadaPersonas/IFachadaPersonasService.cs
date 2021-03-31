@@ -14,6 +14,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         public Task<ClienteResponseDto> ClienteManagementUpdate(ClienteRequestDto requestDto);
         public Task<IEnumerable<ClienteDto>> ClienteManagementGetAll();
         public Task<string> ClienteManagementExportAll();
+        public Task<IEnumerable<ClienteDto>> ClienteManagementImportAll();
 
         public Task<EmpleadoDto> EmpleadoManagementGet(EmpleadoRequestDto requestDto);
         public Task<EmpleadoResponseDto> EmpleadoManagementInsert(EmpleadoRequestDto requestDto);
@@ -21,6 +22,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         public Task<EmpleadoResponseDto> EmpleadoManagementUpdate(EmpleadoRequestDto requestDto);
         public Task<IEnumerable<EmpleadoDto>> EmpleadoManagementGetAll();
         public Task<string> EmpleadoManagementExportAll();
+        public Task<IEnumerable<EmpleadoDto>> EmpleadoManagementImportAll();
 
         public Task<ProveedorDto> ProveedorManagementGet(ProveedorRequestDto requestDto);
         public Task<ProveedorResponseDto> ProveedorManagementInsert(ProveedorRequestDto requestDto);
@@ -28,5 +30,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         public Task<ProveedorResponseDto> ProveedorManagementUpdate(ProveedorRequestDto requestDto);
         public Task<IEnumerable<ProveedorDto>> ProveedorManagementGetAll();
         public Task<string> ProveedorManagementExportAll();
+        public Task<IEnumerable<ProveedorDto>> ProveedorManagementImportAll();
     }
 }

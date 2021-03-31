@@ -90,6 +90,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
 
             return await _integracionPersonaService.ExportJson("ExportAllProveedor", _mapper.Map<IEnumerable<ProveedorDto>>(listentity)).ConfigureAwait(false);
         }
+        public async Task<IEnumerable<ProveedorDto>> ImportAll()
+        {
+            return await _integracionPersonaService.ImportJson<IEnumerable<ProveedorDto>>("ExportAllProveedor").ConfigureAwait(false);
+        }
         private static void ValidationDto(ProveedorRequestDto requestDto)
         {
             if (requestDto == null)

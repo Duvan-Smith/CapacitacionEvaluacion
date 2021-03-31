@@ -13,5 +13,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         public Task<IEnumerable<ClienteDto>> GetAll();
         public Task<bool> Update(ClienteRequestDto requestDto);
         public Task<string> ExportAll();
+        public Task<IEnumerable<ClienteDto>> ImportAll();
     }
 }

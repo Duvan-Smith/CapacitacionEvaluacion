@@ -44,6 +44,10 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         [HttpGet(nameof(ExportAllCliente))]
         public async Task<string> ExportAllCliente() =>
             await _fachadaPersonasService.ClienteManagementExportAll().ConfigureAwait(false);
+
+        [HttpGet(nameof(ImportAllCliente))]
+        public async Task<IEnumerable<ClienteDto>> ImportAllCliente() =>
+            await _fachadaPersonasService.ClienteManagementImportAll().ConfigureAwait(false);
         #endregion
         #region EmpleadoController
         [HttpPost(nameof(InsertEmpleado))]
@@ -69,6 +73,10 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         [HttpGet(nameof(ExportAllEmpleado))]
         public async Task<string> ExportAllEmpleado() =>
             await _fachadaPersonasService.EmpleadoManagementExportAll().ConfigureAwait(false);
+
+        [HttpGet(nameof(ImportAllEmpleado))]
+        public async Task<IEnumerable<EmpleadoDto>> ImportAllEmpleado() =>
+            await _fachadaPersonasService.EmpleadoManagementImportAll().ConfigureAwait(false);
         #endregion
         #region ProveedorController
         [HttpPost(nameof(InsertProveedor))]
@@ -94,6 +102,10 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         [HttpGet(nameof(ExportAllProveedor))]
         public async Task<string> ExportAllProveedor() =>
             await _fachadaPersonasService.ProveedorManagementExportAll().ConfigureAwait(false);
+
+        [HttpGet(nameof(ImportAllProveedor))]
+        public async Task<IEnumerable<ProveedorDto>> ImportAllProveedor() =>
+            await _fachadaPersonasService.ProveedorManagementImportAll().ConfigureAwait(false);
         #endregion
     }
 }

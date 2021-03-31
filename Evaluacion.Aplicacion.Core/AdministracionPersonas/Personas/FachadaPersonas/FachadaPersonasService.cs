@@ -65,6 +65,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         {
             return await _clienteService.ExportAll().ConfigureAwait(false);
         }
+        public async Task<IEnumerable<ClienteDto>> ClienteManagementImportAll()
+        {
+            return await _clienteService.ImportAll().ConfigureAwait(false);
+        }
         #endregion
         #region EmpleadoServices
         public async Task<EmpleadoResponseDto> EmpleadoManagementDelete(EmpleadoRequestDto requestDto)
@@ -109,6 +113,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         {
             return await _empleadoService.ExportAll().ConfigureAwait(false);
         }
+        public async Task<IEnumerable<EmpleadoDto>> EmpleadoManagementImportAll()
+        {
+            return await _empleadoService.ImportAll().ConfigureAwait(false);
+        }
         #endregion
         #region ProveedorServices
         public async Task<ProveedorResponseDto> ProveedorManagementDelete(ProveedorRequestDto requestDto)
@@ -152,6 +160,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPers
         public async Task<string> ProveedorManagementExportAll()
         {
             return await _proveedorService.ExportAll().ConfigureAwait(false);
+        }
+        public async Task<IEnumerable<ProveedorDto>> ProveedorManagementImportAll()
+        {
+            return await _proveedorService.ImportAll().ConfigureAwait(false);
         }
         #endregion
     }

@@ -28,7 +28,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             var entity = _mapper.Map<ClienteEntity>(requestDto);
             return Task.FromResult(_clienteRepositorio.Delete(entity));
         }
-
         public Task<ClienteDto> Get(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -36,14 +35,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
                 .SearchMatching<ClienteEntity>(x => x.Id == requestDto.Id);
             return Task.FromResult(_mapper.Map<ClienteDto>(user.FirstOrDefault()));
         }
-
         public Task<IEnumerable<ClienteDto>> GetAll()
         {
             var area = _clienteRepositorio
                 .GetAll<ClienteEntity>();
             return Task.FromResult(_mapper.Map<IEnumerable<ClienteDto>>(area));
         }
-
         public async Task<Guid> Insert(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -58,7 +55,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             return response.Id;
 
         }
-
         public Task<bool> Update(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -79,6 +75,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
                 .GetAll<ClienteEntity>();
 
             return await _integracionPersonaService.ExportJson("ExportAllCliente", _mapper.Map<IEnumerable<ClienteDto>>(listentity)).ConfigureAwait(false);
+        }
+        public async Task<IEnumerable<ClienteDto>> ImportAll()
+        {
+            return await _integracionPersonaService.ImportJson<IEnumerable<ClienteDto>>("ExportAllCliente").ConfigureAwait(false);
         }
         private static void ValidationDto(ClienteRequestDto requestDto)
         {

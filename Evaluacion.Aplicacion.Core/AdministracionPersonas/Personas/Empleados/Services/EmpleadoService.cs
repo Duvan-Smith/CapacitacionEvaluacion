@@ -60,7 +60,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
             return response.Id;
         }
-
         public Task<bool> Update(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
@@ -81,6 +80,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
                 .GetAll<EmpleadoEntity>();
 
             return await _integracionPersonaService.ExportJson("ExportAllEmpleado", _mapper.Map<IEnumerable<EmpleadoDto>>(listentity)).ConfigureAwait(false);
+        }
+        public async Task<IEnumerable<EmpleadoDto>> ImportAll()
+        {
+            return await _integracionPersonaService.ImportJson<IEnumerable<EmpleadoDto>>("ExportAllEmpleado").ConfigureAwait(false);
         }
         private static void ValidationDto(EmpleadoRequestDto requestDto)
         {
