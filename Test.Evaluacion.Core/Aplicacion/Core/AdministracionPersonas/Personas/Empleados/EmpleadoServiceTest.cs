@@ -1,13 +1,16 @@
 ﻿using AutoMapper;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocumentos.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Services;
 using Evaluacion.Aplicacion.Dto.Especificas.Empleados;
 using Evaluacion.Aplicacion.Dto.Genericas.Areas;
+using Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Genericas.Areas;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -1498,6 +1501,21 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var empleadoRepositorio = provider.GetRequiredService<IEmpleadoRepositorio>();
             var areaService = provider.GetRequiredService<IAreaService>();
             var areaRepositorio = provider.GetRequiredService<IAreaRepositorio>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -1523,7 +1541,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
                 AreaId = guidArea
             };
 
@@ -1543,6 +1561,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             Assert.Equal(dtoEmpleado.Id, result.Id);
             _ = await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         #region GetAll

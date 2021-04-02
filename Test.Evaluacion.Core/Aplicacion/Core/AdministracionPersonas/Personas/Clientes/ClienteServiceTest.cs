@@ -1202,7 +1202,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                Id = Guid.NewGuid(),
                 NombreTipoDocumento = "fakeDocumentofake",
             };
             var documento = documentoRepo
@@ -1224,7 +1224,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
 
             var cliente = clienteRepositorio

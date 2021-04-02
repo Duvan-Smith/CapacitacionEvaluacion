@@ -135,24 +135,23 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             {
                 ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
-            serviceP.ConfigurePersonasService(new DbSettings
+            service.ConfigurePersonasService(new DbSettings
             {
                 ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
-            var providerP = serviceP.BuildServiceProvider();
 
             var areaService = provider.GetRequiredService<IAreaService>();
-            var empleadoService = providerP.GetRequiredService<IEmpleadoService>();
-            var areaRepositorio = providerP.GetRequiredService<IAreaRepositorio>();
-            var mapper = providerP.GetRequiredService<IMapper>();
+            var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+            var areaRepositorio = provider.GetRequiredService<IAreaRepositorio>();
+            var mapper = provider.GetRequiredService<IMapper>();
             var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                Id = Guid.NewGuid(),
                 NombreTipoDocumento = "FakeCEDULAFake",
             };
             var documento = documentoRepo
@@ -184,7 +183,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 FechaRegistro = DateTimeOffset.Now,
                 NumeroTelefono = 0,
                 CorreoElectronico = "fake@fake.fake",
-                TipoDocumentoId = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                TipoDocumentoId = dtoDocumento.Id,
                 CodigoTipoDocumento = "12345678",
                 Salario = 20000,
                 AreaId = dtoArea.Id,
@@ -200,7 +199,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             areaRepositorio.Delete(empleadoEnd);
-            await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //TODO: Las área deben tener una persona encargada
@@ -665,6 +664,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             {
                 ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
 
             var provider = service.BuildServiceProvider();
 
@@ -677,16 +680,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                Id = Guid.NewGuid(),
                 NombreTipoDocumento = "fakeCEDULAfake",
             };
             var documento = documentoRepo
-                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -711,11 +714,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 FechaRegistro = DateTimeOffset.Now,
                 NumeroTelefono = 0,
                 CorreoElectronico = "fake@fake.fake",
-                TipoDocumentoId = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                TipoDocumentoId = dtoDocumento.Id,
                 CodigoTipoDocumento = "12345678",
                 Salario = 20000,
                 AreaId = dtoArea.Id,
-                CodigoEmpleado = "Prueba21"
+                CodigoEmpleado = "Prueba21",
             };
 
             var empleado = empleadoRepo
@@ -735,9 +738,9 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             await areaService.GetAll().ConfigureAwait(false);
 
-            await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
-            await areaService.Delete(dtoArea).ConfigureAwait(false);
-            await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
+            _ = await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
+            _ = await areaService.Delete(dtoArea).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
     }
 }
