@@ -2,12 +2,15 @@
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocumentos.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Services;
 using Evaluacion.Aplicacion.Dto.Especificas.Empleados;
 using Evaluacion.Aplicacion.Dto.Genericas.Areas;
+using Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Genericas.Areas;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -102,7 +105,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var service = new ServiceCollection();
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
@@ -130,11 +133,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             serviceP.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
@@ -144,6 +147,21 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var empleadoService = providerP.GetRequiredService<IEmpleadoService>();
             var areaRepositorio = providerP.GetRequiredService<IAreaRepositorio>();
             var mapper = providerP.GetRequiredService<IMapper>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                NombreTipoDocumento = "FakeCEDULAFake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -182,6 +200,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             areaRepositorio.Delete(empleadoEnd);
+            await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //TODO: Las área deben tener una persona encargada
@@ -245,7 +264,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var service = new ServiceCollection();
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
             var areaService = provider.GetRequiredService<IAreaService>();
@@ -329,7 +348,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
@@ -413,11 +432,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
@@ -519,11 +538,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
@@ -597,11 +616,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
@@ -640,17 +659,34 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
 
             var areaService = provider.GetRequiredService<IAreaService>();
+            var areaRepo = provider.GetRequiredService<IAreaRepositorio>();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
+            var empleadoRepo = provider.GetRequiredService<IEmpleadoRepositorio>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581e3e67-82e2-4f1f-b379-9bd870db669e"),
+                NombreTipoDocumento = "fakeCEDULAfake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -658,6 +694,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 NombreArea = "FakeListEmpleado",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
+            var area = areaRepo
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea || x.Id == dtoArea.Id)
+                .FirstOrDefault();
+            if (area != null || area != default)
+                areaRepo.Delete(area);
+
             await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -675,6 +717,13 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
                 AreaId = dtoArea.Id,
                 CodigoEmpleado = "Prueba21"
             };
+
+            var empleado = empleadoRepo
+                .SearchMatching<EmpleadoEntity>(x => x.Nombre == dtoEmpleado.Nombre || x.Id == dtoEmpleado.Id)
+                .FirstOrDefault();
+            if (empleado != null || empleado != default)
+                empleadoRepo.Delete(empleado);
+
             await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
             var dtoArea2 = new AreaRequestDto
@@ -688,6 +737,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
             await areaService.Delete(dtoArea).ConfigureAwait(false);
+            await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
     }
 }

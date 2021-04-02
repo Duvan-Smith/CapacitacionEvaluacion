@@ -34,11 +34,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
@@ -1227,15 +1227,15 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
@@ -1349,15 +1349,15 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
@@ -1481,15 +1481,15 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
@@ -1604,15 +1604,15 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 

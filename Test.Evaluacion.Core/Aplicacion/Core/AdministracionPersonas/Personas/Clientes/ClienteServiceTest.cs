@@ -1,9 +1,13 @@
 ﻿using AutoMapper;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocumentos.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
 using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
+using Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos;
 using Evaluacion.Dominio.Core.Especificas.Clientes;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
@@ -126,12 +130,34 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
-            var providerP = service.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
-            var clienteService = providerP.GetRequiredService<IClienteService>();
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -157,6 +183,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.NotEqual(default, response);
 
             _ = clienteService.Delete(dtoCliente);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //TODO: Cliente, No puede haber dos personas con el mismo numero y tipo de identificación
@@ -242,13 +269,49 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
-            var providerP = service.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
 
-            var clienteService = providerP.GetRequiredService<IClienteService>();
-            var clienteRepositorio = providerP.GetRequiredService<IClienteRepositorio>();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+
+            var dtoDocumento2 = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("12427378-28E4-48CB-8ED7-097116F8064E"),
+                NombreTipoDocumento = "fakeDocumentofake2",
+            };
+            var documento2 = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
+                .FirstOrDefault();
+            if (documento2 != null || documento2 != default)
+                documentoRepo.Delete(documento2);
+
+            await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -304,6 +367,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             _ = clienteService.Delete(dtoCliente);
             _ = clienteService.Delete(dtoCliente2);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //TODO: Cliente, No puede haber dos personas con el mismo nombre / razón social
@@ -390,12 +454,34 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
-            var providerP = service.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
-            var clienteService = providerP.GetRequiredService<IClienteService>();
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -420,6 +506,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             dtoCliente.Id = id;
 
             _ = clienteService.Delete(dtoCliente);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //TODO: Cliente, La fecha de nacimiento / creación es obligatoria
@@ -498,16 +585,38 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Cliente_Validar_Fechas_IntegrationTest()
         {
-            var serviceP = new ServiceCollection();
+            var service = new ServiceCollection();
 
-            serviceP.ConfigurePersonasService(new DbSettings
+            service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
-            var providerP = serviceP.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
-            var clienteService = providerP.GetRequiredService<IClienteService>();
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -537,6 +646,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.NotEqual(default, response);
 
             _ = clienteService.Delete(dtoCliente);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //TODO: Cliente, Una persona no puede tener el tipo de documento nit 
@@ -615,7 +725,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
@@ -707,16 +817,35 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -747,6 +876,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var result = await clienteService.Delete(dtoCliente2).ConfigureAwait(false);
 
             Assert.True(result);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         #region Update
@@ -818,16 +948,35 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -869,6 +1018,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.True(result);
 
             _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         #region Get
@@ -929,16 +1079,35 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -1013,17 +1182,36 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigureBaseRepository(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
             var provider = service.BuildServiceProvider();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
             var mapper = provider.GetRequiredService<IMapper>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -1053,6 +1241,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.True(result.Any());
 
             _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //TODO: Cliente, Test de integracion para el cliente
@@ -1060,16 +1249,51 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Validacion_Parametros_Cliente_Integration()
         {
-            var serviceP = new ServiceCollection();
+            var service = new ServiceCollection();
 
-            serviceP.ConfigurePersonasService(new DbSettings
+            service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DESKTOP-NE15I70\\BDDUVAN;Initial Catalog=evaluacion;User ID=sa;Password=3147073260"
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureBaseRepository(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
-            var providerP = serviceP.BuildServiceProvider();
+            var provider = service.BuildServiceProvider();
+            var clienteService = provider.GetRequiredService<IClienteService>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
-            var clienteService = providerP.GetRequiredService<IClienteService>();
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                NombreTipoDocumento = "fakeDocumentofake",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+
+            var dtoDocumento2 = new TipoDocumentoRequestDto
+            {
+                Id = Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"),
+                NombreTipoDocumento = "fakeDocumentofake2",
+            };
+            var documento2 = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
+                .FirstOrDefault();
+            if (documento2 != null || documento2 != default)
+                documentoRepo.Delete(documento2);
+
+            await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
