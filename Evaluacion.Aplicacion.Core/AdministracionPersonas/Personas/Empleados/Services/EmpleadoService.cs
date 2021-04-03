@@ -3,6 +3,7 @@ using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Excep
 using Evaluacion.Aplicacion.Core.IntegracionPersonas;
 using Evaluacion.Aplicacion.Dto.Especificas.Empleados;
 using Evaluacion.Dominio.Core.Especificas.Empleados;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +21,14 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         private readonly IEmpleadoRepositorio _empleadoRepositorio;
         private readonly IMapper _mapper;
         private readonly IIntegracionPersonaService _integracionPersonaService;
+        private readonly ITipoDocumentoRepositorio  _tipoDocumentoRepositorio;
 
-        public EmpleadoService(IEmpleadoRepositorio empleadoRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService)
+        public EmpleadoService(IEmpleadoRepositorio empleadoRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService, ITipoDocumentoRepositorio tipoDocumentoRepositorio)
         {
             _mapper = mapper;
             _empleadoRepositorio = empleadoRepositorio;
             _integracionPersonaService = integracionPersonaService;
+            _tipoDocumentoRepositorio = tipoDocumentoRepositorio;
         }
         public Task<bool> Delete(EmpleadoRequestDto requestDto)
         {
@@ -52,9 +55,11 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
             var listentity = _empleadoRepositorio
                 .GetAll<EmpleadoEntity>();
-
+            var listdocumento = _tipoDocumentoRepositorio
+                .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
+                //.GetAll<TipoDocumentoEntity>();
             ValidationEmpleadoDto(requestDto, listentity);
-            ValidationEmpleadoAndCliente(requestDto);
+            ValidationEmpleadoAndCliente(requestDto, listdocumento);
             ValidationInsert(requestDto, listentity);
 
 
@@ -65,12 +70,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             return response.Id;
         }
 
-        private static void ValidationEmpleadoAndCliente(EmpleadoRequestDto requestDto)
+        private static void ValidationEmpleadoAndCliente(EmpleadoRequestDto requestDto, TipoDocumentoEntity listdocumento)
         {
-            #region Empleado_Cliente
-            if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
-                throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
-            #endregion
+            //var tipoDocumento = listdocumento.Where(x=> x.Id == requestDto.TipoDocumentoId);
+            //if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
+            if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
+                    throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }
 
         public Task<bool> Update(EmpleadoRequestDto requestDto)

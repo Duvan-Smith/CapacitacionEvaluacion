@@ -28,6 +28,22 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
     }
     public class ClienteServiceTest
     {
+        private static ServiceProvider ServiceCollectionCliente()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+
+            var provider = service.BuildServiceProvider();
+            return provider;
+        }
         [Fact]
         [UnitTest]
         public async Task Check_AllParameterNull_Cliente_Exception()
@@ -126,30 +142,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Validar_TipoPersona_Cliente_IntegrationTest()
         {
-            var service = new ServiceCollection();
+            ServiceProvider provider = ServiceCollectionCliente();
 
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-
-            var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
             var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente11",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -169,7 +171,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 CodigoTipoDocumento = "000000006",
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
 
             var id = dtoCliente.Id;
@@ -265,22 +267,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void No_Se_Repite_CodigoTipoDocumento_Cliente_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionCliente();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
@@ -289,8 +276,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente07",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -302,8 +289,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var dtoDocumento2 = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("12427378-28E4-48CB-8ED7-097116F8064E"),
-                NombreTipoDocumento = "fakeDocumentofake2",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente08",
             };
             var documento2 = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
@@ -324,7 +311,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
             var usernameExist = clienteRepositorio
                             .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre)
@@ -353,7 +340,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("12427378-28E4-48CB-8ED7-097116F8064E"),
+                TipoDocumentoId = dtoDocumento2.Id,
             };
             var usernameExist2 = clienteRepositorio
                             .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente2.Nombre)
@@ -368,6 +355,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = clienteService.Delete(dtoCliente);
             _ = clienteService.Delete(dtoCliente2);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
         #endregion
         //TODO: Cliente, No puede haber dos personas con el mismo nombre / razón social
@@ -450,30 +438,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void No_Se_Repite_Nombre_Cliente_IntegrationTest()
         {
-            var service = new ServiceCollection();
+            ServiceProvider provider = ServiceCollectionCliente();
 
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-
-            var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
             var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente09",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -494,7 +468,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
             var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
@@ -585,30 +559,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Cliente_Validar_Fechas_IntegrationTest()
         {
-            var service = new ServiceCollection();
+            ServiceProvider provider = ServiceCollectionCliente();
 
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-
-            var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
             var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente05",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -629,7 +589,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
 
 
@@ -721,16 +681,37 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Cliente_Validar_NIT_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionCliente();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
+            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
+            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
+
+            var dtoDocumento = new TipoDocumentoRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente06",
+            };
+            var documento = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
+                .FirstOrDefault();
+            if (documento != null || documento != default)
+                documentoRepo.Delete(documento);
+
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+
+            var dtoDocumento2 = new TipoDocumentoRequestDto
+            {
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "nit",
+            };
+            var documento2 = documentoRepo
+                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
+                .FirstOrDefault();
+            if (documento2 != null || documento2 != default)
+                documentoRepo.Delete(documento2);
+
+            _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -743,18 +724,20 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
 
-            dtoCliente.TipoDocumentoId = Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376");
+            dtoCliente.TipoDocumentoId = dtoDocumento2.Id;
             await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
-            dtoCliente.TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E");
+            dtoCliente.TipoDocumentoId = dtoDocumento.Id;
             var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
             _ = clienteService.Delete(dtoCliente);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
         #endregion
         #region Delect
@@ -813,21 +796,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Cliente_Delete_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionCliente();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
@@ -836,8 +805,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente01",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -858,7 +827,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
 
             var cliente = clienteRepositorio
@@ -944,21 +913,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Cliente_Update_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionCliente();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
@@ -967,8 +922,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente04",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -989,7 +944,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
 
             var cliente = clienteRepositorio
@@ -1011,7 +966,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now.AddHours(1),
                 //FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
             var result = await clienteService.Update(dtoCliente2).ConfigureAwait(false);
 
@@ -1075,21 +1030,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Cliente_Get_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionCliente();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
@@ -1098,8 +1039,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente02",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -1120,7 +1061,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
 
             var cliente = clienteRepositorio
@@ -1139,6 +1080,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             Assert.Equal(dtoCliente.Id, result.Id);
             _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         #region GetAll
@@ -1178,21 +1120,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Cliente_GetAll_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionCliente();
 
             var clienteService = provider.GetRequiredService<IClienteService>();
             var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
@@ -1203,7 +1131,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var dtoDocumento = new TipoDocumentoRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofake",
+                NombreTipoDocumento = "fakeDocumentofakeCliente03",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -1249,30 +1177,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         [IntegrationTest]
         public async void Validacion_Parametros_Cliente_Integration()
         {
-            var service = new ServiceCollection();
+            ServiceProvider provider = ServiceCollectionCliente();
 
-            service.ConfigurePersonasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-
-            var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
             var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
 
             var dtoDocumento = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                NombreTipoDocumento = "fakeDocumentofake",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "fakeDocumentofakeCliente10",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
@@ -1280,12 +1194,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoDocumento2 = new TipoDocumentoRequestDto
             {
-                Id = Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"),
-                NombreTipoDocumento = "fakeDocumentofake2",
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "nit",
             };
             var documento2 = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
@@ -1293,7 +1207,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             if (documento2 != null || documento2 != default)
                 documentoRepo.Delete(documento2);
 
-            await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -1306,7 +1220,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                TipoDocumentoId = dtoDocumento.Id,
             };
             var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
@@ -1329,10 +1243,12 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.FechaRegistro = DateTimeOffset.Now;
-            dtoCliente.TipoDocumentoId = Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376");
+            dtoCliente.TipoDocumentoId = dtoDocumento2.Id;
             await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             _ = clienteService.Delete(dtoCliente);
+            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
     }
 }

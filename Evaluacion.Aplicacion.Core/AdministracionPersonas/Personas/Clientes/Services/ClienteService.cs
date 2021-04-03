@@ -3,6 +3,7 @@ using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Excepc
 using Evaluacion.Aplicacion.Core.IntegracionPersonas;
 using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
 using Evaluacion.Dominio.Core.Especificas.Clientes;
+using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +16,14 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         private readonly IClienteRepositorio _clienteRepositorio;
         private readonly IMapper _mapper;
         private readonly IIntegracionPersonaService _integracionPersonaService;
+        private readonly ITipoDocumentoRepositorio _tipoDocumentoRepositorio;
 
-        public ClienteService(IClienteRepositorio clienteRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService)
+        public ClienteService(IClienteRepositorio clienteRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService, ITipoDocumentoRepositorio tipoDocumentoRepositorio)
         {
             _mapper = mapper;
             _clienteRepositorio = clienteRepositorio;
             _integracionPersonaService = integracionPersonaService;
+            _tipoDocumentoRepositorio = tipoDocumentoRepositorio;
         }
         public Task<bool> Delete(ClienteRequestDto requestDto)
         {
@@ -44,7 +47,11 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         public async Task<Guid> Insert(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
-            ValidationCliente(requestDto);
+
+            var listdocumento = _tipoDocumentoRepositorio
+                .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
+
+            ValidationCliente(requestDto, listdocumento);
 
             var listentity = _clienteRepositorio
                 .GetAll<ClienteEntity>();
@@ -143,12 +150,11 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
                 throw new ClienteNoExistException(requestDto.Nombre);
             return entity;
         }
-        private static void ValidationCliente(ClienteRequestDto requestDto)
+        private static void ValidationCliente(ClienteRequestDto requestDto, TipoDocumentoEntity listdocumento)
         {
-            #region Empleado_Cliente
-            if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
-                throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
-            #endregion
+            //if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
+            if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
+                    throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }
 
     }
