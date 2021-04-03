@@ -66,14 +66,20 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
         public async Task Validar_TipoPersona_Proveedor_Fail()
         {
             var proveedorRepoMock = new Mock<IProveedorRepositorio>();
-
-            proveedorRepoMock
-                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
-                .Returns(new List<ProveedorEntity> { new ProveedorEntity
+            var Listentity = new List<ProveedorEntity>
+            {
+                new ProveedorEntity
                 {
                     Id = Guid.NewGuid(),
-                    Nombre = "FakePrueba"
-                }});
+                    Nombre = "Nombre",
+                    CodigoTipoDocumento="123456789",
+                    TipoDocumentoId=Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
+                    TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
+                }
+            };
+            _ = proveedorRepoMock
+                .Setup(m => m.GetAll<ProveedorEntity>())
+                .Returns(Listentity);
 
             var service = new ServiceCollection();
 
@@ -91,28 +97,25 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
             };
-            await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             dtoProveedor.TipoPersona = 0;
-            await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
         public async Task Validar_TipoPersona_Proveedor_Full()
         {
-            var clienteGetRepoMock = new Mock<IProveedorRepositorio>();
-            var clienteInsertRepoMock = new Mock<IProveedorRepositorio>();
-
-            clienteGetRepoMock
-                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
-            clienteInsertRepoMock
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            _ = proveedorRepoMock
+                .Setup(m => m.GetAll<ProveedorEntity>());
+            _ = proveedorRepoMock
                 .Setup(m => m.Insert(It.IsAny<ProveedorEntity>()))
                 .Returns(Task.FromResult(new ProveedorEntity { Id = Guid.NewGuid() }));
 
             var service = new ServiceCollection();
 
-            service.AddTransient(_ => clienteGetRepoMock.Object);
-            service.AddTransient(_ => clienteInsertRepoMock.Object);
+            service.AddTransient(_ => proveedorRepoMock.Object);
 
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();
@@ -172,7 +175,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
 
-            await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             dtoProveedor.TipoPersona = 0;
             //await Assert.ThrowsAsync<ProveedorTipoPersonaNullException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
@@ -207,7 +210,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                     TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 }
             };
-            proveedorRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.GetAll<ProveedorEntity>())
                 .Returns(Listentity);
 
@@ -237,19 +240,17 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
         [UnitTest]
         public async Task No_Se_Repite_CodigoTipoDocumento_Proveedor_Full()
         {
-            var clienteGetRepoMock = new Mock<IProveedorRepositorio>();
-            var clienteInsertRepoMock = new Mock<IProveedorRepositorio>();
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
 
-            clienteGetRepoMock
-                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
-            clienteInsertRepoMock
+            _ = proveedorRepoMock
+                .Setup(m => m.GetAll<ProveedorEntity>());
+            _ = proveedorRepoMock
                 .Setup(m => m.Insert(It.IsAny<ProveedorEntity>()))
                 .Returns(Task.FromResult(new ProveedorEntity { Id = Guid.NewGuid() }));
 
             var service = new ServiceCollection();
 
-            service.AddTransient(_ => clienteGetRepoMock.Object);
-            service.AddTransient(_ => clienteInsertRepoMock.Object);
+            service.AddTransient(_ => proveedorRepoMock.Object);
 
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();
@@ -288,7 +289,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoDocumento2 = new TipoDocumentoRequestDto
             {
@@ -301,7 +302,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (documento2 != null || documento2 != default)
                 documentoRepo.Delete(documento2);
 
-            await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoProveedor = new ProveedorRequestDto
             {
@@ -330,7 +331,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var id = dtoProveedor.Id;
             dtoProveedor.Nombre = "fake_proveedor_Throws";
             dtoProveedor.Id = Guid.NewGuid();
-            await Assert.ThrowsAsync<ProveedorCodigoTipoDocumentoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorCodigoTipoDocumentoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
             dtoProveedor.Id = id;
 
             var dtoProveedorI2 = new ProveedorRequestDto
@@ -381,7 +382,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                     TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 }
             };
-            proveedorRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.GetAll<ProveedorEntity>())
                 .Returns(Listentity);
 
@@ -410,19 +411,17 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
         [UnitTest]
         public async Task No_Se_Repite_Nombre_Proveedor_Full()
         {
-            var clienteGetRepoMock = new Mock<IProveedorRepositorio>();
-            var clienteInsertRepoMock = new Mock<IProveedorRepositorio>();
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
 
-            clienteGetRepoMock
-                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
-            clienteInsertRepoMock
+            _ = proveedorRepoMock
+                .Setup(m => m.GetAll<ProveedorEntity>());
+            _ = proveedorRepoMock
                 .Setup(m => m.Insert(It.IsAny<ProveedorEntity>()))
                 .Returns(Task.FromResult(new ProveedorEntity { Id = Guid.NewGuid() }));
 
             var service = new ServiceCollection();
 
-            service.AddTransient(_ => clienteGetRepoMock.Object);
-            service.AddTransient(_ => clienteInsertRepoMock.Object);
+            service.AddTransient(_ => proveedorRepoMock.Object);
 
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();
@@ -461,7 +460,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoProveedor = new ProveedorRequestDto
             {
@@ -489,7 +488,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
 
             var id = dtoProveedor.Id;
             dtoProveedor.Id = Guid.NewGuid();
-            await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
             dtoProveedor.Id = id;
 
             _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
@@ -502,19 +501,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
         [UnitTest]
         public async Task Proveedor_Validar_Fechas_Fail()
         {
-            var clienteGetRepoMock = new Mock<IProveedorRepositorio>();
-            var clienteInsertRepoMock = new Mock<IProveedorRepositorio>();
-
-            clienteGetRepoMock
-                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
-            clienteInsertRepoMock
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
+            _ = proveedorRepoMock
+                .Setup(m => m.GetAll<ProveedorEntity>());
+            _ = proveedorRepoMock
                 .Setup(m => m.Insert(It.IsAny<ProveedorEntity>()))
                 .Returns(Task.FromResult(new ProveedorEntity { Id = Guid.NewGuid() }));
 
             var service = new ServiceCollection();
 
-            service.AddTransient(_ => clienteGetRepoMock.Object);
-            service.AddTransient(_ => clienteInsertRepoMock.Object);
+            service.AddTransient(_ => proveedorRepoMock.Object);
 
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();
@@ -530,29 +526,27 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             };
 
             proveedorDto.FechaNacimiento = default;
-            await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(proveedorDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(proveedorDto)).ConfigureAwait(false);
 
             proveedorDto.FechaNacimiento = DateTimeOffset.Now;
             proveedorDto.FechaRegistro = default;
-            await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(proveedorDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(proveedorDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
         public async Task Proveedor_Validar_Fechas_Full()
         {
-            var clienteGetRepoMock = new Mock<IProveedorRepositorio>();
-            var clienteInsertRepoMock = new Mock<IProveedorRepositorio>();
+            var proveedorRepoMock = new Mock<IProveedorRepositorio>();
 
-            clienteGetRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
-            clienteInsertRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.Insert(It.IsAny<ProveedorEntity>()))
                 .Returns(Task.FromResult(new ProveedorEntity { Id = Guid.NewGuid() }));
 
             var service = new ServiceCollection();
 
-            service.AddTransient(_ => clienteGetRepoMock.Object);
-            service.AddTransient(_ => clienteInsertRepoMock.Object);
+            service.AddTransient(_ => proveedorRepoMock.Object);
 
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();
@@ -607,11 +601,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             };
 
             dtoProveedor.FechaNacimiento = default;
-            await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             dtoProveedor.FechaNacimiento = DateTimeOffset.Now;
             dtoProveedor.FechaRegistro = default;
-            await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             dtoProveedor.FechaRegistro = DateTimeOffset.Now;
             var response = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
@@ -640,7 +634,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var provider = service.BuildServiceProvider();
             var proveedorService = provider.GetRequiredService<IProveedorService>();
 
-            await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Delete(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Delete(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -697,7 +691,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoProveedor = new ProveedorRequestDto
             {
@@ -719,7 +713,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
 
-            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+            _ = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
 
             var dtoProveedor2 = new ProveedorRequestDto
             {
@@ -737,7 +731,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
         public async Task Proveedor_Update_Test_Fail()
         {
             var proveedorRepoMock = new Mock<IProveedorRepositorio>();
-            proveedorRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()));
 
             var service = new ServiceCollection();
@@ -748,7 +742,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var provider = service.BuildServiceProvider();
             var proveedorService = provider.GetRequiredService<IProveedorService>();
 
-            await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Update(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Update(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -763,10 +757,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
                 TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
             };
-            proveedorRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
                 .Returns(entity);
-            proveedorRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.Update(It.IsAny<ProveedorEntity>()))
                 .Returns(true);
 
@@ -837,7 +831,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
 
-            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+            _ = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
 
             var dtoProveedor2 = new ProveedorRequestDto
             {
@@ -877,7 +871,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var provider = service.BuildServiceProvider();
             var proveedorService = provider.GetRequiredService<IProveedorService>();
 
-            await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Get(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorNoExistException>(() => proveedorService.Get(new ProveedorRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -889,7 +883,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 Id = Guid.NewGuid(),
                 Nombre = "Nombre"
             };
-            proveedorRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ProveedorEntity, bool>>>()))
                 .Returns(entity);
 
@@ -954,7 +948,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
 
-            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+            _ = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
 
             var dtoProveedor2 = new ProveedorRequestDto
             {
@@ -981,7 +975,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                     Nombre = "Nombre"
                 }
             };
-            proveedorRepoMock
+            _ = proveedorRepoMock
                 .Setup(m => m.GetAll<ProveedorEntity>())
                 .Returns(Listentity);
 
@@ -1045,7 +1039,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             if (proveedor != null || proveedor != default)
                 proveedorRepositorio.Delete(proveedor);
 
-            await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
+            _ = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
 
             var result = mapper.Map<IEnumerable<ProveedorEntity>>(await proveedorService.GetAll().ConfigureAwait(false));
 
@@ -1106,19 +1100,19 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
 
             var id = dtoProveedor.Id;
             dtoProveedor.Id = Guid.NewGuid();
-            await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedornameAlreadyExistException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             dtoProveedor.Nombre = "Fake2_Throws";
-            await Assert.ThrowsAsync<ProveedorCodigoTipoDocumentoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorCodigoTipoDocumentoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
             dtoProveedor.Id = id;
 
             dtoProveedor.CodigoTipoDocumento = "300000002";
             dtoProveedor.FechaNacimiento = default;
-            await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorFechaNacimientoException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             dtoProveedor.FechaNacimiento = DateTimeOffset.Now;
             dtoProveedor.FechaRegistro = default;
-            await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorFechaRegistroException>(() => proveedorService.Insert(dtoProveedor)).ConfigureAwait(false);
 
             _ = await proveedorService.Delete(dtoProveedor).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);

@@ -57,7 +57,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
                 .GetAll<EmpleadoEntity>();
             var listdocumento = _tipoDocumentoRepositorio
                 .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
-                //.GetAll<TipoDocumentoEntity>();
+
             ValidationEmpleadoDto(requestDto, listentity);
             ValidationEmpleadoAndCliente(requestDto, listdocumento);
             ValidationInsert(requestDto, listentity);
@@ -72,8 +72,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
         private static void ValidationEmpleadoAndCliente(EmpleadoRequestDto requestDto, TipoDocumentoEntity listdocumento)
         {
-            //var tipoDocumento = listdocumento.Where(x=> x.Id == requestDto.TipoDocumentoId);
-            //if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
             if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
                     throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }
