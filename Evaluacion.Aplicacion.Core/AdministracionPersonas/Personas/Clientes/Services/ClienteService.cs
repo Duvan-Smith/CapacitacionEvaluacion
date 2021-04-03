@@ -123,7 +123,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             if (requestDto == null)
                 throw new ClienteRequestDtoNullException();
         }
-        private void ValidationParameterDB(ClienteRequestDto requestDto, IEnumerable<ClienteEntity> listEntity)
+        private static void ValidationParameterDB(ClienteRequestDto requestDto, IEnumerable<ClienteEntity> listEntity)
         {
             if (requestDto.TipoPersona == default)
                 throw new ClienteTipoPersonaNullException(requestDto.TipoPersona);
@@ -152,7 +152,6 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         }
         private static void ValidationCliente(ClienteRequestDto requestDto, TipoDocumentoEntity listdocumento)
         {
-            //if (requestDto.TipoDocumentoId == Guid.Parse("A89DAA40-149F-439A-8A08-7842E09D7376"))
             if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
                     throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }

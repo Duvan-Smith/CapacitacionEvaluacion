@@ -114,7 +114,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             if (requestDto == null)
                 throw new ProveedorRequestDtoNullException();
         }
-        private void ValidationParameterDB(ProveedorRequestDto requestDto, IEnumerable<ProveedorEntity> listEntity)
+        private static void ValidationParameterDB(ProveedorRequestDto requestDto, IEnumerable<ProveedorEntity> listEntity)
         {
             if (requestDto.TipoPersona == default)
                 throw new ProveedorTipoPersonaNullException(requestDto.TipoPersona);

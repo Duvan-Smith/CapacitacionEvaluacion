@@ -143,7 +143,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             if (requestDto == null)
                 throw new EmpleadoRequestDtoNullException();
         }
-        private void ValidationEmpleadoDto(EmpleadoRequestDto requestDto, IEnumerable<EmpleadoEntity> listEntity)
+        private static void ValidationEmpleadoDto(EmpleadoRequestDto requestDto, IEnumerable<EmpleadoEntity> listEntity)
         {
             if (nameof(TipoPersona.Juridico) == requestDto.TipoPersona.ToString())
                 throw new EmpleadoErrorTipoPersonaException(requestDto.TipoPersona.ToString());
@@ -163,7 +163,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
                 throw new EmpleadoAreaIdAlreadyExistException(requestDto.AreaId);
         }
 
-        private void ValidationParameterDB(EmpleadoRequestDto requestDto, IEnumerable<EmpleadoEntity> listEntity)
+        private static void ValidationParameterDB(EmpleadoRequestDto requestDto, IEnumerable<EmpleadoEntity> listEntity)
         {
             if (requestDto.TipoPersona == default)
                 throw new EmpleadoTipoPersonaNullException(requestDto.TipoPersona);
