@@ -16,7 +16,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
             ValidatePath(path);
             var result = JsonConvert.SerializeObject(request);
 
-            string pathTxt = @"D:\" + path + ".txt";
+            string pathTxt = @"D:\" + path + ".json";
 
             using (FileStream fs = File.Create(pathTxt))
             {
@@ -36,7 +36,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
         public async Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<DataTransferObject>
         {
             var request = "";
-            string pathTxt = @"D:\" + path + ".txt";
+            string pathTxt = @"D:\" + path + ".json";
 
             using (StreamReader sr = File.OpenText(pathTxt))
             {
