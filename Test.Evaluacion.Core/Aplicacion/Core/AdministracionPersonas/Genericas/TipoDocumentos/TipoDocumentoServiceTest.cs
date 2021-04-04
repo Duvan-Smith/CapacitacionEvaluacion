@@ -2,6 +2,7 @@
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocumentos.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocumentos.Services;
+using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Configuration;
 using Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos;
 using Evaluacion.Dominio.Core.Genericas.TipoDocumentos;
 using Evaluacion.Infraestructura.Datos.Persistencia.Core.Base.Configuration;
@@ -19,6 +20,22 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 {
     public class TipoDocumentoServiceTest
     {
+        private static ServiceProvider ServiceCollectionTipoDocumento()
+        {
+            var service = new ServiceCollection();
+
+            service.ConfigureGenericasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+            service.ConfigurePersonasService(new DbSettings
+            {
+                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+            });
+
+            var provider = service.BuildServiceProvider();
+            return provider;
+        }
         [Fact]
         [UnitTest]
         public async Task Check_AllParameterNull_TipoDocumento_Exception()
@@ -86,14 +103,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         [IntegrationTest]
         public async void TipoDocumento_Insert_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionTipoDocumento();
 
             var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
 
@@ -166,17 +176,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         [IntegrationTest]
         public async void TipoDocumento_Delete_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionTipoDocumento();
 
             var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var areaRepositorio = provider.GetRequiredService<ITipoDocumentoRepositorio>();
@@ -260,17 +260,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         [IntegrationTest]
         public async void TipoDocumento_Update_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionTipoDocumento();
 
             var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var areaRepositorio = provider.GetRequiredService<ITipoDocumentoRepositorio>();
@@ -354,17 +344,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         [IntegrationTest]
         public async void TipoDocumento_Get_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionTipoDocumento();
 
             var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var areaRepositorio = provider.GetRequiredService<ITipoDocumentoRepositorio>();
@@ -429,17 +409,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         [IntegrationTest]
         public async void TipoDocumento_GetAll_Test_IntegrationTest()
         {
-            var service = new ServiceCollection();
-
-            service.ConfigureGenericasService(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            service.ConfigureBaseRepository(new DbSettings
-            {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
-            });
-            var provider = service.BuildServiceProvider();
+            ServiceProvider provider = ServiceCollectionTipoDocumento();
 
             var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
             var areaRepositorio = provider.GetRequiredService<ITipoDocumentoRepositorio>();

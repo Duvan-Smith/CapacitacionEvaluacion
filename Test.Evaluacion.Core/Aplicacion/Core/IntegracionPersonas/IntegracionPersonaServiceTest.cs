@@ -32,7 +32,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.IntegracionPersonas
             await Assert.ThrowsAsync<IntegracionPersonaArgumentPathException>(async () => await integracionPersonaService.ExportJson("", dtoCliente).ConfigureAwait(false)).ConfigureAwait(false);
         }
         [Fact]
-        [UnitTest]
+        [IntegrationTest]
         public async Task Export_Full()
         {
             var service = new ServiceCollection();
@@ -79,7 +79,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.IntegracionPersonas
             Assert.NotNull(result2);
         }
         [Fact]
-        [UnitTest]
+        [IntegrationTest]
         public async Task Import_Full()
         {
             var service = new ServiceCollection();
