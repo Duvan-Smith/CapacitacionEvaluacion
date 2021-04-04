@@ -1018,16 +1018,32 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
                 TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
             };
-            clienteRepoMock
+            var tipoDocumentoRepoMock = new Mock<ITipoDocumentoRepositorio>();
+
+            _ = tipoDocumentoRepoMock
+                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<TipoDocumentoEntity, bool>>>()))
+                .Returns(new List<TipoDocumentoEntity>{ new TipoDocumentoEntity
+                {
+                    Id = Guid.NewGuid(),
+                    NombreTipoDocumento = "fakenonit"
+                }});
+
+            _ = clienteRepoMock
+                .Setup(m => m.GetAll<ClienteEntity>())
+                .Returns(new List<ClienteEntity> { entity });
+
+            _ = clienteRepoMock
                 .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()))
                 .Returns(entity);
-            clienteRepoMock
+
+            _ = clienteRepoMock
                 .Setup(m => m.Update(It.IsAny<ClienteEntity>()))
                 .Returns(true);
 
             var service = new ServiceCollection();
 
             service.AddTransient(_ => clienteRepoMock.Object);
+            service.AddTransient(_ => tipoDocumentoRepoMock.Object);
 
             service.ConfigurePersonasService(new DbSettings());
             var provider = service.BuildServiceProvider();

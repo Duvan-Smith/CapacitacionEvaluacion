@@ -47,11 +47,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         public async Task<Guid> Insert(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
-
-            var listdocumento = _tipoDocumentoRepositorio
-                .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
-
-            ValidationCliente(requestDto, listdocumento);
+            ValidationCliente(requestDto);
 
             var listentity = _clienteRepositorio
                 .GetAll<ClienteEntity>();
@@ -61,13 +57,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             var response = await _clienteRepositorio.Insert(_mapper.Map<ClienteEntity>(requestDto)).ConfigureAwait(false);
 
             return response.Id;
-
         }
         public Task<bool> Update(ClienteRequestDto requestDto)
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
 
+            #region Validation If
             if (!string.IsNullOrEmpty(requestDto.Nombre))
                 entity.Nombre = requestDto.Nombre;
 
@@ -94,10 +90,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
 
             if (requestDto.TipoPersona != default)
                 entity.TipoPersona = (Dominio.Core.Especificas.Personas.TipoPersona)requestDto.TipoPersona;
+            #endregion
 
             var listentity = _clienteRepositorio
                 .GetAll<ClienteEntity>();
 
+            ValidationCliente(requestDto);
             ValidationParameterDB(_mapper.Map<ClienteRequestDto>(entity), listentity);
 
             return Task.FromResult(_clienteRepositorio.Update(entity));
@@ -113,9 +111,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         {
             var clienteDto = await _integracionPersonaService.ImportJson<IEnumerable<ClienteRequestDto>>("ExportAllCliente").ConfigureAwait(false);
             foreach (ClienteRequestDto element in clienteDto)
-            {
                 await Update(element).ConfigureAwait(false);
-            }
             return clienteDto;
         }
         private static void ValidationDto(ClienteRequestDto requestDto)
@@ -150,8 +146,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
                 throw new ClienteNoExistException(requestDto.Nombre);
             return entity;
         }
-        private static void ValidationCliente(ClienteRequestDto requestDto, TipoDocumentoEntity listdocumento)
+        private void ValidationCliente(ClienteRequestDto requestDto)
         {
+            var listdocumento = _tipoDocumentoRepositorio
+                .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
             if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
                     throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }

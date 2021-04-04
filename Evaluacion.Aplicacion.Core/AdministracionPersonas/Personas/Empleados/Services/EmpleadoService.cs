@@ -55,13 +55,10 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
             var listentity = _empleadoRepositorio
                 .GetAll<EmpleadoEntity>();
-            var listdocumento = _tipoDocumentoRepositorio
-                .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
 
             ValidationEmpleadoDto(requestDto, listentity);
-            ValidationEmpleadoAndCliente(requestDto, listdocumento);
+            ValidationEmpleadoAndCliente(requestDto);
             ValidationInsert(requestDto, listentity);
-
 
             ValidationParameterDB(requestDto, listentity);
 
@@ -69,18 +66,19 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
             return response.Id;
         }
-
-        private static void ValidationEmpleadoAndCliente(EmpleadoRequestDto requestDto, TipoDocumentoEntity listdocumento)
+        private void ValidationEmpleadoAndCliente(EmpleadoRequestDto requestDto)
         {
+            var listdocumento = _tipoDocumentoRepositorio
+                .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
             if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
                     throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }
-
         public Task<bool> Update(EmpleadoRequestDto requestDto)
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
 
+            #region Validation If
             if (!string.IsNullOrEmpty(requestDto.Nombre))
                 entity.Nombre = requestDto.Nombre;
 
@@ -113,11 +111,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
 
             if (requestDto.AreaId != default)
                 entity.AreaId = requestDto.AreaId;
+            #endregion
 
             var listentity = _empleadoRepositorio
                 .GetAll<EmpleadoEntity>();
 
             ValidationEmpleadoDto(_mapper.Map<EmpleadoRequestDto>(entity), listentity);
+            ValidationEmpleadoAndCliente(requestDto);
             ValidationParameterDB(_mapper.Map<EmpleadoRequestDto>(entity), listentity);
 
             return Task.FromResult(_empleadoRepositorio.Update(entity));
@@ -133,9 +133,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         {
             var empleadoDto = await _integracionPersonaService.ImportJson<IEnumerable<EmpleadoRequestDto>>("ExportAllEmpleado").ConfigureAwait(false);
             foreach (EmpleadoRequestDto element in empleadoDto)
-            {
                 await Update(element).ConfigureAwait(false);
-            }
             return empleadoDto;
         }
         private static void ValidationDto(EmpleadoRequestDto requestDto)
@@ -155,14 +153,12 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             if (requestDto.AreaId == default)
                 throw new EmpleadoAreaIdNullException(requestDto.AreaId);
         }
-
         private static void ValidationInsert(EmpleadoRequestDto requestDto, IEnumerable<EmpleadoEntity> listEntity)
         {
             var AreaIdExist = listEntity.Where(x => x.Id == requestDto.Id && x.AreaId == requestDto.AreaId).Any();
             if (AreaIdExist)
                 throw new EmpleadoAreaIdAlreadyExistException(requestDto.AreaId);
         }
-
         private static void ValidationParameterDB(EmpleadoRequestDto requestDto, IEnumerable<EmpleadoEntity> listEntity)
         {
             if (requestDto.TipoPersona == default)

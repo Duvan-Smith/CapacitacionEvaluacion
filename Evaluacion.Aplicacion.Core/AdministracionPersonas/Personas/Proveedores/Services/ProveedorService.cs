@@ -58,7 +58,8 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
-
+            
+            #region Validation If
             if (!string.IsNullOrEmpty(requestDto.Nombre))
                 entity.Nombre = requestDto.Nombre;
 
@@ -85,7 +86,8 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
 
             if (requestDto.TipoPersona != default)
                 entity.TipoPersona = (Dominio.Core.Especificas.Personas.TipoPersona)requestDto.TipoPersona;
-
+            #endregion
+            
             var listentity = _proveedorRepositorio
                 .GetAll<ProveedorEntity>();
 
@@ -104,9 +106,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         {
             var proveedorDto = await _integracionPersonaService.ImportJson<IEnumerable<ProveedorRequestDto>>("ExportAllProveedor").ConfigureAwait(false);
             foreach (ProveedorRequestDto element in proveedorDto)
-            {
                 await Update(element).ConfigureAwait(false);
-            }
             return proveedorDto;
         }
         private static void ValidationDto(ProveedorRequestDto requestDto)
