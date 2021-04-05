@@ -2,7 +2,7 @@
 
 namespace Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos
 {
-    public class TipoDocumentoResponseDto : BaseEntity
+    public class TipoDocumentoResponseDto : EntidadPersonaBase
     {
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Evaluacion.Aplicacion.Dto.Genericas.Areas
 {
-    public class AreaResponseDto : BaseEntity
+    public class AreaResponseDto : EntidadPersonaBase
     {
     }
 }

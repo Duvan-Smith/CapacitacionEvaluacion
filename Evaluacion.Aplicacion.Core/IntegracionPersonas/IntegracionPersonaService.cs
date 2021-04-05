@@ -11,7 +11,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
 {
     public class IntegracionPersonaService : IIntegracionPersonaService
     {
-        public async Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<DataTransferObject>
+        public async Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<EntidadPersonaBase>
         {
             ValidatePath(path);
             var result = JsonConvert.SerializeObject(request);
@@ -33,7 +33,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
             }
             return await Task.FromResult(result).ConfigureAwait(false);
         }
-        public async Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<DataTransferObject>
+        public async Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<EntidadPersonaBase>
         {
             var request = "";
             string pathTxt = @"D:\" + path + ".json";

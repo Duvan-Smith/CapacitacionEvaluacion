@@ -2,7 +2,7 @@
 
 namespace Evaluacion.Aplicacion.Dto.Especificas.Empleados
 {
-    public class EmpleadoResponseDto : BaseEntity
+    public class EmpleadoResponseDto : EntidadPersonaBase
     {
     }
 }

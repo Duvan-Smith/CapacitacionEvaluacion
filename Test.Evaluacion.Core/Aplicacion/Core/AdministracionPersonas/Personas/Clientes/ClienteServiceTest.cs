@@ -54,10 +54,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
 
-            await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Update(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Delete(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Get(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Insert(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Update(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Delete(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Get(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Insert(null)).ConfigureAwait(false);
         }
         //TODO: Cliente, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
         #region Validar_TipoPersona_Cliente

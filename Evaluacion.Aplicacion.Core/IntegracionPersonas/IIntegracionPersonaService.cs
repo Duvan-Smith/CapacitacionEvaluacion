@@ -6,7 +6,7 @@ namespace Evaluacion.Aplicacion.Core.IntegracionPersonas
 {
     public interface IIntegracionPersonaService
     {
-        Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<DataTransferObject>;
-        Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<DataTransferObject>;
+        Task<string> ExportJson<TRequest>(string path, TRequest request) where TRequest : IEnumerable<EntidadPersonaBase>;
+        Task<TResponse> ImportJson<TResponse>(string path) where TResponse : IEnumerable<EntidadPersonaBase>;
     }
 }

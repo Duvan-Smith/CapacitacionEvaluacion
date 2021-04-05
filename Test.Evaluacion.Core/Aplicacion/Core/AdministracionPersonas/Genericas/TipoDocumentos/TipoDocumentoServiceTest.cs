@@ -20,6 +20,19 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 {
     public class TipoDocumentoServiceTest
     {
+        private static Mock<ITipoDocumentoRepositorio> MockTipoDocumentoFull()
+        {
+            var areaRepoMock = new Mock<ITipoDocumentoRepositorio>();
+            var entity = new TipoDocumentoEntity
+            {
+                Id = Guid.NewGuid(),
+                NombreTipoDocumento = "NombreTipoDocumento"
+            };
+            areaRepoMock
+                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<TipoDocumentoEntity, bool>>>()))
+                .Returns(entity);
+            return areaRepoMock;
+        }
         private static ServiceProvider ServiceCollectionTipoDocumento()
         {
             var service = new ServiceCollection();
@@ -44,10 +57,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             service.ConfigureGenericasService(new DbSettings());
             var provider = service.BuildServiceProvider();
             var tipoDocumentoService = provider.GetRequiredService<ITipoDocumentoService>();
-            await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Update(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Delete(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Get(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Insert(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Update(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Delete(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Get(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<TipoDocumentoRequestDtoNullException>(() => tipoDocumentoService.Insert(null)).ConfigureAwait(false);
         }
         #region Insert
         [Fact]
@@ -77,18 +90,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         public async Task TipoDocumento_Insert_Test_Full()
         {
             var areaRepoMock = new Mock<ITipoDocumentoRepositorio>();
-            var areaInsertRepoMock = new Mock<ITipoDocumentoRepositorio>();
 
             areaRepoMock
                 .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<TipoDocumentoEntity, bool>>>()));
-            areaInsertRepoMock
+            areaRepoMock
                 .Setup(m => m.Insert(It.IsAny<TipoDocumentoEntity>()))
                 .Returns(Task.FromResult(new TipoDocumentoEntity { Id = Guid.NewGuid() }));
 
             var service = new ServiceCollection();
 
             service.AddTransient(_ => areaRepoMock.Object);
-            service.AddTransient(_ => areaInsertRepoMock.Object);
 
             service.ConfigureGenericasService(new DbSettings());
             var provider = service.BuildServiceProvider();
@@ -143,15 +154,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         [UnitTest]
         public async Task TipoDocumento_Delete_Test_Full()
         {
-            var areaRepoMock = new Mock<ITipoDocumentoRepositorio>();
-            var entity = new TipoDocumentoEntity
-            {
-                Id = Guid.NewGuid(),
-                NombreTipoDocumento = "NombreTipoDocumento"
-            };
-            areaRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<TipoDocumentoEntity, bool>>>()))
-                .Returns(entity);
+            Mock<ITipoDocumentoRepositorio> areaRepoMock = MockTipoDocumentoFull();
             areaRepoMock
                 .Setup(m => m.Delete(It.IsAny<TipoDocumentoEntity>()))
                 .Returns(true);
@@ -227,15 +230,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
         [UnitTest]
         public async Task TipoDocumento_Update_Test_Full()
         {
-            var areaRepoMock = new Mock<ITipoDocumentoRepositorio>();
-            var entity = new TipoDocumentoEntity
-            {
-                Id = Guid.NewGuid(),
-                NombreTipoDocumento = "NombreTipoDocumento"
-            };
-            areaRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<TipoDocumentoEntity, bool>>>()))
-                .Returns(entity);
+            Mock<ITipoDocumentoRepositorio> areaRepoMock = MockTipoDocumentoFull();
+
             areaRepoMock
                 .Setup(m => m.Update(It.IsAny<TipoDocumentoEntity>()))
                 .Returns(true);
@@ -338,7 +334,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             Assert.NotNull(result.ToString());
             Assert.Equal(entity.Id, result.Id);
-
         }
         [Fact]
         [IntegrationTest]
@@ -403,7 +398,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             Assert.NotNull(result.ToString());
             Assert.Equal(Listentity[0].Id, result.First().Id);
-
         }
         [Fact]
         [IntegrationTest]

@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Evaluacion.Aplicacion.Dto.Genericas.Areas
 {
-    public class AreaDto : BaseEntity
+    public class AreaDto : EntidadPersonaBase
     {
         [Required]
         [MaxLength(50)]

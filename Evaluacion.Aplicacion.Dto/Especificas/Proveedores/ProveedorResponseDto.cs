@@ -2,7 +2,7 @@
 
 namespace Evaluacion.Aplicacion.Dto.Especificas.Proveedores
 {
-    public class ProveedorResponseDto : BaseEntity
+    public class ProveedorResponseDto : EntidadPersonaBase
     {
     }
 }

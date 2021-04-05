@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos
 {
-    public class TipoDocumentoDto : BaseEntity
+    public class TipoDocumentoDto : EntidadPersonaBase
     {
         [Required]
         [MaxLength(50)]

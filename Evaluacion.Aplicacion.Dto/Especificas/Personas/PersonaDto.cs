@@ -10,7 +10,7 @@ namespace Evaluacion.Aplicacion.Dto.Especificas.Personas
         Natural = 1,
         Juridico = 2,
     }
-    public class PersonaDto : BaseEntity
+    public class PersonaDto : EntidadPersonaBase
     {
         [Required]
         [MaxLength(50)]

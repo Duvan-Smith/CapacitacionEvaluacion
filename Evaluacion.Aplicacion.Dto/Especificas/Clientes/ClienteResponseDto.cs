@@ -2,7 +2,7 @@
 
 namespace Evaluacion.Aplicacion.Dto.Especificas.Clientes
 {
-    public class ClienteResponseDto : BaseEntity
+    public class ClienteResponseDto : EntidadPersonaBase
     {
     }
 }

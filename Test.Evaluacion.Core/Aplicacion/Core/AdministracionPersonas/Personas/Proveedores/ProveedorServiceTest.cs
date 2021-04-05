@@ -54,10 +54,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             var provider = service.BuildServiceProvider();
             var proveedorService = provider.GetRequiredService<IProveedorService>();
 
-            await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Update(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Delete(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Get(null)).ConfigureAwait(false);
-            await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Insert(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Update(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Delete(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Get(null)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Insert(null)).ConfigureAwait(false);
         }
         //TODO: Proveedor, Debe poderse distinguir entre jurídicas y naturales
         #region Validar_TipoPersona_Proveedor
