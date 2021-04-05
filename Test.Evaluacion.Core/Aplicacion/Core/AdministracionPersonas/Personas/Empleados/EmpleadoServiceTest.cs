@@ -63,11 +63,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await Assert.ThrowsAsync<EmpleadoRequestDtoNullException>(() => empleadoService.Insert(null)).ConfigureAwait(false);
         }
         //TODO: Empleado, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
-        //Preguntar que con esta prueba
         #region Validar_TipoPersona_Empleado
         [Fact]
         [UnitTest]
-        public async Task Validar_TipoPersona_Empleado_Fail()
+        public void Validar_TipoPersona_Empleado_Fail()
         {
             var empleadoDto = new EmpleadoRequestDto
             {
@@ -93,7 +92,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                     AreaId = Guid.NewGuid()
                 }
             };
-            empleadoRepoMock
+            _ = empleadoRepoMock
                 .Setup(m => m.GetAll<EmpleadoEntity>())
                 .Returns(Listentity);
 
@@ -190,7 +189,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -235,7 +234,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            areaRepositorio.Delete(areaEnd);
+            _ = areaRepositorio.Delete(areaEnd);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
@@ -294,7 +293,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 AreaId = Guid.NewGuid()
             };
 
-            await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -374,7 +373,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoDocumento2 = new TipoDocumentoRequestDto
             {
@@ -387,7 +386,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento2 != null || documento2 != default)
                 documentoRepo.Delete(documento2);
 
-            await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -427,7 +426,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             dtoEmpleado.Nombre = "Empleado_fake_Throws_1";
             dtoEmpleado.CodigoEmpleado = "Throws03";
             dtoEmpleado.AreaId = Guid.NewGuid();
-            await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
             dtoEmpleado.Id = id;
 
             var dtoEmpleadoI2 = new EmpleadoRequestDto
@@ -456,7 +455,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            areaRepositorio.Delete(areaEnd);
+            _ = areaRepositorio.Delete(areaEnd);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
@@ -516,7 +515,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 AreaId = Guid.NewGuid()
             };
 
-            await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -596,7 +595,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -635,14 +634,14 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             dtoEmpleado.Id = Guid.NewGuid();
             dtoEmpleado.CodigoEmpleado = "Otro01";
             dtoEmpleado.AreaId = Guid.NewGuid();
-            await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
             dtoEmpleado.Id = id;
 
             _ = empleadoService.Delete(dtoEmpleado);
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            areaRepositorio.Delete(areaEnd);
+            _ = areaRepositorio.Delete(areaEnd);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
@@ -700,11 +699,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             };
 
             empleadoDto.FechaNacimiento = default;
-            await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
 
             empleadoDto.FechaNacimiento = DateTimeOffset.Now;
             empleadoDto.FechaRegistro = default;
-            await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -816,11 +815,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             };
 
             dtoEmpleado.FechaNacimiento = default;
-            await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.FechaNacimiento = DateTimeOffset.Now;
             dtoEmpleado.FechaRegistro = default;
-            await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.FechaRegistro = DateTimeOffset.Now;
             var response = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
@@ -839,7 +838,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         #region Empleado_Tipo_no_juridica
         [Fact]
         [UnitTest]
-        public async Task Empleado_Tipo_juridica()
+        public void Empleado_Tipo_juridica()
         {
             var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
             var tipoDocumentoRepoMock = new Mock<ITipoDocumentoRepositorio>();
@@ -966,7 +965,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -1058,7 +1057,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var provider = service.BuildServiceProvider();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-            await Assert.ThrowsAsync<EmpleadoTipoDocumentoException>(() => empleadoService.Insert(new EmpleadoRequestDto
+            _ = await Assert.ThrowsAsync<EmpleadoTipoDocumentoException>(() => empleadoService.Insert(new EmpleadoRequestDto
             {
                 Nombre = "FakePrueba",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
@@ -1193,7 +1192,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             };
 
             dtoEmpleado.TipoDocumentoId = dtoDocumento2.Id;//Nit
-            await Assert.ThrowsAsync<EmpleadoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.TipoDocumentoId = dtoDocumento.Id;//Cedula
             var response = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
@@ -1263,7 +1262,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 CodigoEmpleado = "empleado01w"
             };
 
-            await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(empleadoDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -1378,7 +1377,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         }
         [Fact]
         [UnitTest]
-        public async void Emplado_Asociado_Area_Full()
+        public async void Emplado_Asociado_Area_Unica_Full()
         {
             var empleadoEntity = new EmpleadoEntity
             {
@@ -1453,7 +1452,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -1484,16 +1483,18 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 CodigoEmpleado = "Prueba19"
             };
 
-            await Assert.ThrowsAsync<EmpleadoAreaIdNullException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoAreaIdNullException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
+            var id = dtoEmpleado.Id;
             dtoEmpleado.AreaId = guidArea;
             var response = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            //dtoEmpleado.Id = Guid.NewGuid();
-            //await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            dtoEmpleado.Id = Guid.NewGuid();
+            await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
+            dtoEmpleado.Id = id;
             _ = empleadoService.Delete(dtoEmpleado);
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
@@ -1525,7 +1526,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -1556,7 +1557,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 CodigoEmpleado = "Prueba19"
             };
 
-            await Assert.ThrowsAsync<EmpleadoAreaIdNullException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoAreaIdNullException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.AreaId = guidArea;
             var response = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
@@ -1564,7 +1565,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             Assert.NotEqual(default, response);
 
             dtoEmpleado.CodigoEmpleado = "Prueba19_Throws";
-            await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             _ = empleadoService.Delete(dtoEmpleado);
             var areaEnd = areaRepositorio
@@ -1592,7 +1593,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var provider = service.BuildServiceProvider();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-            await Assert.ThrowsAsync<EmpleadoNoExistException>(() => empleadoService.Delete(new EmpleadoRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoNoExistException>(() => empleadoService.Delete(new EmpleadoRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -1651,7 +1652,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -1687,7 +1688,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (proveedor != null || proveedor != default)
                 empleadoRepositorio.Delete(proveedor);
 
-            await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+            _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
             var dtoEmpleado2 = new EmpleadoRequestDto
             {
@@ -1716,7 +1717,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var provider = service.BuildServiceProvider();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-            await Assert.ThrowsAsync<EmpleadoNoExistException>(() => empleadoService.Update(new EmpleadoRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoNoExistException>(() => empleadoService.Update(new EmpleadoRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -1804,7 +1805,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -1841,7 +1842,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (proveedor != null || proveedor != default)
                 empleadoRepositorio.Delete(proveedor);
 
-            await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+            _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
             var dtoEmpleado2 = new EmpleadoRequestDto
             {
@@ -1881,7 +1882,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var provider = service.BuildServiceProvider();
             var empleadoService = provider.GetRequiredService<IEmpleadoService>();
 
-            await Assert.ThrowsAsync<EmpleadoNoExistException>(() => empleadoService.Get(new EmpleadoRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoNoExistException>(() => empleadoService.Get(new EmpleadoRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -1938,7 +1939,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -1974,7 +1975,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (proveedor != null || proveedor != default)
                 empleadoRepositorio.Delete(proveedor);
 
-            await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+            _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
             var dtoEmpleado2 = new EmpleadoRequestDto
             {
@@ -1988,24 +1989,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
         }
         #endregion
         #region GetAll
-        //[Fact]
-        //[UnitTest]
-        //public async Task Empleado_GetAll_Test_Fail()
-        //{
-        //    var empleadoRepoMock = new Mock<IEmpleadoRepositorio>();
-        //    empleadoRepoMock
-        //        .Setup(m => m.GetAll<EmpleadoEntity>());
-
-        //    var service = new ServiceCollection();
-
-        //    service.AddTransient(_ => empleadoRepoMock.Object);
-
-        //    service.ConfigurePersonasService(new DbSettings());
-        //    var provider = service.BuildServiceProvider();
-        //    var empleadoService = provider.GetRequiredService<IEmpleadoService>();
-
-        //    await Assert.ThrowsAsync<EmpleadoNoExistException>(() => empleadoService.GetAll()).ConfigureAwait(false);
-        //}
         [Fact]
         [UnitTest]
         public async Task Empleado_GetAll_Test_Full()
@@ -2019,7 +2002,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                     Nombre = "Nombre"
                 }
             };
-            empleadoRepoMock
+            _ = empleadoRepoMock
                 .Setup(m => m.GetAll<EmpleadoEntity>())
                 .Returns(Listentity);
 
@@ -2063,7 +2046,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -2099,7 +2082,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (proveedor != null || proveedor != default)
                 empleadoRepositorio.Delete(proveedor);
 
-            await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
+            _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
             var result = mapper.Map<IEnumerable<EmpleadoEntity>>(await empleadoService.GetAll().ConfigureAwait(false));
 
@@ -2135,7 +2118,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento != null || documento != default)
                 documentoRepo.Delete(documento);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoDocumento2 = new TipoDocumentoRequestDto
             {
@@ -2148,7 +2131,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             if (documento2 != null || documento2 != default)
                 documentoRepo.Delete(documento2);
 
-            await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoArea = new AreaRequestDto
             {
@@ -2185,29 +2168,29 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
 
             dtoEmpleado.CodigoEmpleado = "Prueba19_Throws";
-            await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoAreaIdAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             var id = dtoEmpleado.Id;
             dtoEmpleado.Id = Guid.NewGuid();
             dtoEmpleado.AreaId = Guid.NewGuid();
             dtoEmpleado.CodigoEmpleado = "Otro01";
-            await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.Nombre = "Fake2";
-            await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoCodigoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
             dtoEmpleado.Id = id;
 
             dtoEmpleado.CodigoTipoDocumento = "000000002";
             dtoEmpleado.FechaNacimiento = default;
-            await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoFechaNacimientoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.FechaNacimiento = DateTimeOffset.Now;
             dtoEmpleado.FechaRegistro = default;
-            await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoFechaRegistroException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.FechaRegistro = DateTimeOffset.Now;
             dtoEmpleado.TipoDocumentoId = dtoDocumento2.Id;
-            await Assert.ThrowsAsync<EmpleadoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadoTipoDocumentoException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             _ = empleadoService.Delete(dtoEmpleado);
             var areaEnd = areaRepositorio
