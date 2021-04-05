@@ -59,7 +59,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             _ = await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Get(null)).ConfigureAwait(false);
             _ = await Assert.ThrowsAsync<ProveedorRequestDtoNullException>(() => proveedorService.Insert(null)).ConfigureAwait(false);
         }
-        //TODO: Proveedor, Debe poderse distinguir entre jurídicas y naturales
+        //Proveedor, Debe poderse distinguir entre jurídicas y naturales
         #region Validar_TipoPersona_Proveedor
         [Fact]
         [UnitTest]
@@ -192,7 +192,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Proveedor, No puede haber dos personas con el mismo numero y tipo de identificación
+        //Proveedor, No puede haber dos personas con el mismo numero y tipo de identificación
         #region No_Se_Repite_CodigoTipoDocumento_Proveedor
         [Fact]
         [UnitTest]
@@ -364,7 +364,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Proveedor, No puede haber dos personas con el mismo nombre / razón social
+        //Proveedor, No puede haber dos personas con el mismo nombre / razón social
         #region No_Se_Repite_Nombre_Proveedor
         [Fact]
         [UnitTest]
@@ -495,7 +495,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Proveedor, La fecha de nacimiento / creación es obligatoria
+        //Proveedor, La fecha de nacimiento / creación es obligatoria
         #region Proveedor_Validar_Fechas
         [Fact]
         [UnitTest]
@@ -616,7 +616,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Proveedor, Test de integracion para el Proveedor
+        //Proveedor, Test de integracion para el Proveedor
         #region Delect
         [Fact]
         [UnitTest]

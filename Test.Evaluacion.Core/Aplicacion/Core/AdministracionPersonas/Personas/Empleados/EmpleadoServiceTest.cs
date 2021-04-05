@@ -62,7 +62,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await Assert.ThrowsAsync<EmpleadoRequestDtoNullException>(() => empleadoService.Get(null)).ConfigureAwait(false);
             _ = await Assert.ThrowsAsync<EmpleadoRequestDtoNullException>(() => empleadoService.Insert(null)).ConfigureAwait(false);
         }
-        //TODO: Empleado, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
+        //Empleado, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
         #region Validar_TipoPersona_Empleado
         [Fact]
         [UnitTest]
@@ -71,7 +71,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var empleadoDto = new EmpleadoRequestDto
             {
                 Nombre = "fake",
-                //TODO: Debe poderse distinguir entre jurídicas y naturales
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
@@ -238,7 +237,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Empleado, No puede haber dos personas con el mismo numero y tipo de identificación
+        //Empleado, No puede haber dos personas con el mismo numero y tipo de identificación
         #region No_Se_Repite_CodigoTipoDocumento_Empleado
         [Fact]
         [UnitTest]
@@ -460,7 +459,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Empleado, No puede haber dos personas con el mismo nombre / razón social
+        //Empleado, No puede haber dos personas con el mismo nombre / razón social
         #region No_Se_Repite_Nombre_Empleado
         [Fact]
         [UnitTest]
@@ -645,7 +644,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Empleado, La fecha de nacimiento / creación es obligatoria
+        //Empleado, La fecha de nacimiento / creación es obligatoria
         #region Empleado_Validar_Fechas
         [Fact]
         [UnitTest]
@@ -834,7 +833,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Empleado, Un empleado no puede ser persona jurídica
+        //Empleado, Un empleado no puede ser persona jurídica
         #region Empleado_Tipo_no_juridica
         [Fact]
         [UnitTest]
@@ -1015,7 +1014,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Una persona no puede tener el tipo de documento nit 
+        //Una persona no puede tener el tipo de documento nit 
         #region Empleado_Validar_NIT
         [Fact]
         [UnitTest]
@@ -1208,7 +1207,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Deben tener un código único y estar asociados a un área.
+        //Deben tener un código único y estar asociados a un área.
         #region Emplado_Asociado_Area_Codigo_Unico
         [Fact]
         [UnitTest]
@@ -1575,7 +1574,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Crud
+        //Crud
         #region Delect
         [Fact]
         [UnitTest]
@@ -2093,7 +2092,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Test de integracion para empleado
+        //Test de integracion para empleado
         [Fact]
         [IntegrationTest]
         public async void Validacion_Parametros_Empleado_Integration()

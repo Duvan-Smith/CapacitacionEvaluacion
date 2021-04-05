@@ -59,7 +59,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Get(null)).ConfigureAwait(false);
             _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Insert(null)).ConfigureAwait(false);
         }
-        //TODO: Cliente, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
+        //Cliente, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
         #region Validar_TipoPersona_Cliente
         [Fact]
         [UnitTest]
@@ -155,7 +155,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var result = await clienteService.Insert(new ClienteRequestDto
             {
                 Nombre = "fake",
-                //TODO: Debe poderse distinguir entre jurídicas y naturales
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -215,7 +214,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Cliente, No puede haber dos personas con el mismo numero y tipo de identificación
+        //Cliente, No puede haber dos personas con el mismo numero y tipo de identificación
         #region No_Se_Repite_CodigoTipoDocumento_Cliente
         [Fact]
         [UnitTest]
@@ -413,7 +412,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Cliente, No puede haber dos personas con el mismo nombre / razón social
+        //Cliente, No puede haber dos personas con el mismo nombre / razón social
         #region No_Se_Repite_Nombre_Cliente
         [Fact]
         [UnitTest]
@@ -498,7 +497,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var result = await clienteService.Insert(new ClienteRequestDto
             {
                 Nombre = "fake",
-                //TODO: Debe poderse distinguir entre jurídicas y naturales
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -557,7 +555,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Cliente, La fecha de nacimiento / creación es obligatoria
+        //Cliente, La fecha de nacimiento / creación es obligatoria
         #region Cliente_Validar_Fechas
         [Fact]
         [UnitTest]
@@ -707,7 +705,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Cliente, Una persona no puede tener el tipo de documento nit 
+        //Cliente, Una persona no puede tener el tipo de documento nit 
         #region Cliente_Validar_NIT
         [Fact]
         [UnitTest]
@@ -805,7 +803,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var result = await clienteService.Insert(new ClienteRequestDto
             {
                 Nombre = "fake",
-                //TODO: Debe poderse distinguir entre jurídicas y naturales
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
@@ -1326,7 +1323,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Cliente, Test de integracion para el cliente
+        //Cliente, Test de integracion para el cliente
         [Fact]
         [IntegrationTest]
         public async void Validacion_Parametros_Cliente_Integration()

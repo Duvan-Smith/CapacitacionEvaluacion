@@ -55,7 +55,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             _ = await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Get(null)).ConfigureAwait(false);
             _ = await Assert.ThrowsAsync<AreaRequestDtoNullException>(() => areaService.Insert(null)).ConfigureAwait(false);
         }
-        //TODO: Area, No se pueden eliminar áreas que tengan empleados asociados
+        //Area, No se pueden eliminar áreas que tengan empleados asociados
         #region No_se_pueden_eliminar_areas_que_tengan_empleados_asociados
         [Fact]
         [UnitTest]
@@ -201,7 +201,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
-        //TODO: Las área deben tener una persona encargada
+        //Las área deben tener una persona encargada
         #region Empleado_Encargado_Area
         [Fact]
         [UnitTest]
