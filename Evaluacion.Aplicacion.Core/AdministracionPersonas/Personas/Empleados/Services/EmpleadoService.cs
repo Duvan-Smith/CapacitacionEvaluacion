@@ -21,7 +21,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         private readonly IEmpleadoRepositorio _empleadoRepositorio;
         private readonly IMapper _mapper;
         private readonly IIntegracionPersonaService _integracionPersonaService;
-        private readonly ITipoDocumentoRepositorio  _tipoDocumentoRepositorio;
+        private readonly ITipoDocumentoRepositorio _tipoDocumentoRepositorio;
 
         public EmpleadoService(IEmpleadoRepositorio empleadoRepositorio, IMapper mapper, IIntegracionPersonaService integracionPersonaService, ITipoDocumentoRepositorio tipoDocumentoRepositorio)
         {
@@ -34,7 +34,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
-            return Task.FromResult(_empleadoRepositorio.Delete(entity));
+            return _empleadoRepositorio.Delete(entity);
         }
         public Task<EmpleadoDto> Get(EmpleadoRequestDto requestDto)
         {
@@ -71,7 +71,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             var listdocumento = _tipoDocumentoRepositorio
                 .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
             if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
-                    throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
+                throw new EmpleadoTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }
         public Task<bool> Update(EmpleadoRequestDto requestDto)
         {
@@ -120,7 +120,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.S
             ValidationEmpleadoAndCliente(requestDto);
             ValidationParameterDB(_mapper.Map<EmpleadoRequestDto>(entity), listentity);
 
-            return Task.FromResult(_empleadoRepositorio.Update(entity));
+            return _empleadoRepositorio.Update(entity);
         }
         public async Task<string> ExportAll()
         {

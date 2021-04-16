@@ -337,9 +337,9 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoDocumento2 = new TipoDocumentoRequestDto
             {
@@ -350,9 +350,9 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
                 .FirstOrDefault();
             if (documento2 != null || documento2 != default)
-                documentoRepo.Delete(documento2);
+                _ = await documentoRepo.Delete(documento2).ConfigureAwait(false);
 
-            await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -371,7 +371,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                             .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre)
                             .FirstOrDefault();
             if (usernameExist != null || usernameExist != default)
-                clienteRepositorio.Delete(usernameExist);
+                _ = await clienteRepositorio.Delete(usernameExist).ConfigureAwait(false);
 
             var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
@@ -380,7 +380,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var id = dtoCliente.Id;
             dtoCliente.Id = Guid.NewGuid();
             dtoCliente.Nombre = "Cliente_fake_Throws_1";
-            await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
             dtoCliente.Id = id;
 
             var dtoCliente2 = new ClienteRequestDto
@@ -400,7 +400,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                             .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente2.Nombre)
                             .FirstOrDefault();
             if (usernameExist2 != null || usernameExist2 != default)
-                clienteRepositorio.Delete(usernameExist2);
+                _ = await clienteRepositorio.Delete(usernameExist2).ConfigureAwait(false);
 
             var response2 = await clienteService.Insert(dtoCliente2).ConfigureAwait(false);
             Assert.NotNull(response2.ToString());
@@ -831,7 +831,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -844,7 +844,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
                 .FirstOrDefault();
             if (documento2 != null || documento2 != default)
-                documentoRepo.Delete(documento2);
+                _ = await documentoRepo.Delete(documento2).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
@@ -909,7 +909,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 .Returns(entity);
             clienteRepoMock
                 .Setup(m => m.Delete(It.IsAny<ClienteEntity>()))
-                .Returns(true);
+                .Returns(Task.FromResult(true));
 
             var service = new ServiceCollection();
 
@@ -1035,7 +1035,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             _ = clienteRepoMock
                 .Setup(m => m.Update(It.IsAny<ClienteEntity>()))
-                .Returns(true);
+                .Returns(Task.FromResult(true));
 
             var service = new ServiceCollection();
 

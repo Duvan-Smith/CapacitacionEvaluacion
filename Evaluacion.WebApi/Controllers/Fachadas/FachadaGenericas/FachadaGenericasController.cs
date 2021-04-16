@@ -24,11 +24,11 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         public async Task<AreaResponseDto> InsertArea(AreaRequestDto requestDto) =>
             await _fachadaGenericasService.AreaManagementInsert(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(UpdateArea))]
+        [HttpPut(nameof(UpdateArea))]
         public async Task<AreaResponseDto> UpdateArea(AreaRequestDto requestDto) =>
             await _fachadaGenericasService.AreaManagementUpdate(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(DeleteArea))]
+        [HttpDelete(nameof(DeleteArea))]
         public async Task<AreaResponseDto> DeleteArea(AreaRequestDto requestDto) =>
             await _fachadaGenericasService.AreaManagementDelete(requestDto).ConfigureAwait(false);
 
@@ -45,11 +45,11 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         public async Task<TipoDocumentoResponseDto> InsertTipoDocumento(TipoDocumentoRequestDto requestDto) =>
             await _fachadaGenericasService.TipoDocumentoManagementInsert(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(UpdateTipoDocumento))]
+        [HttpPut(nameof(UpdateTipoDocumento))]
         public async Task<TipoDocumentoResponseDto> UpdateTipoDocumento(TipoDocumentoRequestDto requestDto) =>
             await _fachadaGenericasService.TipoDocumentoManagementUpdate(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(DeleteTipoDocumento))]
+        [HttpDelete(nameof(DeleteTipoDocumento))]
         public async Task<TipoDocumentoResponseDto> DeleteTipoDocumento(TipoDocumentoRequestDto requestDto) =>
             await _fachadaGenericasService.TipoDocumentoManagementDelete(requestDto).ConfigureAwait(false);
 

@@ -15,28 +15,30 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5. Infraestructura", "5. In
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pruebas", "Pruebas", "{AD17CB06-CA43-4EE2-AF0D-42682996D86A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.Dominio.Core", "Evaluacion.Dominio.Core\Evaluacion.Dominio.Core.csproj", "{E3A5D75C-5D81-4EA9-9996-7BFA7B471A90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.Dominio.Core", "Evaluacion.Dominio.Core\Evaluacion.Dominio.Core.csproj", "{E3A5D75C-5D81-4EA9-9996-7BFA7B471A90}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.1 Datos", "5.1 Datos", "{77E16319-9233-42A7-97B2-C90572D800F6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.2 Transversal", "5.2 Transversal", "{540C3A10-B198-486D-9E79-6FA29468246F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.Infraestructura.Transversal", "Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj", "{232ED154-CC74-4BE2-89D5-3B264A5FEC18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.Infraestructura.Transversal", "Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj", "{232ED154-CC74-4BE2-89D5-3B264A5FEC18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Evaluacion.Core", "Test.Evaluacion.Core\Test.Evaluacion.Core.csproj", "{59A38C5A-4425-46F5-B9A0-2C6475B2BEEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Evaluacion.Core", "Test.Evaluacion.Core\Test.Evaluacion.Core.csproj", "{59A38C5A-4425-46F5-B9A0-2C6475B2BEEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.Infraestructura.Datos.Persistencia.Core", "Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj", "{152C8B76-2E93-45BB-AEF2-980007119660}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.Infraestructura.Datos.Persistencia.Core", "Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj", "{152C8B76-2E93-45BB-AEF2-980007119660}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1410198F-4910-438A-B247-A8E4938DE82A}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.Aplicacion.Core", "Evaluacion.Aplicacion.Core\Evaluacion.Aplicacion.Core.csproj", "{2E16AFD6-406B-48DB-BC3F-667ECFCA3F21}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.Aplicacion.Core", "Evaluacion.Aplicacion.Core\Evaluacion.Aplicacion.Core.csproj", "{2E16AFD6-406B-48DB-BC3F-667ECFCA3F21}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.Aplicacion.Dto", "Evaluacion.Aplicacion.Dto\Evaluacion.Aplicacion.Dto.csproj", "{37668638-BD34-401F-9695-AF88D4601289}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.Aplicacion.Dto", "Evaluacion.Aplicacion.Dto\Evaluacion.Aplicacion.Dto.csproj", "{37668638-BD34-401F-9695-AF88D4601289}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.WebApi", "Evaluacion.WebApi\Evaluacion.WebApi.csproj", "{CCCB0E5D-44B4-4511-9516-281602D2F2D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.WebApi", "Evaluacion.WebApi\Evaluacion.WebApi.csproj", "{CCCB0E5D-44B4-4511-9516-281602D2F2D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.BlazorUI", "Evaluacion.BlazorUI\Evaluacion.BlazorUI.csproj", "{D956E610-C61C-4900-804A-D6EE77AA6BC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,6 +74,10 @@ Global
 		{CCCB0E5D-44B4-4511-9516-281602D2F2D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CCCB0E5D-44B4-4511-9516-281602D2F2D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CCCB0E5D-44B4-4511-9516-281602D2F2D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D956E610-C61C-4900-804A-D6EE77AA6BC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D956E610-C61C-4900-804A-D6EE77AA6BC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D956E610-C61C-4900-804A-D6EE77AA6BC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D956E610-C61C-4900-804A-D6EE77AA6BC7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -86,6 +92,7 @@ Global
 		{2E16AFD6-406B-48DB-BC3F-667ECFCA3F21} = {41B3D6DE-3237-4B46-8458-FD0E4BD8CF16}
 		{37668638-BD34-401F-9695-AF88D4601289} = {41B3D6DE-3237-4B46-8458-FD0E4BD8CF16}
 		{CCCB0E5D-44B4-4511-9516-281602D2F2D7} = {C48F417F-5585-4069-95F3-0AAD466D5199}
+		{D956E610-C61C-4900-804A-D6EE77AA6BC7} = {2617DA4C-9AA3-43B0-B77C-6C1957D4B024}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {09F2E3B1-FBD9-4265-A284-11BA3EAC44DF}

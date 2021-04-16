@@ -26,7 +26,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
-            return Task.FromResult(_proveedorRepositorio.Delete(entity));
+            return _proveedorRepositorio.Delete(entity);
         }
         public Task<ProveedorDto> Get(ProveedorRequestDto requestDto)
         {
@@ -58,7 +58,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
-            
+
             #region Validation If
             if (!string.IsNullOrEmpty(requestDto.Nombre))
                 entity.Nombre = requestDto.Nombre;
@@ -87,13 +87,13 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores
             if (requestDto.TipoPersona != default)
                 entity.TipoPersona = (Dominio.Core.Especificas.Personas.TipoPersona)requestDto.TipoPersona;
             #endregion
-            
+
             var listentity = _proveedorRepositorio
                 .GetAll<ProveedorEntity>();
 
             ValidationParameterDB(_mapper.Map<ProveedorRequestDto>(entity), listentity);
 
-            return Task.FromResult(_proveedorRepositorio.Update(entity));
+            return _proveedorRepositorio.Update(entity);
         }
         public async Task<string> ExportAll()
         {

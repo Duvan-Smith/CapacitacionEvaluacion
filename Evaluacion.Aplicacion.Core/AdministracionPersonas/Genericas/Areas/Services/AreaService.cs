@@ -32,7 +32,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
             if (empleado)
                 throw new EmpleadoAreaAlreadyExistException(requestDto.NombreArea);
             var entity = _mapper.Map<AreaEntity>(requestDto);
-            return Task.FromResult(_areaRepositorio.Delete(entity));
+            return _areaRepositorio.Delete(entity);
         }
 
         public Task<IEnumerable<AreaDto>> GetAll()
@@ -75,7 +75,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Serv
 
             entity.EmpleadoResponsableId = requestDto.EmpleadoResponsableId;
 
-            return Task.FromResult(_areaRepositorio.Update(entity));
+            return _areaRepositorio.Update(entity);
         }
 
         private static void ValidationDto(AreaRequestDto requestDto)

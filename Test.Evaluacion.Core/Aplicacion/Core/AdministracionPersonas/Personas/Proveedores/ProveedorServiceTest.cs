@@ -651,7 +651,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 .Returns(entity);
             proveedorRepoMock
                 .Setup(m => m.Delete(It.IsAny<ProveedorEntity>()))
-                .Returns(true);
+                .Returns(Task.FromResult(true));
 
             var service = new ServiceCollection();
 
@@ -762,7 +762,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 .Returns(entity);
             _ = proveedorRepoMock
                 .Setup(m => m.Update(It.IsAny<ProveedorEntity>()))
-                .Returns(true);
+                .Returns(Task.FromResult(true));
 
             var service = new ServiceCollection();
 

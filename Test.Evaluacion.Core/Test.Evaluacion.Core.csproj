@@ -7,6 +7,18 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Aplicacion\Core\AdministracionPersonas\Genericas\FachadaGenericas\**" />
+    <Compile Remove="Aplicacion\Core\AdministracionPersonas\Personas\FachadaPersonas\**" />
+    <Compile Remove="Aplicacion\Dto\**" />
+    <EmbeddedResource Remove="Aplicacion\Core\AdministracionPersonas\Genericas\FachadaGenericas\**" />
+    <EmbeddedResource Remove="Aplicacion\Core\AdministracionPersonas\Personas\FachadaPersonas\**" />
+    <EmbeddedResource Remove="Aplicacion\Dto\**" />
+    <None Remove="Aplicacion\Core\AdministracionPersonas\Genericas\FachadaGenericas\**" />
+    <None Remove="Aplicacion\Core\AdministracionPersonas\Personas\FachadaPersonas\**" />
+    <None Remove="Aplicacion\Dto\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.7.1" />
     <PackageReference Include="Moq" Version="4.16.1" />
@@ -27,12 +39,6 @@
     <ProjectReference Include="..\Evaluacion.Aplicacion.Core\Evaluacion.Aplicacion.Core.csproj" />
     <ProjectReference Include="..\Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj" />
     <ProjectReference Include="..\Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Aplicacion\Core\AdministracionPersonas\Genericas\FachadaGenericas\" />
-    <Folder Include="Aplicacion\Core\AdministracionPersonas\Personas\FachadaPersonas\" />
-    <Folder Include="Aplicacion\Dto\" />
   </ItemGroup>
 
 </Project>

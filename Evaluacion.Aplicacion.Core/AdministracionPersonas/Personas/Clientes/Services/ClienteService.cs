@@ -29,7 +29,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
-            return Task.FromResult(_clienteRepositorio.Delete(entity));
+            return _clienteRepositorio.Delete(entity);
         }
         public Task<ClienteDto> Get(ClienteRequestDto requestDto)
         {
@@ -98,7 +98,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             ValidationCliente(requestDto);
             ValidationParameterDB(_mapper.Map<ClienteRequestDto>(entity), listentity);
 
-            return Task.FromResult(_clienteRepositorio.Update(entity));
+            return _clienteRepositorio.Update(entity);
         }
         public async Task<string> ExportAll()
         {
@@ -151,7 +151,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Se
             var listdocumento = _tipoDocumentoRepositorio
                 .SearchMatching<TipoDocumentoEntity>(x => x.Id == requestDto.TipoDocumentoId).FirstOrDefault();
             if (listdocumento.NombreTipoDocumento.ToLower() == "nit".ToLower())
-                    throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
+                throw new ClienteTipoDocumentoException(requestDto.TipoDocumentoId.ToString());
         }
 
     }

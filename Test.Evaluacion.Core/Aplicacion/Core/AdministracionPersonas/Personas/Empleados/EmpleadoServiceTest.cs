@@ -186,7 +186,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -200,7 +200,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -229,11 +229,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            _ = empleadoService.Delete(dtoEmpleado);
+            _ = await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            _ = areaRepositorio.Delete(areaEnd);
+            _ = await areaRepositorio.Delete(areaEnd).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
@@ -592,7 +592,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -606,7 +606,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -636,7 +636,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = await Assert.ThrowsAsync<EmpleadonameAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
             dtoEmpleado.Id = id;
 
-            _ = empleadoService.Delete(dtoEmpleado);
+            _ = await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
@@ -1143,7 +1143,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -1156,7 +1156,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
                 .FirstOrDefault();
             if (documento2 != null || documento2 != default)
-                documentoRepo.Delete(documento2);
+                _ = await documentoRepo.Delete(documento2).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
@@ -1170,7 +1170,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -1202,7 +1202,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            areaRepositorio.Delete(areaEnd);
+            _ = await areaRepositorio.Delete(areaEnd).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
@@ -1401,7 +1401,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             _ = empleadoReposMock
                 .Setup(m => m.GetAll<EmpleadoEntity>())
                 .Returns(new List<EmpleadoEntity> { empleadoEntity });
-            
+
             _ = empleadoReposMock
                 .Setup(m => m.Insert(It.IsAny<EmpleadoEntity>()))
                 .Returns(Task.FromResult(new EmpleadoEntity { Id = Guid.NewGuid() }));
@@ -1449,7 +1449,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -1463,7 +1463,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -1491,14 +1491,14 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             Assert.NotEqual(default, response);
 
             dtoEmpleado.Id = Guid.NewGuid();
-            await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<EmpleadocodeAlreadyExistException>(() => empleadoService.Insert(dtoEmpleado)).ConfigureAwait(false);
 
             dtoEmpleado.Id = id;
             _ = empleadoService.Delete(dtoEmpleado);
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            areaRepositorio.Delete(areaEnd);
+            _ = await areaRepositorio.Delete(areaEnd).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         [Fact]
@@ -1523,7 +1523,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -1537,7 +1537,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -1570,7 +1570,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
-            areaRepositorio.Delete(areaEnd);
+            _ = await areaRepositorio.Delete(areaEnd).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
@@ -1609,7 +1609,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .Returns(entity);
             empleadoRepoMock
                 .Setup(m => m.Delete(It.IsAny<EmpleadoEntity>()))
-                .Returns(true);
+                .Returns(Task.FromResult(true));
 
             var service = new ServiceCollection();
 
@@ -1649,7 +1649,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -1663,7 +1663,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -1685,7 +1685,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<EmpleadoEntity>(x => x.Nombre == dtoEmpleado.Nombre || x.Id == dtoEmpleado.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
-                empleadoRepositorio.Delete(proveedor);
+                _ = await empleadoRepositorio.Delete(proveedor).ConfigureAwait(false);
 
             _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
@@ -1754,7 +1754,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
 
             _ = empleadoRepoMock
                 .Setup(m => m.Update(It.IsAny<EmpleadoEntity>()))
-                .Returns(true);
+                .Returns(Task.FromResult(true));
 
             var service = new ServiceCollection();
 
@@ -1802,7 +1802,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -1816,7 +1816,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -1839,7 +1839,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<EmpleadoEntity>(x => x.Nombre == dtoEmpleado.Nombre || x.Id == dtoEmpleado.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
-                empleadoRepositorio.Delete(proveedor);
+                _ = await empleadoRepositorio.Delete(proveedor).ConfigureAwait(false);
 
             _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
@@ -1936,7 +1936,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -1950,7 +1950,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -1972,7 +1972,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<EmpleadoEntity>(x => x.Nombre == dtoEmpleado.Nombre || x.Id == dtoEmpleado.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
-                empleadoRepositorio.Delete(proveedor);
+                _ = await empleadoRepositorio.Delete(proveedor).ConfigureAwait(false);
 
             _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
@@ -2043,7 +2043,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -2057,7 +2057,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -2079,7 +2079,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<EmpleadoEntity>(x => x.Nombre == dtoEmpleado.Nombre || x.Id == dtoEmpleado.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
-                empleadoRepositorio.Delete(proveedor);
+                _ = await empleadoRepositorio.Delete(proveedor).ConfigureAwait(false);
 
             _ = await empleadoService.Insert(dtoEmpleado).ConfigureAwait(false);
 
@@ -2115,7 +2115,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -2128,7 +2128,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
                 .FirstOrDefault();
             if (documento2 != null || documento2 != default)
-                documentoRepo.Delete(documento2);
+                _ = await documentoRepo.Delete(documento2).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
@@ -2142,7 +2142,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea)
                 .FirstOrDefault();
             if (area != null || area != default)
-                areaRepositorio.Delete(area);
+                _ = await areaRepositorio.Delete(area).ConfigureAwait(false);
             var guidArea = await areaService.Insert(dtoArea).ConfigureAwait(false);
 
             var dtoEmpleado = new EmpleadoRequestDto
@@ -2195,7 +2195,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var areaEnd = areaRepositorio
                 .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea || x.Id == dtoArea.Id)
                 .FirstOrDefault();
-            areaRepositorio.Delete(areaEnd);
+            _ = await areaRepositorio.Delete(areaEnd).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }

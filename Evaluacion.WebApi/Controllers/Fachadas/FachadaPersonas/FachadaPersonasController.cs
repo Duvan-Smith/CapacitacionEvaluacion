@@ -25,11 +25,11 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         public async Task<ClienteResponseDto> InsertCliente(ClienteRequestDto requestDto) =>
             await _fachadaPersonasService.ClienteManagementInsert(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(UpdateCliente))]
+        [HttpPut(nameof(UpdateCliente))]
         public async Task<ClienteResponseDto> UpdateCliente(ClienteRequestDto requestDto) =>
             await _fachadaPersonasService.ClienteManagementUpdate(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(DeleteCliente))]
+        [HttpDelete(nameof(DeleteCliente))]
         public async Task<ClienteResponseDto> DeleteCliente(ClienteRequestDto requestDto) =>
             await _fachadaPersonasService.ClienteManagementDelete(requestDto).ConfigureAwait(false);
 
@@ -54,11 +54,11 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         public async Task<EmpleadoResponseDto> InsertEmpleado(EmpleadoRequestDto requestDto) =>
             await _fachadaPersonasService.EmpleadoManagementInsert(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(UpdateEmpleado))]
+        [HttpPut(nameof(UpdateEmpleado))]
         public async Task<EmpleadoResponseDto> UpdateEmpleado(EmpleadoRequestDto requestDto) =>
             await _fachadaPersonasService.EmpleadoManagementUpdate(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(DeleteEmpleado))]
+        [HttpDelete(nameof(DeleteEmpleado))]
         public async Task<EmpleadoResponseDto> DeleteEmpleado(EmpleadoRequestDto requestDto) =>
             await _fachadaPersonasService.EmpleadoManagementDelete(requestDto).ConfigureAwait(false);
 
@@ -83,11 +83,11 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
         public async Task<ProveedorResponseDto> InsertProveedor(ProveedorRequestDto requestDto) =>
             await _fachadaPersonasService.ProveedorManagementInsert(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(UpdateProveedor))]
+        [HttpPut(nameof(UpdateProveedor))]
         public async Task<ProveedorResponseDto> UpdateProveedor(ProveedorRequestDto requestDto) =>
             await _fachadaPersonasService.ProveedorManagementUpdate(requestDto).ConfigureAwait(false);
 
-        [HttpPost(nameof(DeleteProveedor))]
+        [HttpDelete(nameof(DeleteProveedor))]
         public async Task<ProveedorResponseDto> DeleteProveedor(ProveedorRequestDto requestDto) =>
             await _fachadaPersonasService.ProveedorManagementDelete(requestDto).ConfigureAwait(false);
 

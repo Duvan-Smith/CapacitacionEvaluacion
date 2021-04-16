@@ -22,7 +22,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
         {
             ValidationDto(requestDto);
             var entity = ValidationEntity(requestDto);
-            return Task.FromResult(_tipoDocumentoRepositorio.Delete(entity));
+            return _tipoDocumentoRepositorio.Delete(entity);
         }
 
 
@@ -61,7 +61,7 @@ namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocume
             if (!string.IsNullOrEmpty(requestDto.NombreTipoDocumento))
                 entity.NombreTipoDocumento = requestDto.NombreTipoDocumento;
 
-            return Task.FromResult(_tipoDocumentoRepositorio.Update(entity));
+            return _tipoDocumentoRepositorio.Update(entity);
         }
         private static void ValidationDto(TipoDocumentoRequestDto requestDto)
         {
