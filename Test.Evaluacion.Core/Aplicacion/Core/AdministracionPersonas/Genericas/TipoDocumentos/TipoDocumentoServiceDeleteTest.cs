@@ -113,7 +113,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoTipoDocumento = new TipoDocumentoRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreTipoDocumento = "FakeListTipoDocumento1",
+                NombreTipoDocumento = "FakeListTipoDocumentoDeleteI1",
             };
 
             var area = areaRepositorio

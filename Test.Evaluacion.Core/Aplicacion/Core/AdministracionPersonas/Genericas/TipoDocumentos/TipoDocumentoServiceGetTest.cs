@@ -105,7 +105,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoTipoDocumento = new TipoDocumentoRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreTipoDocumento = "FakeListTipoDocumento1",
+                NombreTipoDocumento = "FakeListTipoDocumentoGetI1",
             };
 
             var area = areaRepositorio
@@ -123,6 +123,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var result = await tipoDocumentoService.Get(dtoTipoDocumento2).ConfigureAwait(false);
 
             Assert.Equal(dtoTipoDocumento.Id, result.Id);
+            _ = await tipoDocumentoService.Delete(dtoTipoDocumento).ConfigureAwait(false);
         }
         #endregion
     }

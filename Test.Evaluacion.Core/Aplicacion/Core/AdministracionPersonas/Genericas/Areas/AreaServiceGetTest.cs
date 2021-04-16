@@ -117,7 +117,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoArea = new AreaRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreArea = "FakeListTipoDocumento1",
+                NombreArea = "FakeListAreaGetI",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
 
@@ -137,6 +137,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var result = await areaService.Get(dtoArea2).ConfigureAwait(false);
 
             Assert.Equal(dtoArea.Id, result.Id);
+
+            _ = await areaService.Delete(dtoArea).ConfigureAwait(false);
         }
         #endregion
     }

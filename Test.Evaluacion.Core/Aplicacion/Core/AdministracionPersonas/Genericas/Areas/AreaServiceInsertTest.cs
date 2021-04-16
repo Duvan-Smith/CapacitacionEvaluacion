@@ -156,11 +156,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoArea = new AreaRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreArea = "FakeListEmpleado",
+                NombreArea = "FakeListAreaInsert2",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
             var area = areaRepo
-                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea || x.Id == dtoArea.Id)
+                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea && x.Id == dtoArea.Id)
                 .FirstOrDefault();
             if (area != null || area != default)
                 _ = await areaRepo.Delete(area).ConfigureAwait(false);
@@ -170,8 +170,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoEmpleado = new EmpleadoRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "Fake_Empleado_Area_2",
-                Apellido = "Fake_Empleado_Area_2",
+                Nombre = "Fake_Empleado_AreaInsert_2",
+                Apellido = "Fake_Empleado_AreaInsert_2",
                 FechaNacimiento = DateTimeOffset.Now,
                 FechaRegistro = DateTimeOffset.Now,
                 NumeroTelefono = 0,

@@ -1015,15 +1015,15 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoProveedor = new ProveedorRequestDto
             {
                 Id = Guid.Parse("45c2a9b5-1eac-48d3-83a4-ff692326e4f7"),
-                Nombre = "FakeListTipoDocumento1",
-                Apellido = "FakeListTipoDocumento1",
+                Nombre = "NombreProveedor",
+                Apellido = "NombreProveedor",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
                 CodigoTipoDocumento = "000000008",
@@ -1037,7 +1037,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.P
                 .SearchMatching<ProveedorEntity>(x => x.Nombre == dtoProveedor.Nombre || x.Id == dtoProveedor.Id)
                 .FirstOrDefault();
             if (proveedor != null || proveedor != default)
-                proveedorRepositorio.Delete(proveedor);
+                _ = await proveedorRepositorio.Delete(proveedor).ConfigureAwait(false);
 
             _ = await proveedorService.Insert(dtoProveedor).ConfigureAwait(false);
 

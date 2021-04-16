@@ -103,7 +103,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
             var dtoTipoDocumento = new TipoDocumentoRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreTipoDocumento = "FakeListTipoDocumento",
+                NombreTipoDocumento = "FakeListTipoDocumentoInsert",
             };
             var result = await tipoDocumentoService.Insert(dtoTipoDocumento).ConfigureAwait(false);
 

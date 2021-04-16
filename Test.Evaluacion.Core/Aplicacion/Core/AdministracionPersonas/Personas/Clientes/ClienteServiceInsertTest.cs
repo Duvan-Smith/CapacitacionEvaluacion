@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
+﻿using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Configuration;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.TipoDocumentos.Services;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Excepciones;
 using Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Services;
@@ -26,7 +25,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
         Natural = 1,
         Juridico = 2,
     }
-    public class ClienteServiceTest
+    public class ClienteServiceInsertTest
     {
         private static ServiceProvider ServiceCollectionCliente()
         {
@@ -43,21 +42,6 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var provider = service.BuildServiceProvider();
             return provider;
-        }
-        [Fact]
-        [UnitTest]
-        public async Task Check_AllParameterNull_Cliente_Exception()
-        {
-            var service = new ServiceCollection();
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-
-            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Update(null)).ConfigureAwait(false);
-            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Delete(null)).ConfigureAwait(false);
-            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Get(null)).ConfigureAwait(false);
-            _ = await Assert.ThrowsAsync<ClienteRequestDtoNullException>(() => clienteService.Insert(null)).ConfigureAwait(false);
         }
         //Cliente, Debe poderse distinguir entre jurídicas y naturales - hace parte de los parametros
         #region Validar_TipoPersona_Cliente
@@ -109,10 +93,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
             };
 
-            await Assert.ThrowsAsync<ClienteTipoPersonaNullException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteTipoPersonaNullException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.TipoPersona = 0;
-            await Assert.ThrowsAsync<ClienteTipoPersonaNullException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteTipoPersonaNullException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -177,15 +161,15 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var dtoDocumento = new TipoDocumentoRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofakeCliente11",
+                NombreTipoDocumento = "fakeDocumentoClienteInsert11",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -202,7 +186,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var id = dtoCliente.Id;
             dtoCliente.Id = Guid.NewGuid();
-            await Assert.ThrowsAsync<ClienteTipoPersonaNullException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteTipoPersonaNullException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
             dtoCliente.Id = id;
 
             dtoCliente.TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico;
@@ -210,7 +194,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            _ = clienteService.Delete(dtoCliente);
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
@@ -266,7 +250,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
             };
 
-            await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -406,8 +390,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             Assert.NotNull(response2.ToString());
             Assert.NotEqual(default, response2);
 
-            _ = clienteService.Delete(dtoCliente);
-            _ = clienteService.Delete(dtoCliente2);
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
+            _ = await clienteService.Delete(dtoCliente2).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
@@ -454,7 +438,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
 
-            await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(new ClienteRequestDto
+            _ = await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(new ClienteRequestDto
             {
                 Id = Guid.NewGuid(),
                 Nombre = "Nombre",
@@ -519,15 +503,15 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var dtoDocumento = new TipoDocumentoRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofakeCliente09",
+                NombreTipoDocumento = "fakeDocumentoClienteInsertI09",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
+            _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
             var dtoCliente = new ClienteRequestDto
             {
@@ -548,10 +532,10 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var id = dtoCliente.Id;
             dtoCliente.Id = Guid.NewGuid();
-            await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
             dtoCliente.Id = id;
 
-            _ = clienteService.Delete(dtoCliente);
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
@@ -595,11 +579,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             };
 
             clienteDto.FechaNacimiento = default;
-            await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
 
             clienteDto.FechaNacimiento = DateTimeOffset.Now;
             clienteDto.FechaRegistro = default;
-            await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(clienteDto)).ConfigureAwait(false);
         }
         [Fact]
         [UnitTest]
@@ -670,7 +654,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -690,18 +674,18 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
 
             dtoCliente.FechaNacimiento = default;
-            await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.FechaNacimiento = DateTimeOffset.Now;
             dtoCliente.FechaRegistro = default;
-            await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.FechaRegistro = DateTimeOffset.Now;
             var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            _ = clienteService.Delete(dtoCliente);
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
@@ -749,7 +733,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var provider = service.BuildServiceProvider();
             var clienteService = provider.GetRequiredService<IClienteService>();
 
-            await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(new ClienteRequestDto
+            _ = await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(new ClienteRequestDto
             {
                 Nombre = "FakePrueba",
                 TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
@@ -851,8 +835,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var dtoCliente = new ClienteRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "fake",
+                Nombre = "fake_cliente_insert3",
+                Apellido = "fake_cliente_insert3",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
                 CodigoTipoDocumento = "000000003",
@@ -863,464 +847,16 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             };
 
             dtoCliente.TipoDocumentoId = dtoDocumento2.Id;
-            await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.TipoDocumentoId = dtoDocumento.Id;
             var response = await clienteService.Insert(dtoCliente).ConfigureAwait(false);
             Assert.NotNull(response.ToString());
             Assert.NotEqual(default, response);
 
-            _ = clienteService.Delete(dtoCliente);
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
-        }
-        #endregion
-        #region Delect
-        [Fact]
-        [UnitTest]
-        public async Task Cliente_Delete_Test_Fail()
-        {
-            var clienteRepoMock = new Mock<IClienteRepositorio>();
-            clienteRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()));
-
-            var service = new ServiceCollection();
-
-            service.AddTransient(_ => clienteRepoMock.Object);
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-
-            await Assert.ThrowsAsync<ClienteNoExistException>(() => clienteService.Delete(new ClienteRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
-        }
-        [Fact]
-        [UnitTest]
-        public async Task Cliente_Delete_Test_Full()
-        {
-            var clienteRepoMock = new Mock<IClienteRepositorio>();
-            var entity = new ClienteEntity
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "Nombre"
-            };
-            clienteRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()))
-                .Returns(entity);
-            clienteRepoMock
-                .Setup(m => m.Delete(It.IsAny<ClienteEntity>()))
-                .Returns(Task.FromResult(true));
-
-            var service = new ServiceCollection();
-
-            service.AddTransient(_ => clienteRepoMock.Object);
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-
-            var result = await clienteService.Delete(new ClienteRequestDto
-            {
-                Id = Guid.NewGuid(),
-            }).ConfigureAwait(false);
-
-            Assert.NotNull(result.ToString());
-            Assert.True(result);
-        }
-        [Fact]
-        [IntegrationTest]
-        public async void Cliente_Delete_Test_IntegrationTest()
-        {
-            ServiceProvider provider = ServiceCollectionCliente();
-
-            var clienteService = provider.GetRequiredService<IClienteService>();
-            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
-            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
-            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
-
-            var dtoDocumento = new TipoDocumentoRequestDto
-            {
-                Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofakeCliente01",
-            };
-            var documento = documentoRepo
-                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
-                .FirstOrDefault();
-            if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
-
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
-
-            var dtoCliente = new ClienteRequestDto
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "fakeProveedorDeleteTestI1",
-                Apellido = "fakeProveedorDeleteTestI1",
-                NumeroTelefono = 123456789,
-                CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "000000001",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = dtoDocumento.Id,
-            };
-
-            var cliente = clienteRepositorio
-                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
-                .FirstOrDefault();
-            if (cliente != null || cliente != default)
-                clienteRepositorio.Delete(cliente);
-
-            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
-
-            var dtoCliente2 = new ClienteRequestDto
-            {
-                Id = dtoCliente.Id
-            };
-            var result = await clienteService.Delete(dtoCliente2).ConfigureAwait(false);
-
-            Assert.True(result);
-            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
-        }
-        #endregion
-        #region Update
-        [Fact]
-        [UnitTest]
-        public async Task Cliente_Update_Test_Fail()
-        {
-            var clienteRepoMock = new Mock<IClienteRepositorio>();
-            clienteRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()));
-
-            var service = new ServiceCollection();
-
-            service.AddTransient(_ => clienteRepoMock.Object);
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-
-            await Assert.ThrowsAsync<ClienteNoExistException>(() => clienteService.Update(new ClienteRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
-        }
-        [Fact]
-        [UnitTest]
-        public async Task Proveedor_Update_Test_Full()
-        {
-            var clienteRepoMock = new Mock<IClienteRepositorio>();
-            var entity = new ClienteEntity
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "Nombre",
-                CodigoTipoDocumento = "123456789",
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E"),
-                TipoPersona = (global::Evaluacion.Dominio.Core.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-            };
-            var tipoDocumentoRepoMock = new Mock<ITipoDocumentoRepositorio>();
-
-            _ = tipoDocumentoRepoMock
-                .Setup(m => m.SearchMatching(It.IsAny<Expression<Func<TipoDocumentoEntity, bool>>>()))
-                .Returns(new List<TipoDocumentoEntity>{ new TipoDocumentoEntity
-                {
-                    Id = Guid.NewGuid(),
-                    NombreTipoDocumento = "fakenonit"
-                }});
-
-            _ = clienteRepoMock
-                .Setup(m => m.GetAll<ClienteEntity>())
-                .Returns(new List<ClienteEntity> { entity });
-
-            _ = clienteRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()))
-                .Returns(entity);
-
-            _ = clienteRepoMock
-                .Setup(m => m.Update(It.IsAny<ClienteEntity>()))
-                .Returns(Task.FromResult(true));
-
-            var service = new ServiceCollection();
-
-            service.AddTransient(_ => clienteRepoMock.Object);
-            service.AddTransient(_ => tipoDocumentoRepoMock.Object);
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-
-            var result = await clienteService.Update(new ClienteRequestDto
-            {
-                Id = entity.Id,
-                Nombre = "Nombre2",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                CodigoTipoDocumento = "123456789",
-                TipoDocumentoId = Guid.Parse("581E3E67-82E2-4F1F-B379-9BD870DB669E")
-            }).ConfigureAwait(false);
-
-            Assert.NotNull(result.ToString());
-            Assert.True(result);
-        }
-        [Fact]
-        [IntegrationTest]
-        public async void Cliente_Update_Test_IntegrationTest()
-        {
-            ServiceProvider provider = ServiceCollectionCliente();
-
-            var clienteService = provider.GetRequiredService<IClienteService>();
-            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
-            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
-            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
-
-            var dtoDocumento = new TipoDocumentoRequestDto
-            {
-                Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofakeCliente04",
-            };
-            var documento = documentoRepo
-                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
-                .FirstOrDefault();
-            if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
-
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
-
-            var dtoCliente = new ClienteRequestDto
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "fake",
-                NumeroTelefono = 123456789,
-                CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "0000000011",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Natural,
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = dtoDocumento.Id,
-            };
-
-            var cliente = clienteRepositorio
-                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
-                .FirstOrDefault();
-            if (cliente != null || cliente != default)
-                clienteRepositorio.Delete(cliente);
-
-            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
-
-            var dtoCliente2 = new ClienteRequestDto
-            {
-                Id = dtoCliente.Id,
-                Nombre = "fake2",
-                Apellido = "fake2",
-                NumeroTelefono = 123456789,
-                CorreoElectronico = "fake@fake.fake2",
-                //CodigoTipoDocumento = "223456789",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
-                FechaNacimiento = DateTimeOffset.Now.AddHours(1),
-                //FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = dtoDocumento.Id,
-            };
-            var result = await clienteService.Update(dtoCliente2).ConfigureAwait(false);
-
-            Assert.True(result);
-
-            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
-            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
-        }
-        #endregion
-        #region Get
-        [Fact]
-        [UnitTest]
-        public async Task Cliente_Get_Test_Fail()
-        {
-            var clienteRepoMock = new Mock<IClienteRepositorio>();
-            clienteRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()));
-
-            var service = new ServiceCollection();
-
-            service.AddTransient(_ => clienteRepoMock.Object);
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-
-            await Assert.ThrowsAsync<ClienteNoExistException>(() => clienteService.Get(new ClienteRequestDto { Nombre = "Nombre", Id = Guid.NewGuid() })).ConfigureAwait(false);
-        }
-        [Fact]
-        [UnitTest]
-        public async Task Cliente_Get_Test_Full()
-        {
-            var clienteRepoMock = new Mock<IClienteRepositorio>();
-            var entity = new ClienteEntity
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "Nombre"
-            };
-            clienteRepoMock
-                .Setup(m => m.SearchMatchingOneResult(It.IsAny<Expression<Func<ClienteEntity, bool>>>()))
-                .Returns(entity);
-
-            var service = new ServiceCollection();
-
-            service.AddTransient(_ => clienteRepoMock.Object);
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-
-            var result = await clienteService.Get(new ClienteRequestDto
-            {
-                Id = Guid.NewGuid(),
-            }).ConfigureAwait(false);
-
-            Assert.NotNull(result.ToString());
-            Assert.Equal(entity.Id, result.Id);
-
-        }
-        [Fact]
-        [IntegrationTest]
-        public async void Cliente_Get_Test_IntegrationTest()
-        {
-            ServiceProvider provider = ServiceCollectionCliente();
-
-            var clienteService = provider.GetRequiredService<IClienteService>();
-            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
-            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
-            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
-
-            var dtoDocumento = new TipoDocumentoRequestDto
-            {
-                Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofakeCliente02",
-            };
-            var documento = documentoRepo
-                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
-                .FirstOrDefault();
-            if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
-
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
-
-            var dtoCliente = new ClienteRequestDto
-            {
-                Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "fake",
-                NumeroTelefono = 123456789,
-                CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "000000002",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = dtoDocumento.Id,
-            };
-
-            var cliente = clienteRepositorio
-                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
-                .FirstOrDefault();
-            if (cliente != null || cliente != default)
-                clienteRepositorio.Delete(cliente);
-
-            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
-
-            var dtoCliente2 = new ClienteRequestDto
-            {
-                Id = dtoCliente.Id,
-            };
-            var result = await clienteService.Get(dtoCliente2).ConfigureAwait(false);
-
-            Assert.Equal(dtoCliente.Id, result.Id);
-            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
-            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
-        }
-        #endregion
-        #region GetAll
-        [Fact]
-        [UnitTest]
-        public async Task Cliente_GetAll_Test_Full()
-        {
-            var clienteRepoMock = new Mock<IClienteRepositorio>();
-            var Listentity = new List<ClienteEntity>
-            {
-                new ClienteEntity
-                {
-                    Id = Guid.NewGuid(),
-                    Nombre = "Nombre"
-                }
-            };
-            clienteRepoMock
-                .Setup(m => m.GetAll<ClienteEntity>())
-                .Returns(Listentity);
-
-            var service = new ServiceCollection();
-
-            service.AddTransient(_ => clienteRepoMock.Object);
-
-            service.ConfigurePersonasService(new DbSettings());
-            var provider = service.BuildServiceProvider();
-            var clienteService = provider.GetRequiredService<IClienteService>();
-            var mapper = provider.GetRequiredService<IMapper>();
-
-            var result = mapper.Map<IEnumerable<ClienteEntity>>(await clienteService.GetAll().ConfigureAwait(false));
-
-            Assert.NotNull(result.ToString());
-            Assert.Equal(Listentity[0].Id, result.First().Id);
-
-        }
-        [Fact]
-        [IntegrationTest]
-        public async void Cliente_GetAll_Test_IntegrationTest()
-        {
-            ServiceProvider provider = ServiceCollectionCliente();
-
-            var clienteService = provider.GetRequiredService<IClienteService>();
-            var clienteRepositorio = provider.GetRequiredService<IClienteRepositorio>();
-            var mapper = provider.GetRequiredService<IMapper>();
-            var documentoService = provider.GetRequiredService<ITipoDocumentoService>();
-            var documentoRepo = provider.GetRequiredService<ITipoDocumentoRepositorio>();
-
-            var dtoDocumento = new TipoDocumentoRequestDto
-            {
-                Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofakeCliente03",
-            };
-            var documento = documentoRepo
-                .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
-                .FirstOrDefault();
-            if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
-
-            await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
-
-            var dtoCliente = new ClienteRequestDto
-            {
-                Id = Guid.Parse("45c2a9b5-1eac-48d3-83a4-ff692326e4f7"),
-                Nombre = "FakeListTipoDocumento1",
-                Apellido = "FakeListTipoDocumento1",
-                NumeroTelefono = 123456789,
-                CorreoElectronico = "fake@fake.fake",
-                CodigoTipoDocumento = "000000008",
-                TipoPersona = (global::Evaluacion.Aplicacion.Dto.Especificas.Personas.TipoPersona)TipoPersona.Juridico,
-                FechaNacimiento = DateTimeOffset.Now,
-                FechaRegistro = DateTimeOffset.Now,
-                TipoDocumentoId = dtoDocumento.Id,
-            };
-
-            var cliente = clienteRepositorio
-                .SearchMatching<ClienteEntity>(x => x.Nombre == dtoCliente.Nombre || x.Id == dtoCliente.Id)
-                .FirstOrDefault();
-            if (cliente != null || cliente != default)
-                clienteRepositorio.Delete(cliente);
-
-            await clienteService.Insert(dtoCliente).ConfigureAwait(false);
-
-            var result = mapper.Map<IEnumerable<ClienteEntity>>(await clienteService.GetAll().ConfigureAwait(false));
-
-            Assert.NotNull(result.ToString());
-            Assert.True(result.Any());
-
-            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
-            _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion
         //Cliente, Test de integracion para el cliente
@@ -1337,13 +873,13 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var dtoDocumento = new TipoDocumentoRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreTipoDocumento = "fakeDocumentofakeCliente10",
+                NombreTipoDocumento = "fakeDocumentoClienteInsert10",
             };
             var documento = documentoRepo
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento.NombreTipoDocumento || x.Id == dtoDocumento.Id)
                 .FirstOrDefault();
             if (documento != null || documento != default)
-                documentoRepo.Delete(documento);
+                _ = await documentoRepo.Delete(documento).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento).ConfigureAwait(false);
 
@@ -1356,7 +892,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
                 .SearchMatching<TipoDocumentoEntity>(x => x.NombreTipoDocumento == dtoDocumento2.NombreTipoDocumento || x.Id == dtoDocumento2.Id)
                 .FirstOrDefault();
             if (documento2 != null || documento2 != default)
-                documentoRepo.Delete(documento2);
+                _ = await documentoRepo.Delete(documento2).ConfigureAwait(false);
 
             _ = await documentoService.Insert(dtoDocumento2).ConfigureAwait(false);
 
@@ -1379,25 +915,25 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
 
             var id = dtoCliente.Id;
             dtoCliente.Id = Guid.NewGuid();
-            await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClientenameAlreadyExistException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.Nombre = "Fake2";
-            await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteCodigoTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
             dtoCliente.Id = id;
 
             dtoCliente.CodigoTipoDocumento = "000000002";
             dtoCliente.FechaNacimiento = default;
-            await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteFechaNacimientoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.FechaNacimiento = DateTimeOffset.Now;
             dtoCliente.FechaRegistro = default;
-            await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteFechaRegistroException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
             dtoCliente.FechaRegistro = DateTimeOffset.Now;
             dtoCliente.TipoDocumentoId = dtoDocumento2.Id;
-            await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
+            _ = await Assert.ThrowsAsync<ClienteTipoDocumentoException>(() => clienteService.Insert(dtoCliente)).ConfigureAwait(false);
 
-            _ = clienteService.Delete(dtoCliente);
+            _ = await clienteService.Delete(dtoCliente).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
             _ = await documentoService.Delete(dtoDocumento2).ConfigureAwait(false);
         }
