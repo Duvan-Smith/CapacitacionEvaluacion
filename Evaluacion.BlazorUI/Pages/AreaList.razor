@@ -1,0 +1,37 @@
+﻿@page "/arealist"
+@using System
+@using System.Net.Http
+@using System.Net.Http.Json
+@inject HttpClient Http
+@using MatBlazor
+@using Newtonsoft.Json
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (areaDtos == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <MatTable Items="@areaDtos" class="mat-elevation-z5">
+        <MatTableHeader>
+            <th>Date</th>
+            <th>NombreArea</th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Id</td>
+            <td>@context.NombreArea</td>
+        </MatTableRow>
+    </MatTable>
+}
+
+@code {
+    private string Url = "/FachadaGenericas/GetAllArea";
+    private IEnumerable<AreaDto> areaDtos;
+
+    protected override async Task OnInitializedAsync() =>
+        areaDtos = await Http.GetFromJsonAsync<IEnumerable<AreaDto>>(Url);
+}

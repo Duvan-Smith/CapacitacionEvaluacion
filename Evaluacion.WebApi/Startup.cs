@@ -12,13 +12,20 @@ namespace Evaluacion.WebApi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
+        private readonly string MiCors = "MiCords";
         public IConfiguration Configuration { get; }
-
+        public IHostEnvironment Environment { get; }
+        public Startup(IHostEnvironment env)
+        {
+            Environment = env;
+            var configurationBuilder = new ConfigurationBuilder()
+                .SetBasePath(env.ContentRootPath)
+                .AddJsonFile("appsettings.json", false, true)
+                .AddJsonFile($"appsettings{env.EnvironmentName}.json", true, true)
+                .AddEnvironmentVariables();
+            //.EnableSubstitutions();
+            Configuration = configurationBuilder.Build();
+        }
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -29,10 +36,15 @@ namespace Evaluacion.WebApi
             services.AddRazorPages();
             services.AddServerSideBlazor();
 
-            var dbSettings = Configuration.GetSection("ConnectionString").Get<string>();
+            var dbSettings = Configuration.GetSection("DbSettings").Get<DbSettings>();
+            //var ClientSettings = Configuration.GetSection("ClientSettings").Get<HttpClientSettings>();
 
-            services.ConfigurePersonasService(new DbSettings { ConnectionString = dbSettings });
-            services.ConfigureGenericasService(new DbSettings { ConnectionString = dbSettings });
+            services.ConfigurePersonasService(dbSettings);
+            services.ConfigureGenericasService(dbSettings);
+            //services.ConfigureHttpClientService(ClientSettings);
+
+            services.AddCors(options =>
+                options.AddPolicy(name: MiCors, builder => builder.WithOrigins("*")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +66,7 @@ namespace Evaluacion.WebApi
             app.UseEndpoints(endpoints =>
                 endpoints.MapControllers()
             );
+            app.UseCors(MiCors);
         }
     }
 }
