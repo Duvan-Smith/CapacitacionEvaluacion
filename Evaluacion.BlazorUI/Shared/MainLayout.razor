@@ -9,9 +9,13 @@
         </MatDrawer>
         <MatDrawerContent>
             <div class="main">
-                <div class="top-row px-4">
-                    <MatButton OnClick="@((e) => ButtonClicked())">Open Menu</MatButton>
-                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                <div class="top-row px-4" style="display:flex; justify-content:space-between">
+                    <div class="top-row px-0">
+                        <MatButton Icon="menu" OnClick="@((e) => ButtonClicked())"></MatButton>
+                    </div>
+                    <div class="top-row px-4">
+                        <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                    </div>
                 </div>
                 <div class="content px-4">
                     @Body

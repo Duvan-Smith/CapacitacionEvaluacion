@@ -10,8 +10,14 @@ namespace Evaluacion.BlazorUI.Pages.Area
         private readonly string Url = "/FachadaArea/GetAllArea";
         private IEnumerable<AreaDto> areaDtos;
         private string _currentSelectedTask;
-        protected override async Task OnInitializedAsync() =>
+        protected void OpenAreaForm()
+        {
+            NavigationManager.NavigateTo("/areaform");
+        }
+        protected override async Task OnInitializedAsync()
+        {
             areaDtos = await Http.GetFromJsonAsync<IEnumerable<AreaDto>>(Url).ConfigureAwait(false);
+        }
         public void SelectionChangedEvent(object row)
         {
             if (row == null)

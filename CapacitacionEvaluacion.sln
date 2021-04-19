@@ -38,7 +38,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.Aplicacion.Dto",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.WebApi", "Evaluacion.WebApi\Evaluacion.WebApi.csproj", "{CCCB0E5D-44B4-4511-9516-281602D2F2D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Evaluacion.BlazorUI", "Evaluacion.BlazorUI\Evaluacion.BlazorUI.csproj", "{5F0AE412-D6B8-486A-BBA3-A1ADBAC1534A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Evaluacion.BlazorUI", "Evaluacion.BlazorUI\Evaluacion.BlazorUI.csproj", "{5F0AE412-D6B8-486A-BBA3-A1ADBAC1534A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

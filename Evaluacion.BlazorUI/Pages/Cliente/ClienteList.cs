@@ -7,12 +7,14 @@ namespace Evaluacion.BlazorUI.Pages.Cliente
 {
     public partial class ClienteList
     {
-        private readonly string Url = "/FachadaPersonas/GetAllCliente";
+        private readonly string Url = "/FachadaCliente/GetAllCliente";
         private IEnumerable<ClienteDto> clienteDtos;
         private string _currentSelectedTask;
 
-        protected override async Task OnInitializedAsync() =>
+        protected override async Task OnInitializedAsync()
+        {
             clienteDtos = await Http.GetFromJsonAsync<IEnumerable<ClienteDto>>(Url).ConfigureAwait(false);
+        }
         public void SelectionChangedEvent(object row)
         {
             if (row == null)

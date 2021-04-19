@@ -18,6 +18,10 @@
     <ProjectReference Include="..\Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Pages\TipoDocumento\CRUD\" />
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

@@ -2,6 +2,12 @@
 
 <h1>Lista de areas</h1>
 
+<div class="row">
+    <div class="col-12 text-center">
+        <MatButton Icon="horizontal_split" OnClick="OpenAreaForm"></MatButton>
+    </div>
+</div>
+
 @if (areaDtos == null)
 {
     <div class="loadingio-spinner-eclipse-et0d2h7rdkc">
@@ -69,10 +75,15 @@ else
         <MatTableHeader>
             <th>Id</th>
             <th>NombreArea</th>
+            <th></th>
         </MatTableHeader>
         <MatTableRow>
             <td>@context.Id</td>
             <td>@context.NombreArea</td>
+            <td>
+                <MatButtonLink Icon="edit" Href="/ButtonLink"></MatButtonLink>
+                <MatButtonLink Icon="delete" Href="/ButtonLink"></MatButtonLink>
+            </td>
         </MatTableRow>
     </MatTable>
 }
