@@ -1,8 +1,8 @@
-﻿@page "/arealist"
+﻿@page "/clientelist"
 
-<h1>Lista de areas</h1>
+<h1>Lista de clientes</h1>
 
-@if (areaDtos == null)
+@if (clienteDtos == null)
 {
     <div class="loadingio-spinner-eclipse-et0d2h7rdkc">
         <div class="ldio-1twzmihf3jb">
@@ -65,16 +65,18 @@
 }
 else
 {
-    <MatTable Items="@areaDtos" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
-        <MatTableHeader>
-            <th>Date</th>
-            <th>NombreArea</th>
-        </MatTableHeader>
-        <MatTableRow>
-            <td>@context.Id</td>
-            <td>@context.NombreArea</td>
-        </MatTableRow>
-    </MatTable>
+<MatTable Items="@clienteDtos" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+    <MatTableHeader>
+        <th>Date</th>
+        <th>Nombre</th>
+        <th>Correo</th>
+    </MatTableHeader>
+    <MatTableRow>
+        <td>@context.Id</td>
+        <td>@context.Nombre @context.Apellido </td>
+        <td>@context.CorreoElectronico</td>
+    </MatTableRow>
+</MatTable>
 }
 
 <p>@_currentSelectedTask</p>

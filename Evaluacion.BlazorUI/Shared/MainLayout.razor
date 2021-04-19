@@ -1,17 +1,30 @@
 ﻿@inherits LayoutComponentBase
 
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <div class="main">
-        <div class="top-row px-4">
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
-        </div>
-
-        <div class="content px-4">
-            @Body
-        </div>
-    </div>
+    <MatDrawerContainer Style="width: 100vw; height: 100vh;">
+        <MatDrawer @bind-Opened="@Opened" Mode="@MatDrawerMode.Modal">
+            <div class="sidebar">
+                <NavMenu />
+            </div>
+        </MatDrawer>
+        <MatDrawerContent>
+            <div class="main">
+                <div class="top-row px-4">
+                    <MatButton OnClick="@((e) => ButtonClicked())">Open Menu</MatButton>
+                    <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+                </div>
+                <div class="content px-4">
+                    @Body
+                </div>
+            </div>
+        </MatDrawerContent>
+    </MatDrawerContainer>
 </div>
+@code {
+    bool Opened = true;
+
+    void ButtonClicked()
+    {
+        Opened = !Opened;
+    }
+}
