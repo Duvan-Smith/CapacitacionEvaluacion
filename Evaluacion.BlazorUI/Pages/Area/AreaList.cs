@@ -7,7 +7,7 @@ namespace Evaluacion.BlazorUI.Pages.Area
 {
     public partial class AreaList
     {
-        private readonly string Url = "/FachadaGenericas/GetAllArea";
+        private readonly string Url = "/FachadaArea/GetAllArea";
         private IEnumerable<AreaDto> areaDtos;
         private string _currentSelectedTask;
         protected override async Task OnInitializedAsync() =>
