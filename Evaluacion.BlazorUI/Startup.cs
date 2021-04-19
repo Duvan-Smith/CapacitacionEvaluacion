@@ -1,4 +1,3 @@
-using Evaluacion.BlazorUI.Data;
 using MatBlazor;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -36,7 +35,6 @@ namespace Evaluacion.BlazorUI
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
-            services.AddSingleton<WeatherForecastService>();
             services.AddMatBlazor();
             services.AddSingleton(new HttpClient
             {
