@@ -7,6 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\TipoDocumento\CRUD\**" />
+    <Content Remove="Pages\TipoDocumento\CRUD\**" />
+    <EmbeddedResource Remove="Pages\TipoDocumento\CRUD\**" />
+    <None Remove="Pages\TipoDocumento\CRUD\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="MatBlazor" Version="2.8.0" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.13" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -16,10 +23,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Evaluacion.Aplicacion.Dto\Evaluacion.Aplicacion.Dto.csproj" />
     <ProjectReference Include="..\Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\TipoDocumento\CRUD\" />
   </ItemGroup>
 
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
