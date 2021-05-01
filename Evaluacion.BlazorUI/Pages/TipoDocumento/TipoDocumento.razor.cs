@@ -1,17 +1,29 @@
 ﻿using Evaluacion.Aplicacion.Dto.Genericas.TipoDocumentos;
+using Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPersonas.Genericas.TipoDocumentos;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Evaluacion.BlazorUI.Pages.TipoDocumento
 {
     public partial class TipoDocumento
     {
-        private readonly string Url = "/FachadaTipoDocumento/GetAllTipoDocumento";
+        [Inject]
+        public ITipoDocumentoClienteHttp ClienteHttp { get; set; }
         private IEnumerable<TipoDocumentoDto> tipoDocumentoDtos;
         private string _currentSelectedTask;
-        protected override async Task OnInitializedAsync() =>
-            tipoDocumentoDtos = await Http.GetFromJsonAsync<IEnumerable<TipoDocumentoDto>>(Url).ConfigureAwait(false);
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                var response = await ClienteHttp.GetAll().ConfigureAwait(false);
+                tipoDocumentoDtos = response ?? new List<TipoDocumentoDto>();
+                await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+            }
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
         public void SelectionChangedEvent(object row)
         {
             if (row == null)

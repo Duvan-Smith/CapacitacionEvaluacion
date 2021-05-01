@@ -1,20 +1,29 @@
 ﻿using Evaluacion.Aplicacion.Dto.Especificas.Clientes;
+using Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPersonas.Personas.Clientes;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Evaluacion.BlazorUI.Pages.Cliente
 {
     public partial class ClienteList
     {
-        private readonly string Url = "/FachadaCliente/GetAllCliente";
+        [Inject]
+        public IClienteClienteHttp ClienteHttp { get; set; }
         private IEnumerable<ClienteDto> clienteDtos;
         private string _currentSelectedTask;
 
-        protected override async Task OnInitializedAsync()
+        protected override async Task OnAfterRenderAsync(bool firstRender)
         {
-            clienteDtos = await Http.GetFromJsonAsync<IEnumerable<ClienteDto>>(Url).ConfigureAwait(false);
+            if (firstRender)
+            {
+                var response = await ClienteHttp.GetAll().ConfigureAwait(false);
+                clienteDtos = response ?? new List<ClienteDto>();
+                await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+            }
+            await base.OnAfterRenderAsync(firstRender);
         }
+
         public void SelectionChangedEvent(object row)
         {
             if (row == null)
