@@ -1,23 +1,35 @@
 ﻿using Evaluacion.Aplicacion.Dto.Genericas.Areas;
+using Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPersonas.Genericas.Areas;
+using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace Evaluacion.BlazorUI.Pages.Area
 {
     public partial class AreaList
     {
-        private readonly string Url = "/FachadaArea/GetAllArea";
-        private IEnumerable<AreaDto> areaDtos;
+        [Inject]
+        public IAreaClienteHttp ClienteHttp { get; set; }
+        public IEnumerable<AreaDto> Areas;
+
         private string _currentSelectedTask;
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                var response = await ClienteHttp.GetAll().ConfigureAwait(false);
+                Areas = response ?? new List<AreaDto>();
+                await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+            }
+            await base.OnAfterRenderAsync(firstRender);
+        }
+
         protected void OpenAreaForm()
         {
             NavigationManager.NavigateTo("/areaform");
         }
-        protected override async Task OnInitializedAsync()
-        {
-            areaDtos = await Http.GetFromJsonAsync<IEnumerable<AreaDto>>(Url).ConfigureAwait(false);
-        }
+
         public void SelectionChangedEvent(object row)
         {
             if (row == null)
@@ -28,7 +40,7 @@ namespace Evaluacion.BlazorUI.Pages.Area
             {
                 _currentSelectedTask = string.Format("areaDtos Nr. {0} has been selected", ((AreaDto)row).Id);
             }
-            this.StateHasChanged();
+            StateHasChanged();
         }
     }
 }

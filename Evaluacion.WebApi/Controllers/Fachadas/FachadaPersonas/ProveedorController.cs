@@ -9,11 +9,11 @@ namespace Evaluacion.WebApi.Controllers.Fachadas.FachadaGenericas
 {
     [ApiController]
     [Route("[controller]")]
-    public class FachadaProveedorController : ControllerBase
+    public class ProveedorController : ControllerBase
     {
-        private readonly ILogger<FachadaProveedorController> _logger;
+        private readonly ILogger<ProveedorController> _logger;
         private readonly IFachadaPersonasService _fachadaPersonasService;
-        public FachadaProveedorController(ILogger<FachadaProveedorController> logger, IFachadaPersonasService fachadaGenericasService)
+        public ProveedorController(ILogger<ProveedorController> logger, IFachadaPersonasService fachadaGenericasService)
         {
             _logger = logger;
             _fachadaPersonasService = fachadaGenericasService;

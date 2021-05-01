@@ -8,7 +8,7 @@
     </div>
 </div>
 
-@if (areaDtos == null)
+@if (Areas == null)
 {
     <div class="loadingio-spinner-eclipse-et0d2h7rdkc">
         <div class="ldio-1twzmihf3jb">
@@ -71,7 +71,7 @@
 }
 else
 {
-    <MatTable Items="@areaDtos" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+    <MatTable Items="@Areas" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
         <MatTableHeader>
             <th>Id</th>
             <th>NombreArea</th>

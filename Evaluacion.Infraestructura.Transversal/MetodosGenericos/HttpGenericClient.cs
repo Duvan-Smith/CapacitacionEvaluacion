@@ -14,17 +14,23 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
     public class HttpGenericClient : IHttpGenericClient
     {
         private readonly HttpClient _client;
+
+        private readonly string urlBase;
+
         public HttpGenericClient(IOptions<HttpClientSettings> settings, HttpClient client)
         {
             if (settings == null)
                 throw new UriFormatException();
             _client = client ?? throw new HttpClientNotDefinedException();
-            _client.BaseAddress = settings.Value.GetServiceUrl();
+            //_client.BaseAddress = settings.Value.GetServiceUrl();
+            urlBase = settings.Value.GetServiceUrl().ToString();
         }
+
         public async Task<T> Get<T>(string path, string request) where T : DataTransferObject
         {
             ValidatePath(path);
-            var response = await _client.GetAsync(path).ConfigureAwait(false);
+            var response = await _client.GetAsync($"{urlBase}{path}").ConfigureAwait(false);
+            ValidateUserUnauthorized(response);
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
@@ -32,40 +38,64 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
         public async Task<T> GetAll<T>(string path) where T : DataTransferObject
         {
             ValidatePath(path);
-            var response = await _client.GetAsync(path).ConfigureAwait(false);
+            var response = await _client.GetAsync($"{urlBase}{path}").ConfigureAwait(false);
+            ValidateUserUnauthorized(response);
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
-        //TODO: impementar metodo
-        public Task<T> Patch<T>(string path, T request) where T : DataTransferObject
+
+        public async Task<TResponse> Patch<TResponse, TRequest>(string path, TRequest request) where TRequest : DataTransferObject
         {
             ValidatePath(path);
-#pragma warning disable RCS1079 // Throwing of new NotImplementedException.
-            throw new System.NotImplementedException();
-#pragma warning restore RCS1079 // Throwing of new NotImplementedException.
+            var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await _client.PatchAsync(path, stringRequest).ConfigureAwait(false);
+            ValidateUserUnauthorized(response);
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        public async Task<TResponse> Post<TResponse, TRequest>(string path, TRequest request) where TResponse : DataTransferObject
+        public async Task<TResponse> Post<TResponse, TRequest>(string path, TRequest request) where TRequest : DataTransferObject
         {
             ValidatePath(path);
             var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var response = await _client.PostAsync(path, stringRequest).ConfigureAwait(false);
+            ValidateUserUnauthorized(response);
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
-        //TODO: impementar metodo
-        public Task<T> Put<T>(string path, T request) where T : DataTransferObject
+
+        public async Task<TResponse> Put<TResponse, TRequest>(string path, TRequest request) where TRequest : DataTransferObject
         {
             ValidatePath(path);
-#pragma warning disable RCS1079 // Throwing of new NotImplementedException.
-            throw new System.NotImplementedException();
-#pragma warning restore RCS1079 // Throwing of new NotImplementedException.
+            var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await _client.PutAsync(path, stringRequest).ConfigureAwait(false);
+            ValidateUserUnauthorized(response);
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
+
+        public async Task<T> Delete<T>(string path) where T : DataTransferObject
+        {
+            ValidatePath(path);
+            var response = await _client.DeleteAsync(path).ConfigureAwait(false);
+            ValidateUserUnauthorized(response);
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        }
+
         private static void ValidatePath(string path)
         {
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentPathException($"Parameter: {nameof(path)} required");
+        }
+
+        private static void ValidateUserUnauthorized(HttpResponseMessage response)
+        {
+            if (string.Equals(response.StatusCode.ToString(), "unauthorized", StringComparison.OrdinalIgnoreCase))
+                throw new UserUnauthorizedException();
         }
     }
 }
