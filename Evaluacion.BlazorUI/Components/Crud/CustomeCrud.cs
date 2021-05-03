@@ -4,13 +4,8 @@ namespace Evaluacion.BlazorUI.Components.Crud
 {
     public class CustomeCrud : ComponentBase
     {
-        [Parameter]
-        public virtual string Tipo { get; set; }
+        public NavigationManager NavigationManager;
 
-        [Parameter]
-        public virtual string Url { get; set; }
-
-        [Parameter]
-        public virtual string Etiqueta { get; set; }
+        public string NuevoValor { get; set; }
     }
 }

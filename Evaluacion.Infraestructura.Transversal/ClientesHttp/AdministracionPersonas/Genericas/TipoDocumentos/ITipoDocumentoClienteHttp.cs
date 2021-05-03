@@ -7,5 +7,7 @@ namespace Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPers
     public interface ITipoDocumentoClienteHttp
     {
         Task<IEnumerable<TipoDocumentoDto>> GetAll();
+        Task<TipoDocumentoDto> Post(TipoDocumentoRequestDto areaDto);
+
     }
 }

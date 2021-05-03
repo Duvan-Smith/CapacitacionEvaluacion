@@ -7,7 +7,7 @@ using MatBlazor;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Evaluacion.BlazorUI.Components.Configuration
+namespace Evaluacion.BlazorUI.Configuration
 {
     public static class BlazorConfigurator
     {

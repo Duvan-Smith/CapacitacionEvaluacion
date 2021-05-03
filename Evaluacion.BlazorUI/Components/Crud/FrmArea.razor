@@ -1,0 +1,8 @@
+﻿@page "/areaform2"
+@inherits FrmAreaBase
+<h3>AreaForm</h3>
+<div class="top-row px-4" style="display:grid; justify-content:space-between">
+    <MatTextField @bind-Value="@NuevoValor" Label="Nombre del arear"></MatTextField>
+    <MatButton Icon="save" OnClick="@Agregar" Label="Guardar area"></MatButton>
+</div>
+

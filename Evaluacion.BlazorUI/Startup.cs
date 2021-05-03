@@ -1,4 +1,4 @@
-using Evaluacion.BlazorUI.Components.Configuration;
+using Evaluacion.BlazorUI.Configuration;
 using Evaluacion.Infraestructura.Transversal.MetodosGenericos.Cofiguration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

@@ -17,5 +17,6 @@ namespace Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPers
         protected override string Controller { get => "TipoDocumento"; }
 
         public async Task<IEnumerable<TipoDocumentoDto>> GetAll() => await Get("GetAllTipoDocumento").ConfigureAwait(false);
+        public async Task<TipoDocumentoDto> Post(TipoDocumentoRequestDto tipoDocumentoDto) => await Post<TipoDocumentoRequestDto>("InsertTipoDocumento", tipoDocumentoDto).ConfigureAwait(false);
     }
 }
