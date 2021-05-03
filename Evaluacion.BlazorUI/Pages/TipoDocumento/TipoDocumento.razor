@@ -1,7 +1,8 @@
 ﻿@page "/tipoDocumentolist"
 
 <h1>Lista de tipos de documentos</h1>
-
+<BtnCrud Tipo="save" Url="/tipoDocumentoform" Etiqueta="Agregar tipo documento">
+</BtnCrud>
 @if (tipoDocumentoDtos == null)
 {
     <div class="loadingio-spinner-eclipse-et0d2h7rdkc">
@@ -69,6 +70,12 @@ else
         <MatTableRow>
             <td>@context.Id</td>
             <td>@context.NombreTipoDocumento</td>
+            <td>
+                <BtnCrud Tipo="edit" Url="/areaedit">
+                </BtnCrud>
+                <BtnCrud Tipo="delete" Url="/areadelet" Etiqueta="">
+                </BtnCrud>
+            </td>
         </MatTableRow>
     </MatTable>
 }

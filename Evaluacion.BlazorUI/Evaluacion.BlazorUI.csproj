@@ -25,10 +25,6 @@
     <ProjectReference Include="..\Evaluacion.Infraestructura.Transversal\Evaluacion.Infraestructura.Transversal.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Components\" />
-  </ItemGroup>
-
   <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
 
 </Project>

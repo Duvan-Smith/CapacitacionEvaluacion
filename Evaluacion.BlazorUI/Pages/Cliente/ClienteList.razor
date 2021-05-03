@@ -1,6 +1,9 @@
-﻿@page "/clientelist"
+﻿
+@page "/clientelist"
 
 <h1>Lista de clientes</h1>
+<BtnCrud Tipo="save" Url="/clienteform" Etiqueta="Agregar cliente">
+</BtnCrud>
 
 @if (clienteDtos == null)
 {
@@ -75,6 +78,12 @@ else
         <td>@context.Id</td>
         <td>@context.Nombre @context.Apellido </td>
         <td>@context.CorreoElectronico</td>
+        <td>
+            <BtnCrud Tipo="edit" Url="/clienteedit">
+            </BtnCrud>
+            <BtnCrud Tipo="delete" Url="/clientedelet" Etiqueta="">
+            </BtnCrud>
+        </td>
     </MatTableRow>
 </MatTable>
 }
