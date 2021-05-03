@@ -599,7 +599,7 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             var dtoArea = new AreaRequestDto
             {
                 Id = Guid.NewGuid(),
-                NombreArea = "FakeAreaEmpleado2",
+                NombreArea = "FakeAreaEmpleadoItest2",
                 EmpleadoResponsableId = Guid.NewGuid()
             };
             var area = areaRepositorio
@@ -637,10 +637,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.E
             dtoEmpleado.Id = id;
 
             _ = await empleadoService.Delete(dtoEmpleado).ConfigureAwait(false);
-            var areaEnd = areaRepositorio
-                .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea && x.Id == dtoArea.Id)
-                .FirstOrDefault();
-            _ = areaRepositorio.Delete(areaEnd);
+            _ = await areaService.Delete(dtoArea).ConfigureAwait(false);
+            //var areaEnd = areaRepositorio
+            //    .SearchMatching<AreaEntity>(x => x.NombreArea == dtoArea.NombreArea && x.Id == dtoArea.Id)
+            //    .FirstOrDefault();
+            //_ = areaRepositorio.Delete(areaEnd);
             _ = await documentoService.Delete(dtoDocumento).ConfigureAwait(false);
         }
         #endregion

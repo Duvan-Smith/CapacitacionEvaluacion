@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Clientes.Services
 {
-    public class ClienteService : IClienteService
+    internal class ClienteService : IClienteService
     {
         private readonly IClienteRepositorio _clienteRepositorio;
         private readonly IMapper _mapper;

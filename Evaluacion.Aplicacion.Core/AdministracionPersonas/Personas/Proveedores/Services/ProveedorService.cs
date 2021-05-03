@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Proveedores.Services
 {
-    public class ProveedorService : IProveedorService
+    internal class ProveedorService : IProveedorService
     {
         private readonly IProveedorRepositorio _proveedorRepositorio;
         private readonly IMapper _mapper;

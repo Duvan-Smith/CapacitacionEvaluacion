@@ -7,5 +7,6 @@ namespace Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPers
     public interface IAreaClienteHttp
     {
         Task<IEnumerable<AreaDto>> GetAll();
+        Task<AreaDto> Post(AreaRequestDto areaDto);
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.FachadaGenericas
 {
-    public class FachadaGenericasService : IFachadaGenericasService
+    internal class FachadaGenericasService : IFachadaGenericasService
     {
         private readonly IAreaService _areaService;
         private readonly ITipoDocumentoService _tipoDocumentoService;

@@ -4,16 +4,16 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Infraestructura.Transversal.ClasesGenericas
 {
-    public interface IHttpClientGeneric<T> where T : DataTransferObject
+    public interface IHttpClientGeneric<TRequest> where TRequest : DataTransferObject
     {
-        Task<IEnumerable<T>> Get(string action);
+        Task<IEnumerable<TRequest>> Get(string action);
 
-        Task<T> Post(T request);
+        Task<TResponse> Post<TResponse>(string path, TRequest request);
 
-        Task<T> Put(T request);
+        Task<TRequest> Put(TRequest request);
 
-        Task<T> Patch(T request);
+        Task<TRequest> Patch(TRequest request);
 
-        public Task<T> Delete();
+        public Task<TRequest> Delete();
     }
 }

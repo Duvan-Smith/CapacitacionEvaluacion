@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Genericas.Areas.Services
 {
-    public class AreaService : IAreaService
+    internal class AreaService : IAreaService
     {
         private readonly IAreaRepositorio _areaRepositorio;
         private readonly IMapper _mapper;

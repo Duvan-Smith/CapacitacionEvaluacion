@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.FachadaPersonas
 {
-    public class FachadaPersonasService : IFachadaPersonasService
+    internal class FachadaPersonasService : IFachadaPersonasService
     {
         private readonly IClienteService _clienteService;
         private readonly IEmpleadoService _empleadoService;

@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 
 namespace Evaluacion.Aplicacion.Core.AdministracionPersonas.Personas.Empleados.Services
 {
-    public enum TipoPersona
+    internal enum TipoPersona
     {
         Natural = 1,
         Juridico = 2,
     }
-    public class EmpleadoService : IEmpleadoService
+    internal class EmpleadoService : IEmpleadoService
     {
         private readonly IEmpleadoRepositorio _empleadoRepositorio;
         private readonly IMapper _mapper;

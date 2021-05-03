@@ -661,8 +661,8 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Personas.C
             var dtoCliente = new ClienteRequestDto
             {
                 Id = Guid.NewGuid(),
-                Nombre = "fake",
-                Apellido = "fake",
+                Nombre = "fake_Cliente05",
+                Apellido = "fake_Cliente05",
                 NumeroTelefono = 123456789,
                 CorreoElectronico = "fake@fake.fake",
                 CodigoTipoDocumento = "000000007",
