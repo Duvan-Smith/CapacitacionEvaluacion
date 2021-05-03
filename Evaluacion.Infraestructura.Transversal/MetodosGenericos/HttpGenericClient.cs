@@ -22,7 +22,6 @@ namespace Evaluacion.Infraestructura.Transversal.MetodosGenericos
             if (settings == null)
                 throw new UriFormatException();
             _client = client ?? throw new HttpClientNotDefinedException();
-            //_client.BaseAddress = settings.Value.GetServiceUrl();
             urlBase = settings.Value.GetServiceUrl().ToString();
         }
 

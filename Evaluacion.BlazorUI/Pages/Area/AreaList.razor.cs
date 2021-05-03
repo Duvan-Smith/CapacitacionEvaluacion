@@ -25,11 +25,6 @@ namespace Evaluacion.BlazorUI.Pages.Area
             await base.OnAfterRenderAsync(firstRender);
         }
 
-        protected void OpenAreaForm()
-        {
-            NavigationManager.NavigateTo("/areaform");
-        }
-
         public void SelectionChangedEvent(object row)
         {
             if (row == null)

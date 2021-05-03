@@ -17,6 +17,7 @@ namespace Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPers
         protected override string Controller { get => "Area"; }
 
         public async Task<IEnumerable<AreaDto>> GetAll() => await Get("GetAllArea").ConfigureAwait(false);
+
         public async Task<AreaDto> Post(AreaRequestDto areaDto) => await Post<AreaRequestDto>("InsertArea", areaDto).ConfigureAwait(false);
     }
 }
