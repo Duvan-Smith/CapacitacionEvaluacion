@@ -1,0 +1,28 @@
+﻿<div class="top-row px-4" style="display:grid; justify-content:center;">
+    <MatTable Items="@Areas" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
+        <MatTableHeader>
+            <th>
+                Id
+            </th>
+            <th>
+                NombreArea
+            </th>
+            <th>
+                Empleado
+            </th>
+            <th>
+            </th>
+        </MatTableHeader>
+        <MatTableRow>
+            <td>@context.Id</td>
+            <td>@context.NombreArea</td>
+            <td>@context.EmpleadoResponsableId</td>
+            <td>
+                <BtnCrud Tipo="edit" Url="@UrlEditar">
+                </BtnCrud>
+                <BtnCrud Tipo="delete" Url="@UrlEditar" Etiqueta="">
+                </BtnCrud>
+            </td>
+        </MatTableRow>
+    </MatTable>
+</div>

@@ -6,45 +6,16 @@
 
     <ComSubBarra Tipo="save" Url="/areaform" Etiqueta="Agregar area">
     </ComSubBarra>
+    <div style="height:100px; max-height:500px; min-height:500px; overflow-y:scroll">
 
-    @if (Areas == null)
-    {
-        <ComLoading>
-        </ComLoading>
-    }
-    else
-    {
-        //TODO: Cambiar a componente padre
-        <div style="height:100px; max-height:100px; min-height:100px; overflow-y:scroll">
-            <div class="top-row px-4" style="display:grid; justify-content:center;">
-                <MatTable Items="@Areas" class="mat-elevation-z5" AllowSelection="true" SelectionChanged="SelectionChangedEvent">
-                    <MatTableHeader>
-                        <th>
-                            Id
-                        </th>
-                        <th>
-                            NombreArea
-                        </th>
-                        <th>
-                            Empleado
-                        </th>
-                        <th>
-                        </th>
-                    </MatTableHeader>
-                    <MatTableRow>
-                        <td>@context.Id</td>
-                        <td>@context.NombreArea</td>
-                        <td>@context.EmpleadoResponsableId</td>
-                        <td>
-                            <BtnCrud Tipo="edit" Url="@UrlEditar">
-                            </BtnCrud>
-                            <BtnCrud Tipo="delete" Url="@UrlEditar" Etiqueta="">
-                            </BtnCrud>
-                        </td>
-                    </MatTableRow>
-                </MatTable>
-            </div>
-        </div>
-    }
-
+        @if (Areas == null)
+        {
+            <ComLoading>
+            </ComLoading>
+        }
+        else
+        {
+            <ComTabla Areas="@Areas" UrlEditar="@UrlEditar" SelecionarId="@IdTablaComportamiento" SelecionarUrl="@UrlTablaComportamiento"></ComTabla>
+        }
+    </div>
 </MatPaper>
