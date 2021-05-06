@@ -12,7 +12,11 @@ namespace Evaluacion.BlazorUI.Pages.Area
         public IAreaClienteHttp ClienteHttp { get; set; }
         public IEnumerable<AreaDto> Areas;
 
+        public string UrlEditar { get; set; }
+
+
         private string _currentSelectedTask;
+
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
@@ -33,8 +37,9 @@ namespace Evaluacion.BlazorUI.Pages.Area
             }
             else
             {
-                _currentSelectedTask = string.Format("areaDtos Nr. {0} has been selected", ((AreaDto)row).Id);
+                _currentSelectedTask = ((AreaDto)row).Id.ToString();
             }
+            UrlEditar = "/areaform/{" + _currentSelectedTask + "}";
             StateHasChanged();
         }
     }

@@ -16,7 +16,7 @@ namespace Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPers
 
         protected override string Controller { get => "Empleado"; }
 
-        public async Task<IEnumerable<EmpleadoDto>> GetAll() => await Get("GetAllEmpleado").ConfigureAwait(false);
+        public async Task<IEnumerable<EmpleadoDto>> GetAll() => await GetAll("GetAllEmpleado").ConfigureAwait(false);
         public async Task<EmpleadoDto> Post(EmpleadoRequestDto empleadoDto) => await Post<EmpleadoRequestDto>("InsertEmpleado", empleadoDto).ConfigureAwait(false);
     }
 }

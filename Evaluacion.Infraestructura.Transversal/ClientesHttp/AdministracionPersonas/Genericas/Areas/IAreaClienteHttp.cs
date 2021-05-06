@@ -8,5 +8,7 @@ namespace Evaluacion.Infraestructura.Transversal.ClientesHttp.AdministracionPers
     {
         Task<IEnumerable<AreaDto>> GetAll();
         Task<AreaDto> Post(AreaRequestDto areaDto);
+        Task<AreaDto> Put(AreaRequestDto areaDto);
+        Task<AreaDto> GetId(AreaRequestDto areaDto);
     }
 }

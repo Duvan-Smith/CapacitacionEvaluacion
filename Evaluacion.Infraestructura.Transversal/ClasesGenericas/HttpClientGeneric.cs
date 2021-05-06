@@ -28,7 +28,7 @@ namespace Evaluacion.Infraestructura.Transversal.ClasesGenericas
             baseUrl = settings.Value.GetServiceUrl().ToString();
         }
 
-        public async Task<IEnumerable<TRequest>> Get(string path)
+        public async Task<IEnumerable<TRequest>> GetAll(string path)
         {
             ValidateNotNullPath(path);
             var response = await _client.GetAsync($"{baseUrl}{Controller}/{path}").ConfigureAwait(false);
@@ -36,7 +36,16 @@ namespace Evaluacion.Infraestructura.Transversal.ClasesGenericas
             response.EnsureSuccessStatusCode();
             return JsonConvert.DeserializeObject<IEnumerable<TRequest>>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
-
+        public async Task<TResponse> GetId<TResponse>(string path, TRequest request)
+        {
+            ValidateNotNullPath(Controller);
+            var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            var response = await _client.PostAsync($"{baseUrl}{Controller}/{path}", stringRequest).ConfigureAwait(false);
+            ValidateUserUnauthorized(response);
+            response.EnsureSuccessStatusCode();
+            return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+        }
         public async Task<TRequest> Patch(TRequest request)
         {
             ValidateNotNullPath(Controller);
@@ -59,15 +68,15 @@ namespace Evaluacion.Infraestructura.Transversal.ClasesGenericas
             return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
 
-        public async Task<TRequest> Put(TRequest request)
+        public async Task<TResponse> Put<TResponse>(string path, TRequest request)
         {
             ValidateNotNullPath(Controller);
             var stringRequest = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var response = await _client.PutAsync(Controller, stringRequest).ConfigureAwait(false);
+            var response = await _client.PutAsync($"{baseUrl}{Controller}/{path}", stringRequest).ConfigureAwait(false);
             ValidateUserUnauthorized(response);
             response.EnsureSuccessStatusCode();
-            return JsonConvert.DeserializeObject<TRequest>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            return JsonConvert.DeserializeObject<TResponse>(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
         public async Task<TRequest> Delete()
         {

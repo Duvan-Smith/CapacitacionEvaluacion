@@ -1,5 +1,13 @@
 ﻿@page "/areaform"
-<h3>AreaForm</h3>
+@page "/areaform/{Id}"
+<h3>AreaForm @Id</h3>
 
-<MatTextField @bind-Value="@NuevoValor" Label="Nombre del arear"></MatTextField>
-<MatButton Icon="save" OnClick="@Agregar" Label="Guardar area"></MatButton>
+@if (Loading && Id!=null)
+{
+    <ComLoading></ComLoading>
+}
+else
+{
+    <MatTextField @bind-Value="@NuevoValor" Label="Nombre del arear"></MatTextField>
+    <MatButton Icon="save" OnClick="@Agregar" Label="Guardar area"></MatButton>
+}
