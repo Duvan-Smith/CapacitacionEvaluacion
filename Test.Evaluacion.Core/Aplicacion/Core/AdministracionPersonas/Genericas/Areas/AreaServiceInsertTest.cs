@@ -31,11 +31,11 @@ namespace Test.Evaluacion.Core.Aplicacion.Core.AdministracionPersonas.Genericas.
 
             service.ConfigureGenericasService(new DbSettings
             {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+                ConnectionString = "Data Source=Asus;Initial Catalog=evaluacion;Integrated Security=True"
             });
             service.ConfigurePersonasService(new DbSettings
             {
-                ConnectionString = "Data Source=DSMITH;Initial Catalog=evaluacion;Integrated Security=True"
+                ConnectionString = "Data Source=Asus;Initial Catalog=evaluacion;Integrated Security=True"
             });
 
             var provider = service.BuildServiceProvider();
