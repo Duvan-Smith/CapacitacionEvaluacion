@@ -12,7 +12,7 @@ namespace Evaluacion.BlazorUI.Pages.Area
         public IAreaClienteHttp ClienteHttp { get; set; }
 
         public bool Loading { get; set; }
-        public string NuevoValor { get; set; }
+        public string NuevoValor = string.Empty;
 
         [Parameter]
         public string Id { get; set; }
@@ -22,17 +22,17 @@ namespace Evaluacion.BlazorUI.Pages.Area
 
         protected override async Task OnInitializedAsync()
         {
-            if (Id != "")
+            if (!string.IsNullOrEmpty(Id))
             {
                 var areaDto = new AreaRequestDto { Id = Guid.Parse(Id), NombreArea = "id", EmpleadoResponsableId = Guid.NewGuid() };
                 AreaDto = await ClienteHttp.GetId(areaDto).ConfigureAwait(false);
-                if (AreaDto != null)
+                if (AreaDto == null)
                 {
-                    NuevoValor = AreaDto.NombreArea;
-                    Loading = false;
-                }
-                else
                     Loading = true;
+                    return;
+                }
+                NuevoValor = AreaDto.NombreArea;
+                Loading = false;
             }
             _ = base.OnInitializedAsync();
         }

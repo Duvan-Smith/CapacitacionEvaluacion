@@ -2,7 +2,7 @@
 @page "/areaform/{Id}"
 <h3>AreaForm @Id</h3>
 
-@if (Loading && Id!=null)
+@if (Loading && string.IsNullOrEmpty(Id))
 {
     <ComLoading></ComLoading>
 }

@@ -17,4 +17,6 @@
     <ProjectReference Include="..\Evaluacion.Infraestructura.Datos.Persistencia.Core\Evaluacion.Infraestructura.Datos.Persistencia.Core.csproj" />
   </ItemGroup>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="" /></VisualStudio></ProjectExtensions>
+
 </Project>
